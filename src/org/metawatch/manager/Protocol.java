@@ -671,7 +671,7 @@ public class Protocol {
 		enqueue(bytes);
 	}
 
-	public static void setNvalTime(Context context) {
+	public static void setTimeDateFormat(Context context) {
 		// Set the watch to 12h or 24h mode, depending on watch setting
 		if (DateFormat.is24HourFormat(context)) {
 			Protocol.setNvalTime(true);
@@ -680,6 +680,16 @@ public class Protocol {
 		else {
 			Protocol.setNvalTime(false);
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Setting watch to 12h format");
+		}
+		
+		char[] order = DateFormat.getDateFormatOrder(context);
+		if (order[0] == DateFormat.DAY) {
+			Protocol.setNvalDate(true);
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Setting watch to ddmm format");
+		}
+		else {
+			Protocol.setNvalDate(false);
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Setting watch to mmdd format");
 		}
 	}
 
@@ -702,6 +712,27 @@ public class Protocol {
 
 		enqueue(bytes);
 	}
+
+	public static void setNvalDate(boolean dayFirst) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.setNvalDate()");
+		byte[] bytes = new byte[8];
+
+		bytes[0] = eMessageType.start;
+		bytes[1] = (byte) (bytes.length+2); // length
+		bytes[2] = eMessageType.NvalOperationMsg.msg; // nval operations
+		bytes[3] = 0x02; // write
+
+		bytes[4] = 0x0a;
+		bytes[5] = 0x20;
+		bytes[6] = 0x01; // size
+		if (dayFirst)
+			bytes[7] = 0x01; // 24 hour mode
+		else
+			bytes[7] = 0x00; // 12 hour mode
+
+		enqueue(bytes);
+	}
+	
 
 	public static void ledChange(Boolean ledOn) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.ledChange()");
