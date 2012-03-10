@@ -303,26 +303,13 @@ public class Protocol {
 	public static void sendRtcNow(Context context) {
 		try {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.sendRtcNow()");
-			boolean isMMDD = true;
-			char[] ch = DateFormat.getDateFormatOrder(context);
-
-			for (int i = 0; i < ch.length; i++) {
-				if (ch[i] == DateFormat.DATE) {
-					isMMDD = false;
-					break;
-				}
-				if (ch[i] == DateFormat.MONTH) {
-					isMMDD = true;
-					break;
-				}	
-			}
 
 			Date date = new Date();
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
 			int year = calendar.get(Calendar.YEAR);
 
-			byte[] bytes = new byte[14];
+			byte[] bytes = new byte[12];
 
 			bytes[0] = eMessageType.start;
 			bytes[1] = (byte) (bytes.length+2); // length
@@ -337,18 +324,8 @@ public class Protocol {
 			bytes[9] = (byte) calendar.get(Calendar.HOUR_OF_DAY);
 			bytes[10] = (byte) calendar.get(Calendar.MINUTE);
 			bytes[11] = (byte) calendar.get(Calendar.SECOND);
-			if (DateFormat.is24HourFormat(context))
-				bytes[12] = (byte) 1; // 24hr
-			else
-				bytes[12] = (byte) 0; // 12hr
-			if (isMMDD)
-				bytes[13] = (byte) 0; // mm/dd
-			else
-				bytes[13] = (byte) 1; // dd/mm
 
-			//send(bytes);
 			enqueue(bytes);
-			//processSendQueue();
 
 		} catch (Exception x) {
 		}
