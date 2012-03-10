@@ -683,7 +683,7 @@ public class Protocol {
 		}
 		
 		char[] order = DateFormat.getDateFormatOrder(context);
-		if (order[0] == DateFormat.DAY) {
+		if (order[0] == DateFormat.DATE) {
 			Protocol.setNvalDate(true);
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Setting watch to ddmm format");
 		}
