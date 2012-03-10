@@ -204,26 +204,26 @@ public class WidgetSetup extends Activity {
     
     private void storeWidgetLayout() {
     	
-    	String out = "";
+        StringBuilder out = new StringBuilder();
     	for(List<Map<String, String>> row : childData) {
     		if(out.length()>0)
-    			out+="|";
+    			out.append("|");
     		
-    		String line = "";
+    		StringBuilder line = new StringBuilder();
     		for(Map<String, String> child : row) {
         		String id = child.get(ID);	
         		if(id!="") {
 	        		if(line.length()>0)
-	        			line+=",";
+	        			line.append(",");
 	        		
-	        		line+=id;
+	        		line.append(id);
         		}
     		}
     		
-    		out+=line;
+    		out.append(line);
     	}
     	
-    	Preferences.widgets = out;
-    	MetaWatchService.saveWidgets(this, out);
+    	Preferences.widgets = out.toString();
+    	MetaWatchService.saveWidgets(this, out.toString());
     }
 }
