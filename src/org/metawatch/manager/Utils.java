@@ -807,5 +807,21 @@ public class Utils {
 		
 		return false;
 	}
+	
+	public static String removeExtension(String filePath) {
+	    File f = new File(filePath);
+	    // if it's a directory, don't remove the extention
+	    if (f.isDirectory()) return f.getName();
+	    String name = f.getName();
+	    // if it is a hidden file
+	    if (name.startsWith(".")) {
+	        // if there is no extn, do not rmove one...
+	        if (name.lastIndexOf('.') == name.indexOf('.')) return name;
+	    }
+	    // if there is no extention, don't do anything
+	    if (!name.contains(".")) return name;
+	    // Otherwise, remove the last 'extension type thing'
+	    return name.substring(0, name.lastIndexOf('.'));
+	}
 
 }
