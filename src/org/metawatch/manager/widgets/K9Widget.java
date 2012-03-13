@@ -16,6 +16,9 @@ public class K9Widget implements InternalWidget {
 
 	public final static String id_0 = "unreadK9_24_32";
 	final static String desc_0 = "Unread K9 email (24x32)";
+
+	public final static String id_1 = "unreadK9_19_16";
+	final static String desc_1 = "Unread K9 email (19x16)";
 	
 	private Context context;
 	private TextPaint paintSmall;
@@ -43,17 +46,32 @@ public class K9Widget implements InternalWidget {
 		if(widgetIds == null || widgetIds.contains(id_0)) {
 			result.put(id_0, GenWidget(id_0));
 		}
+		
+		if(widgetIds == null || widgetIds.contains(id_1)) {
+			result.put(id_1, GenWidget(id_1));
+		}
 	}
 		
 	private InternalWidget.WidgetData GenWidget(String widget_id) {
 		InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
 
-		widget.id = id_0;
-		widget.description = desc_0;
-		widget.width = 24;
-		widget.height = 32;
+		String iconFile="";
+		if( widget_id == id_0 ) {
+			widget.id = id_0;
+			widget.description = desc_0;
+			widget.width = 24;
+			widget.height = 32;
+			iconFile = "idle_k9mail.bmp";
+		}
+		else if( widget_id == id_1 ) {
+			widget.id = id_1;
+			widget.description = desc_1;
+			widget.width = 19;
+			widget.height = 16;
+			iconFile = "idle_k9mail_10.bmp";
+		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "idle_k9mail.bmp");
+		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
 
 		int count = Utils.getUnreadK9Count(context);
 
