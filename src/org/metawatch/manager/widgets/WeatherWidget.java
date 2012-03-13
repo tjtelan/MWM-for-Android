@@ -152,10 +152,10 @@ public class WeatherWidget implements InternalWidget {
 								
 			// temperatures
 			if (WeatherData.celsius) {
-				Utils.drawOutlinedText(WeatherData.temp+"Â°C", canvas, 0, 7, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(WeatherData.temp+"°C", canvas, 0, 7, paintSmall, paintSmallOutline);
 			}
 			else {
-				Utils.drawOutlinedText(WeatherData.temp+"Â°F", canvas, 0, 7, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(WeatherData.temp+"°F", canvas, 0, 7, paintSmall, paintSmallOutline);
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
@@ -316,7 +316,7 @@ public class WeatherWidget implements InternalWidget {
 		return bitmap;
 	}
 	
-	final static int[] phaseImage = {0,0,1,1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5,6,6,6,7,7,7,7,0,0};
+	final static int[] phaseImage = {0,0,1,1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5,5,6,6,7,7,7,7,0,0};
 	
 	private Bitmap draw3() {
 		Bitmap bitmap = Bitmap.createBitmap(24, 32, Bitmap.Config.RGB_565);
