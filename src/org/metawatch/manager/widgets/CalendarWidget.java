@@ -143,7 +143,7 @@ public class CalendarWidget implements InternalWidget {
 		if (widget.height == 16) {
 			canvas.drawBitmap(icon, 4, 0, null);
 			if(meetingTime.equals("None"))
-				canvas.drawText("22:34", 10, 15, paintSmallNumerals);
+				canvas.drawText("-", 10, 15, paintSmallNumerals);
 			else
 				canvas.drawText(meetingTime, 10, 15, paintSmallNumerals);
 		}
