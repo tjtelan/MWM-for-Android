@@ -651,7 +651,7 @@ public class Utils {
 		
 		if(height==16) {
 			canvas.drawBitmap(icon, 4, 0, null);
-			canvas.drawText(text, 9, 15, textPaint);
+			canvas.drawText(text, 10, 15, textPaint);
 		}
 		else if(height==32) {
 			canvas.drawBitmap(icon, 0, 3, null);

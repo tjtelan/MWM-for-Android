@@ -324,10 +324,9 @@ public class Idle {
 		}
 		
 		updateWidgetPages(context);
-		Bitmap bitmap = createLcdIdle(context);
-		int mode = currentPage==mediaPlayerPage ? MetaWatchService.WatchBuffers.APPLICATION : MetaWatchService.WatchBuffers.IDLE;
+		final int mode = currentPage==mediaPlayerPage ? MetaWatchService.WatchBuffers.APPLICATION : MetaWatchService.WatchBuffers.IDLE;
 		
-		Protocol.sendLcdBitmap(bitmap, mode);
+		Protocol.sendLcdBitmap(createLcdIdle(context), mode);
 		Protocol.configureIdleBufferSize(currentPage==0);
 		Protocol.updateDisplay(mode);
 	}
@@ -339,6 +338,11 @@ public class Idle {
 		}
 		
 		updateWidgetPages(context);
+		
+		for (int i=0;i<4;++i) {
+			//Protocol.sendOledBitmap(createOledIdle(context, false, i), MetaWatchService.WatchBuffers.IDLE, i);
+		}
+			
 	}
 	
 	public static boolean toIdle(Context context) {

@@ -23,28 +23,38 @@ public class CalendarWidget implements InternalWidget {
 
 	public final static String id_0 = "Calendar_24_32";
 	final static String desc_0 = "Next Calendar Appointment (24x32)";
-	
+
 	public final static String id_1 = "Calendar_96_32";
 	final static String desc_1 = "Next Calendar Appointment (96x32)";
-	
+
+	public final static String id_2 = "Calendar_19_16";
+	final static String desc_2 = "Next Calendar Appointment (19x16)";
+
 	private Context context;
 	private TextPaint paintSmall;
+	private TextPaint paintSmallNumerals;
 	private TextPaint paintNumerals;
 
 	private String meetingTime = "None";
 	private String meetingTitle;
 	private String meetingLocation;
 	private long meetingEndTimestamp = 0;
-	
+
 	public void init(Context context, ArrayList<CharSequence> widgetIds) {
 		this.context = context;
-		
+
 		paintSmall = new TextPaint();
 		paintSmall.setColor(Color.BLACK);
 		paintSmall.setTextSize(FontCache.instance(context).Small.size);
 		paintSmall.setTypeface(FontCache.instance(context).Small.face);
 		paintSmall.setTextAlign(Align.CENTER);
 		
+		paintSmallNumerals = new TextPaint();
+		paintSmallNumerals.setColor(Color.BLACK);
+		paintSmallNumerals.setTextSize(FontCache.instance(context).SmallNumerals.size);
+		paintSmallNumerals.setTypeface(FontCache.instance(context).SmallNumerals.face);
+		paintSmallNumerals.setTextAlign(Align.CENTER);
+
 		paintNumerals = new TextPaint();
 		paintNumerals.setColor(Color.BLACK);
 		paintNumerals.setTextSize(FontCache.instance(context).Numerals.size);
@@ -58,8 +68,8 @@ public class CalendarWidget implements InternalWidget {
 
 	long lastRefresh = 0;
 
-public void refresh(ArrayList<CharSequence> widgetIds) {
-	  
+	public void refresh(ArrayList<CharSequence> widgetIds) {
+
 		boolean readCalendar = false;
 		long time = System.currentTimeMillis();
 		if (Preferences.readCalendarDuringMeeting) {
@@ -88,17 +98,22 @@ public void refresh(ArrayList<CharSequence> widgetIds) {
 		if(widgetIds == null || widgetIds.contains(id_0)) {		
 			result.put(id_0, GenWidget(id_0));
 		}
-		
+
 		if(widgetIds == null || widgetIds.contains(id_1)) {		
 			result.put(id_1, GenWidget(id_1));
 		}
+		
+		if(widgetIds == null || widgetIds.contains(id_2)) {		
+			result.put(id_2, GenWidget(id_2));
+		}
 	}
-	
+
 	private InternalWidget.WidgetData GenWidget(String widget_id) {
 		InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
 
 		widget.priority = meetingTime.equals("None") ? 0 : 1;	
-		
+
+		String iconFile = "idle_calendar.bmp";
 		if (widget_id.equals(id_0)) {
 			widget.id = id_0;
 			widget.description = desc_0;
@@ -111,44 +126,61 @@ public void refresh(ArrayList<CharSequence> widgetIds) {
 			widget.width = 96;
 			widget.height = 32;
 		}
-							
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "idle_calendar.bmp");
-		
+		else if (widget_id.equals(id_2)) {
+			widget.id = id_2;
+			widget.description = desc_2;
+			widget.width = 19;
+			widget.height = 16;
+			iconFile = "idle_calendar_10.bmp";
+		}
+
+		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+
 		widget.bitmap = Bitmap.createBitmap(widget.width, widget.height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(widget.bitmap);
 		canvas.drawColor(Color.WHITE);
-		
-		canvas.drawBitmap(icon, 0, 3, null);
-		
-		if ((Preferences.displayLocationInSmallCalendarWidget)&&
-		(!meetingTime.equals("None"))&&(meetingLocation!=null)&&
-		(!meetingLocation.equals("---"))&&(widget_id.equals(id_0))&&
-		(meetingLocation.length()>0)&&(meetingLocation.length()<=3)) {
-			canvas.drawText(meetingLocation, 12, 15, paintSmall);        
-		}
-		else 
-		{
-			Calendar c = Calendar.getInstance(); 
-			int dayOfMonth = c.get(Calendar.DAY_OF_MONTH); 
-			if(dayOfMonth<10) {
-				canvas.drawText(""+dayOfMonth, 12, 16, paintNumerals);
-			}
+
+		if (widget.height == 16) {
+			canvas.drawBitmap(icon, 4, 0, null);
+			if(meetingTime.equals("None"))
+				canvas.drawText("22:34", 10, 15, paintSmallNumerals);
 			else
-			{
-				canvas.drawText(""+dayOfMonth/10, 9, 16, paintNumerals);
-				canvas.drawText(""+dayOfMonth%10, 15, 16, paintNumerals);
-			}
+				canvas.drawText(meetingTime, 10, 15, paintSmallNumerals);
 		}
-		canvas.drawText(meetingTime, 12, 30, paintSmall);
+		else {
+			canvas.drawBitmap(icon, 0, 3, null);
+
+			if ((Preferences.displayLocationInSmallCalendarWidget)&&
+					(!meetingTime.equals("None"))&&(meetingLocation!=null)&&
+					(!meetingLocation.equals("---"))&&(widget_id.equals(id_0))&&
+					(meetingLocation.length()>0)&&(meetingLocation.length()<=3)) {
+				canvas.drawText(meetingLocation, 12, 15, paintSmall);        
+			}
+			else 
+			{
+				Calendar c = Calendar.getInstance(); 
+				int dayOfMonth = c.get(Calendar.DAY_OF_MONTH); 
+				if(dayOfMonth<10) {
+					canvas.drawText(""+dayOfMonth, 12, 16, paintNumerals);
+				}
+				else
+				{
+					canvas.drawText(""+dayOfMonth/10, 9, 16, paintNumerals);
+					canvas.drawText(""+dayOfMonth%10, 15, 16, paintNumerals);
+				}
+			}
+			canvas.drawText(meetingTime, 12, 30, paintSmall);
+		}
+		
 		
 
 		if (widget_id.equals(id_1)) {
 			paintSmall.setTextAlign(Align.LEFT);
-			
+
 			String text = meetingTitle;
 			if ((meetingLocation !=null) && (meetingLocation.length()>0))
 				text += " - " + meetingLocation;
-			
+
 			canvas.save();			
 			StaticLayout layout = new StaticLayout(text, paintSmall, 70, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
 			int height = layout.getHeight();
@@ -159,13 +191,13 @@ public void refresh(ArrayList<CharSequence> widgetIds) {
 			canvas.translate(25, textY); //position the text
 			layout.draw(canvas);
 			canvas.restore();	
-			
+
 			paintSmall.setTextAlign(Align.CENTER);
 		}
-		
+
 		return widget;
 	}
-	
+
 
 
 }

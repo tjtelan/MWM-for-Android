@@ -34,6 +34,9 @@ public class WeatherWidget implements InternalWidget {
 	public final static String id_3 = "moon_24_32";
 	final static String desc_3 = "Moon Phase (24x32)";
 	
+	public final static String id_4 = "weather_80_16";
+	final static String desc_4 = "Current Weather (80x16)";
+	
 	private Context context;
 	private TextPaint paintSmall;
 	private TextPaint paintSmallOutline;
@@ -129,6 +132,20 @@ public class WeatherWidget implements InternalWidget {
 			
 			result.put(widget.id, widget);
 		}
+		
+		if(widgetIds == null || widgetIds.contains(id_4)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_4;
+			widget.description = desc_4;
+			widget.width = 80;
+			widget.height = 16;
+			
+			widget.bitmap = draw4();
+			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
 	}
 	
 	private int calcPriority()
@@ -180,39 +197,6 @@ public class WeatherWidget implements InternalWidget {
 		
 		if (WeatherData.received) {
 			
-			/* For debugging the display of weather information
-			WeatherData.icon = "weather_sunny.bmp";
-			WeatherData.icon = "weather_partlycloudy.bmp";
-			WeatherData.icon = "weather_rain.bmp";
-			WeatherData.icon = "weather_thunderstorm.bmp";
-			WeatherData.icon = "weather_snow.bmp";
-			WeatherData.icon = "weather_cloudy.bmp";		  
-			WeatherData.condition = "clear";
-			WeatherData.condition = "sunny";
-			WeatherData.condition = "cloudy";
-			WeatherData.condition = "overcast";
-			WeatherData.condition = "mostly cloudy";
-			WeatherData.condition = "partly cloudy";
-			WeatherData.condition = "mostly sunny";
-			WeatherData.condition = "partly sunny";
-			WeatherData.condition = "rain";
-			WeatherData.condition = "light rain";
-			WeatherData.condition = "rain showers";
-			WeatherData.condition = "showers";
-			WeatherData.condition = "chance of showers";
-			WeatherData.condition = "scattered showers";
-			WeatherData.condition = "freezing rain";
-			WeatherData.condition = "freezing drizzle";
-			WeatherData.condition = "rain and snow";
-			WeatherData.condition = "thunderstorm";
-			WeatherData.condition = "chance of storm";
-			WeatherData.condition = "isolated thunderstorms";
-			WeatherData.condition = "chance of snow";
-			WeatherData.condition = "snow showers";
-			WeatherData.condition = "ice/snow";
-			WeatherData.condition = "flurries";		  
-			WeatherData.temp = "-1.4";*/
-
 			// icon
 			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
 			if (Preferences.overlayWeatherText)
@@ -338,6 +322,66 @@ public class WeatherWidget implements InternalWidget {
 		}
 		
 		paintSmall.setTextAlign(Paint.Align.LEFT);
+		
+		return bitmap;
+	}
+
+	private Bitmap draw4() {
+		Bitmap bitmap = Bitmap.createBitmap(80, 16, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		if (WeatherData.received) {
+			
+			// icon
+			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);	
+			canvas.drawBitmap(image, 28, -4, null);
+			
+			// condition
+			Utils.drawWrappedOutlinedText(WeatherData.condition, canvas, 0, 0, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
+			
+			// temperatures
+			
+			paintSmall.setTextAlign(Paint.Align.RIGHT);
+						
+			StringBuilder string = new StringBuilder();
+			string.append(WeatherData.temp);
+			
+			if (WeatherData.celsius) {
+				string.append("°C");
+			}
+			else {
+				string.append("°F");
+			}
+			canvas.drawText(string.toString(), 80, 5, paintSmall);
+			
+			if (WeatherData.forecast!=null) {
+				string = new StringBuilder();
+				string.append(WeatherData.forecast[0].tempHigh);
+				string.append("/");
+				string.append(WeatherData.forecast[0].tempLow);
+						
+				canvas.drawText(string.toString(), 80, 16, paintSmall);
+			}
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+			
+			Utils.drawOutlinedText((String) TextUtils.ellipsize(WeatherData.locationName, paintSmall, 47, TruncateAt.END), canvas, 0, 16, paintSmall, paintSmallOutline);
+						
+		} else {
+			paintSmall.setTextAlign(Paint.Align.CENTER);
+			if (Preferences.weatherGeolocation) {
+				if( !LocationData.received ) {
+					canvas.drawText("Awaiting location", 40, 9, paintSmall);
+				}
+				else {
+					canvas.drawText("Awaiting weather", 40, 9, paintSmall);
+				}
+			}
+			else {
+				canvas.drawText("No data", 40, 9, paintSmall);
+			}
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
 		
 		return bitmap;
 	}

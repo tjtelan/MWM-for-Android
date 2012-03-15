@@ -22,6 +22,7 @@ public class SmsWidget implements InternalWidget {
 	
 	private Context context;
 	private TextPaint paintSmall;
+	private TextPaint paintSmallNumerals;
 	
 	public void init(Context context, ArrayList<CharSequence> widgetIds) {
 		this.context = context;
@@ -31,7 +32,12 @@ public class SmsWidget implements InternalWidget {
 		paintSmall.setTextSize(FontCache.instance(context).Small.size);
 		paintSmall.setTypeface(FontCache.instance(context).Small.face);
 		paintSmall.setTextAlign(Align.CENTER);
-
+		
+		paintSmallNumerals = new TextPaint();
+		paintSmallNumerals.setColor(Color.BLACK);
+		paintSmallNumerals.setTextSize(FontCache.instance(context).SmallNumerals.size);
+		paintSmallNumerals.setTypeface(FontCache.instance(context).SmallNumerals.face);
+		paintSmallNumerals.setTextAlign(Align.CENTER);
 	}
 
 	public void shutdown() {
@@ -77,7 +83,7 @@ public class SmsWidget implements InternalWidget {
 		int count = Utils.getUnreadSmsCount(context);
 
 		widget.priority = count;		
-		widget.bitmap = Utils.DrawIconCountWidget(context, widget.width, widget.height, icon, count, paintSmall);
+		widget.bitmap = Utils.DrawIconCountWidget(context, widget.width, widget.height, icon, count, widget.width == 24 ? paintSmall : paintSmallNumerals);
 				
 		return widget;
 	}
