@@ -20,7 +20,7 @@ public class WidgetRow {
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
 			return 96;
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
-			return 16;
+			return 80;
 		else
 			return 0;
 	}
