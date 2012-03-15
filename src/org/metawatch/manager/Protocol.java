@@ -231,6 +231,9 @@ public class Protocol {
 
 	public static void enqueue(byte[] bytes) {
 
+		if (MetaWatchService.fakeWatch)
+			return;
+		
 		sendQueue.add(bytes);
 
 		if (sendQueue.size() % 10 == 0)
