@@ -175,9 +175,9 @@ public class MetaWatchService extends Service {
 		public static boolean overlayWeatherText = false;
 	}
 
-	final class WatchType {
-		static final int ANALOG = 1;
-		static final int DIGITAL = 2;
+	public final class WatchType {
+		public static final int ANALOG = 1;
+		public static final int DIGITAL = 2;
 	}
 
 	@Override

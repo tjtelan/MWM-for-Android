@@ -113,13 +113,23 @@ public class Idle {
 			row.doLayout(widgetData);
 		}
 		
+		int maxScreenSize = 0;
+		
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+			maxScreenSize = 96;
+		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+			maxScreenSize = 16;
+		
 		// Bucket rows into screens
 		ArrayList<ArrayList<WidgetRow>> screens = new ArrayList<ArrayList<WidgetRow>>();
 	
-		int screenSize = 32; // Initial screen has top part used by the fw clock
+		int screenSize = 0;
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+			screenSize = 32; // Initial screen has top part used by the fw clock
+		
 		ArrayList<WidgetRow> screen = new ArrayList<WidgetRow>();
 		for(WidgetRow row : rows) { 
-			if(screenSize+row.getHeight() > 96) {
+			if(screenSize+row.getHeight() > maxScreenSize) {
 				screens.add(screen);
 				screen = new ArrayList<WidgetRow>();
 				screenSize = 0;
@@ -282,6 +292,15 @@ public class Idle {
 		Protocol.updateDisplay(mode);
 	}
 	
+	private static synchronized void sendOledIdle(Context context) {
+		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
+			return;
+		}
+		
+		updateWidgetPages(context);
+	}
+	
 	public static boolean toIdle(Context context) {
 		
 		MetaWatchService.WatchModes.IDLE = true;
@@ -296,14 +315,19 @@ public class Idle {
 			}
 		
 		}
+		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
+			sendOledIdle(context);
+		}
 
 		return true;
 	}
 	
 	public static void updateLcdIdle(Context context) {
-		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE
-				&& MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
-			sendLcdIdle(context);
+		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
+			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+				sendLcdIdle(context);
+			else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+				sendOledIdle(context);
 	}
 	
 }
