@@ -37,6 +37,9 @@ public class WeatherWidget implements InternalWidget {
 	public final static String id_4 = "weather_80_16";
 	final static String desc_4 = "Current Weather (80x16)";
 	
+	public final static String id_5 = "moon_16_16";
+	final static String desc_5 = "Moon Phase (16x16)";
+	
 	private Context context;
 	private TextPaint paintSmall;
 	private TextPaint paintSmallOutline;
@@ -127,7 +130,6 @@ public class WeatherWidget implements InternalWidget {
 			widget.height = 32;
 			
 			widget.bitmap = draw3();
-			widget.priority = 1;
 			widget.priority = WeatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
 			
 			result.put(widget.id, widget);
@@ -143,6 +145,20 @@ public class WeatherWidget implements InternalWidget {
 			
 			widget.bitmap = draw4();
 			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
+		
+		if(widgetIds == null || widgetIds.contains(id_5)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_5;
+			widget.description = desc_5;
+			widget.width = 16;
+			widget.height = 16;
+			
+			widget.bitmap = draw5();
+			widget.priority = WeatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
 			
 			result.put(widget.id, widget);
 		}
@@ -381,6 +397,24 @@ public class WeatherWidget implements InternalWidget {
 				canvas.drawText("No data", 40, 9, paintSmall);
 			}
 			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
+		
+		return bitmap;
+	}
+	
+	private Bitmap draw5() {
+		Bitmap bitmap = Bitmap.createBitmap(16, 16, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		if (WeatherData.received && WeatherData.ageOfMoon!=-1) {
+			int moonPhase = WeatherData.ageOfMoon;
+			int moonImage = phaseImage[moonPhase];
+			int x = 0-(moonImage*16);
+			Bitmap image = Preferences.invertLCD ? Utils.loadBitmapFromAssets(context, "moon-inv_10.bmp") : Utils.loadBitmapFromAssets(context, "moon_10.bmp");
+			canvas.drawBitmap(image, x, 0, null);
+		} else {
+			canvas.drawText("Wait", 12, 16, paintSmall);
 		}
 		
 		return bitmap;
