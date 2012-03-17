@@ -64,7 +64,7 @@ public class PictureWidget implements InternalWidget {
 
 	public void init(Context context, ArrayList<CharSequence> widgetIds) {
 		// Ensure the images folder exists on the SD card
-		searchDir = context.getExternalFilesDir("PictureWidget");
+		searchDir = Utils.getExternalFilesDir(context, "PictureWidget");
 
 		loadPictures();
 

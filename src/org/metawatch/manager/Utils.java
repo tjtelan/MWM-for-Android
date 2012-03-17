@@ -78,6 +78,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -720,7 +721,7 @@ public class Utils {
     
 	public static void backupUserPrefs(Context context) {
 		final File prefsFile = new File(context.getFilesDir(), "../shared_prefs/"+context.getPackageName()+"_preferences.xml");
-		final File backupFile = new File(context.getExternalFilesDir(null), "preferenceBackup.xml");
+		final File backupFile = new File(getExternalFilesDir(context, null), "preferenceBackup.xml");
 		String error = "";
 		Toast toast;
 		try {
@@ -748,7 +749,7 @@ public class Utils {
 	}
     
 	public static boolean restoreUserPrefs(Context context) {
-		final File backupFile = new File(context.getExternalFilesDir(null), "preferenceBackup.xml");
+		final File backupFile = new File(getExternalFilesDir(context, null), "preferenceBackup.xml");
 		String error = "";
 		
 	    try {
@@ -830,6 +831,23 @@ public class Utils {
 	    if (!name.contains(".")) return name;
 	    // Otherwise, remove the last 'extension type thing'
 	    return name.substring(0, name.lastIndexOf('.'));
+	}
+	
+	public static File getExternalFilesDir(Context context, String type) {
+		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO) {
+			return context.getExternalFilesDir(type);
+		}
+		
+		// Fallback for Android 2.1
+		File folder = new File(Environment.getExternalStorageDirectory() + "/Android/data/" + context.getPackageName() + "/Files/" + (type != null ? type : "" ) );
+	
+		if(!folder.exists())
+		{
+		    folder.mkdirs();
+		} 
+		
+		return folder;
 	}
 
 }
