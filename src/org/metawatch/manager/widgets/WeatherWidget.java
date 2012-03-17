@@ -407,6 +407,7 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
+		paintSmall.setTextAlign(Paint.Align.CENTER);
 		if (WeatherData.received && WeatherData.ageOfMoon!=-1) {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
@@ -414,8 +415,9 @@ public class WeatherWidget implements InternalWidget {
 			Bitmap image = Preferences.invertLCD ? Utils.loadBitmapFromAssets(context, "moon-inv_10.bmp") : Utils.loadBitmapFromAssets(context, "moon_10.bmp");
 			canvas.drawBitmap(image, x, 0, null);
 		} else {
-			canvas.drawText("Wait", 12, 16, paintSmall);
+			canvas.drawText("--", 8, 9, paintSmall);
 		}
+		paintSmall.setTextAlign(Paint.Align.LEFT);
 		
 		return bitmap;
 	}

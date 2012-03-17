@@ -433,14 +433,16 @@ public class MetaWatchService extends Service {
 					+ Preferences.watchMacAddress);
 			if (!Preferences.loaded)
 				loadPreferences(context);
-			BluetoothDevice bluetoothDevice = bluetoothAdapter
-					.getRemoteDevice(Preferences.watchMacAddress);
-
-			if (!MetaWatchService.fakeWatch && !bluetoothAdapter.isEnabled()) {
-				return;
-			}
-
+			
 			if (!MetaWatchService.fakeWatch) {
+				
+				BluetoothDevice bluetoothDevice = bluetoothAdapter
+						.getRemoteDevice(Preferences.watchMacAddress);
+	
+				if (!bluetoothAdapter.isEnabled()) {
+					return;
+				}
+			
 				if (Preferences.skipSDP) {
 					Method method = bluetoothDevice.getClass().getMethod(
 							"createRfcommSocket", new Class[] { int.class });
@@ -650,6 +652,14 @@ public class MetaWatchService extends Service {
 
 	void readFromDevice() {
 
+		if (MetaWatchService.fakeWatch) {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+			}
+			return;
+		}
+		
 		try {
 			byte[] bytes = new byte[256];
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "before blocking read");
