@@ -163,12 +163,12 @@ public class WidgetSetup extends Activity {
         	adapter.notifyDataSetChanged();
         	storeWidgetLayout();
         	refreshPreview();
-        	Idle.updateIdle(this);
+        	Idle.updateIdle(this, true);
         }
     }
     
     private void refreshPreview() {
-    	Idle.updateWidgetPages(this);
+    	Idle.updateWidgetPages(this, true);
     	LinearLayout ll = (LinearLayout) findViewById(R.id.idlePreviews);
     	
     	ll.removeAllViews();
@@ -194,7 +194,7 @@ public class WidgetSetup extends Activity {
 	    		    public void onClick(View v) {
 	    		    	Integer page = (Integer)v.getTag();
 	    		        Idle.toPage(page);
-	    		        Idle.updateIdle(v.getContext());
+	    		        Idle.updateIdle(v.getContext(), true);
 	    		    }
 	    		});
 	    		ll.addView(v);

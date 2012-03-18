@@ -94,7 +94,7 @@ public class Idle {
 	private static ArrayList<ArrayList<WidgetRow>> widgetScreens = null;
 	private static Map<String,WidgetData> widgetData = null;
 	
-	public static synchronized void updateWidgetPages(Context context)
+	public static synchronized void updateWidgetPages(Context context, boolean refresh)
 	{
 		if(!widgetsInitialised) {
 			WidgetManager.initWidgets(context, null);
@@ -107,7 +107,11 @@ public class Idle {
 		for(WidgetRow row : rows) {
 			widgetsDesired.addAll(row.getIds());
 		}			
-		widgetData = WidgetManager.refreshWidgets(context, widgetsDesired);
+		
+		if (refresh)
+			widgetData = WidgetManager.refreshWidgets(context, widgetsDesired);
+		else
+			widgetData = WidgetManager.getCachedWidgets(context, widgetsDesired);
 		
 		for(WidgetRow row : rows) { 
 			row.doLayout(widgetData);
@@ -317,13 +321,14 @@ public class Idle {
 	  return canvas;
 	}
 	
-	private static synchronized void sendLcdIdle(Context context) {
+	private static synchronized void sendLcdIdle(Context context, Boolean refresh) {
 		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
 			return;
 		}
 		
-		updateWidgetPages(context);
+		updateWidgetPages(context, refresh);
+		
 		final int mode = currentPage==mediaPlayerPage ? MetaWatchService.WatchBuffers.APPLICATION : MetaWatchService.WatchBuffers.IDLE;
 		
 		Protocol.sendLcdBitmap(createLcdIdle(context), mode);
@@ -331,13 +336,13 @@ public class Idle {
 		Protocol.updateDisplay(mode);
 	}
 	
-	private static synchronized void sendOledIdle(Context context) {
+	private static synchronized void sendOledIdle(Context context, Boolean refresh) {
 		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
 			return;
 		}
 		
-		updateWidgetPages(context);
+		updateWidgetPages(context, refresh);
 		
 		for (int i=0;i<4;++i) {
 			//Protocol.sendOledBitmap(createOledIdle(context, false, i), MetaWatchService.WatchBuffers.IDLE, i);
@@ -351,7 +356,7 @@ public class Idle {
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
 		
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-			sendLcdIdle(context);
+			sendLcdIdle(context, true);
 				
 			if (numPages()>1) {
 				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 0); // Right top immediate
@@ -360,18 +365,18 @@ public class Idle {
 		
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-			sendOledIdle(context);
+			sendOledIdle(context, true);
 		}
 
 		return true;
 	}
 	
-	public static void updateIdle(Context context) {
+	public static void updateIdle(Context context, Boolean refresh) {
 		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
 			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
-				sendLcdIdle(context);
+				sendLcdIdle(context, refresh);
 			else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
-				sendOledIdle(context);
+				sendOledIdle(context, refresh);
 	}
 	
 }

@@ -427,7 +427,7 @@ public class Monitors {
 			WeatherData.received = true;
 			WeatherData.timeStamp = System.currentTimeMillis();		
 
-			Idle.updateIdle(context);
+			Idle.updateIdle(context, true);
 			MetaWatchService.notifyClients();
 			
 		} catch (Exception e) {
@@ -454,7 +454,7 @@ public class Monitors {
 				if (diff < 5 * 60*1000) {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"Skipping weather update - updated less than 5m ago");
-					Idle.updateIdle(context);
+					Idle.updateIdle(context, true);
 					return;
 				}
 			}
@@ -556,7 +556,7 @@ public class Monitors {
 				
 				WeatherData.received = true;
 				
-				Idle.updateIdle(context);
+				Idle.updateIdle(context, true);
 				MetaWatchService.notifyClients();
 				WeatherData.timeStamp = System.currentTimeMillis();		
 		    }
@@ -695,7 +695,7 @@ public class Monitors {
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);			
 			// change in SMS/MMS database			
-			Idle.updateIdle(context);
+			Idle.updateIdle(context, true);
 		}
 	}
 	
@@ -713,7 +713,7 @@ public class Monitors {
 			super.onChange(selfChange);			
 			// change in call history database
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "call history change");
-			Idle.updateIdle(context);
+			Idle.updateIdle(context, true);
 		}
 	}
 	
@@ -732,7 +732,7 @@ public class Monitors {
 			// change in calendar database
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "calendar change");
 				calendarChanged = true;
-				Idle.updateIdle(context);
+				Idle.updateIdle(context, true);
 				calendarChanged = false;
 			}
 		}
@@ -856,7 +856,7 @@ public class Monitors {
 				if(BatteryData.level != level) {
 					//if (Preferences.logging) Log.d(MetaWatch.TAG, "Battery level changed: "+rawlevel+"/"+scale+" - "+level+"%");
 					BatteryData.level = level;
-					Idle.updateIdle(context);
+					Idle.updateIdle(context, true);
 				}
 			}
 		};

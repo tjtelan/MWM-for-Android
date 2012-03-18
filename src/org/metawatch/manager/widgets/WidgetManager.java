@@ -137,9 +137,9 @@ public class WidgetManager {
 				dataCache = new HashMap<String,WidgetData>();
 			
 			dataCache.put(widget.id, widget);
-			Log.d(MetaWatch.TAG, "Received widget "+widget.id+ "successfully");
+			Log.d(MetaWatch.TAG, "Received widget "+widget.id+ " successfully");
 			
-			Idle.updateIdle(context);
+			Idle.updateIdle(context, false); // false as we don't want to trigger another UPDATE broadcast
 			
 		}
 	}

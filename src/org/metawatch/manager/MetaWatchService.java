@@ -380,7 +380,7 @@ public class MetaWatchService extends Service {
 
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		
-		Idle.updateIdle(context);
+		Idle.updateIdle(context, true);
 		
 		Monitors.start(this, telephonyManager);
 
@@ -746,7 +746,7 @@ public class MetaWatchService extends Service {
 
 					Protocol.configureMode();
 					Idle.toIdle(this);
-					Idle.updateIdle(this);
+					Idle.updateIdle(this, true);
 
 					Protocol.queryNvalTime();
 
@@ -876,7 +876,7 @@ public class MetaWatchService extends Service {
 				
 			case Idle.IDLE_NEXT_PAGE:
 				Idle.nextPage();
-				Idle.updateIdle(this);
+				Idle.updateIdle(this, true);
 				break;
 				
 			case Call.CALL_SPEAKER:
