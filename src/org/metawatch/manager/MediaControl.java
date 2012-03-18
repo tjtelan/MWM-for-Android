@@ -142,7 +142,7 @@ public class MediaControl {
 		MediaControl.lastAlbum = album;
 		
 		if(MediaControl.mediaPlayerActive)
-			Idle.updateLcdIdle(context);
+			Idle.updateIdle(context);
 		
 		if (!MetaWatchService.Preferences.notifyMusic)
 			return;

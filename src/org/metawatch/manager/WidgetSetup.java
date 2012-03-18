@@ -59,7 +59,7 @@ public class WidgetSetup extends Activity {
 		if(adapter!=null)
 			return;
 		
-		widgetMap = WidgetManager.getCachedWidgets(null);
+		widgetMap = WidgetManager.getCachedWidgets(this, null);
 			
 		widgetList = (ExpandableListView) findViewById(R.id.widgetList);		
 		widgetList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -139,7 +139,7 @@ public class WidgetSetup extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	super.onActivityResult(requestCode, resultCode, data);
 
-		widgetMap = WidgetManager.getCachedWidgets(null);
+		widgetMap = WidgetManager.getCachedWidgets(this, null);
     	
         if (resultCode == Activity.RESULT_OK) {      	  
         	String id = data.getStringExtra("selectedWidget");
@@ -163,7 +163,7 @@ public class WidgetSetup extends Activity {
         	adapter.notifyDataSetChanged();
         	storeWidgetLayout();
         	refreshPreview();
-        	Idle.updateLcdIdle(this);
+        	Idle.updateIdle(this);
         }
     }
     
@@ -194,7 +194,7 @@ public class WidgetSetup extends Activity {
 	    		    public void onClick(View v) {
 	    		    	Integer page = (Integer)v.getTag();
 	    		        Idle.toPage(page);
-	    		        Idle.updateLcdIdle(v.getContext());
+	    		        Idle.updateIdle(v.getContext());
 	    		    }
 	    		});
 	    		ll.addView(v);

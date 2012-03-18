@@ -107,7 +107,7 @@ public class Idle {
 		for(WidgetRow row : rows) {
 			widgetsDesired.addAll(row.getIds());
 		}			
-		widgetData = WidgetManager.refreshWidgets(widgetsDesired);
+		widgetData = WidgetManager.refreshWidgets(context, widgetsDesired);
 		
 		for(WidgetRow row : rows) { 
 			row.doLayout(widgetData);
@@ -366,7 +366,7 @@ public class Idle {
 		return true;
 	}
 	
-	public static void updateLcdIdle(Context context) {
+	public static void updateIdle(Context context) {
 		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
 			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
 				sendLcdIdle(context);
