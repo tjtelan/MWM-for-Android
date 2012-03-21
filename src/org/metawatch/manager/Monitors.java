@@ -204,14 +204,19 @@ public class Monitors {
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
 					"Initialising Geolocation");
 			
-			locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-			locationProvider = LocationManager.NETWORK_PROVIDER;
-			
-			networkLocationListener = new NetworkLocationListener(context);
-			
-			locationManager.requestLocationUpdates(locationProvider, 30 * 60 * 1000, 500, networkLocationListener);
-			
-			RefreshLocation();
+			try {
+				locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+				locationProvider = LocationManager.NETWORK_PROVIDER;
+				
+				networkLocationListener = new NetworkLocationListener(context);
+				
+				locationManager.requestLocationUpdates(locationProvider, 30 * 60 * 1000, 500, networkLocationListener);
+				
+				RefreshLocation();
+			}
+			catch (IllegalArgumentException e) {
+				if (Preferences.logging) Log.d(MetaWatch.TAG,"Failed to initialise Geolocation "+e.getMessage());
+			}
 		}
 		else {
 			if (Preferences.logging) Log.d(MetaWatch.TAG,"Geolocation disabled");

@@ -3,6 +3,7 @@ package org.metawatch.manager.widgets;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
 
 import android.graphics.Canvas;
@@ -15,6 +16,15 @@ public class WidgetRow {
 	int totalWidth = 0;
 	int totalHeight = 0;
 	
+	private int screenWidth() {
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+			return 96;
+		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+			return 80;
+		else
+			return 0;
+	}
+	
 	public void add(String id) {
 		widgetIDs.add(id);
 	}
@@ -26,6 +36,8 @@ public class WidgetRow {
 	public void doLayout(Map<String,WidgetData> widgetData) {
 		widgets = new ArrayList<WidgetData>();
 		
+		final int screenWidth = screenWidth();
+		
 		totalWidth = 0;
 		for( CharSequence id : widgetIDs ) {
 			WidgetData widget = widgetData.get(id);
@@ -36,7 +48,7 @@ public class WidgetRow {
 		}
 		
 		// Cull widgets to fit
-		while(totalWidth>96) {
+		while(totalWidth>screenWidth) {
 			int lowestPri = Integer.MAX_VALUE;
 			int cull = -1;
 			for(int i=0; i<widgets.size(); ++i) {
@@ -80,10 +92,13 @@ public class WidgetRow {
 		if (widgets==null)
 			return;
 		
-		int space = (96-totalWidth)/(widgets.size()+1);		
+		final int space = (screenWidth()-totalWidth)/(widgets.size()+1);		
 		int x=space;
 		for(WidgetData widget : widgets) {
-			canvas.drawBitmap(widget.bitmap, x, y, null);
+			int yAdd = 0;
+			if(widget.height<totalHeight)
+				yAdd = (totalHeight/2)-(widget.height/2);
+			canvas.drawBitmap(widget.bitmap, x, y+yAdd, null);
 			x += (space+widget.width);
 		}	
 	}

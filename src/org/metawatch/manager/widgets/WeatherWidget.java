@@ -34,6 +34,12 @@ public class WeatherWidget implements InternalWidget {
 	public final static String id_3 = "moon_24_32";
 	final static String desc_3 = "Moon Phase (24x32)";
 	
+	public final static String id_4 = "weather_80_16";
+	final static String desc_4 = "Current Weather (80x16)";
+	
+	public final static String id_5 = "moon_16_16";
+	final static String desc_5 = "Moon Phase (16x16)";
+	
 	private Context context;
 	private TextPaint paintSmall;
 	private TextPaint paintSmallOutline;
@@ -124,7 +130,34 @@ public class WeatherWidget implements InternalWidget {
 			widget.height = 32;
 			
 			widget.bitmap = draw3();
-			widget.priority = 1;
+			widget.priority = WeatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
+			
+			result.put(widget.id, widget);
+		}
+		
+		if(widgetIds == null || widgetIds.contains(id_4)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_4;
+			widget.description = desc_4;
+			widget.width = 80;
+			widget.height = 16;
+			
+			widget.bitmap = draw4();
+			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
+		
+		if(widgetIds == null || widgetIds.contains(id_5)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_5;
+			widget.description = desc_5;
+			widget.width = 16;
+			widget.height = 16;
+			
+			widget.bitmap = draw5();
 			widget.priority = WeatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
 			
 			result.put(widget.id, widget);
@@ -152,10 +185,10 @@ public class WeatherWidget implements InternalWidget {
 								
 			// temperatures
 			if (WeatherData.celsius) {
-				Utils.drawOutlinedText(WeatherData.temp+"Â°C", canvas, 0, 7, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(WeatherData.temp+"°C", canvas, 0, 7, paintSmall, paintSmallOutline);
 			}
 			else {
-				Utils.drawOutlinedText(WeatherData.temp+"Â°F", canvas, 0, 7, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(WeatherData.temp+"°F", canvas, 0, 7, paintSmall, paintSmallOutline);
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
@@ -180,39 +213,6 @@ public class WeatherWidget implements InternalWidget {
 		
 		if (WeatherData.received) {
 			
-			/* For debugging the display of weather information
-			WeatherData.icon = "weather_sunny.bmp";
-			WeatherData.icon = "weather_partlycloudy.bmp";
-			WeatherData.icon = "weather_rain.bmp";
-			WeatherData.icon = "weather_thunderstorm.bmp";
-			WeatherData.icon = "weather_snow.bmp";
-			WeatherData.icon = "weather_cloudy.bmp";		  
-			WeatherData.condition = "clear";
-			WeatherData.condition = "sunny";
-			WeatherData.condition = "cloudy";
-			WeatherData.condition = "overcast";
-			WeatherData.condition = "mostly cloudy";
-			WeatherData.condition = "partly cloudy";
-			WeatherData.condition = "mostly sunny";
-			WeatherData.condition = "partly sunny";
-			WeatherData.condition = "rain";
-			WeatherData.condition = "light rain";
-			WeatherData.condition = "rain showers";
-			WeatherData.condition = "showers";
-			WeatherData.condition = "chance of showers";
-			WeatherData.condition = "scattered showers";
-			WeatherData.condition = "freezing rain";
-			WeatherData.condition = "freezing drizzle";
-			WeatherData.condition = "rain and snow";
-			WeatherData.condition = "thunderstorm";
-			WeatherData.condition = "chance of storm";
-			WeatherData.condition = "isolated thunderstorms";
-			WeatherData.condition = "chance of snow";
-			WeatherData.condition = "snow showers";
-			WeatherData.condition = "ice/snow";
-			WeatherData.condition = "flurries";		  
-			WeatherData.temp = "-1.4";*/
-
 			// icon
 			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
 			if (Preferences.overlayWeatherText)
@@ -316,7 +316,7 @@ public class WeatherWidget implements InternalWidget {
 		return bitmap;
 	}
 	
-	final static int[] phaseImage = {0,0,1,1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5,6,6,6,7,7,7,7,0,0};
+	final static int[] phaseImage = {0,0,1,1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5,5,6,6,7,7,7,7,0,0};
 	
 	private Bitmap draw3() {
 		Bitmap bitmap = Bitmap.createBitmap(24, 32, Bitmap.Config.RGB_565);
@@ -337,6 +337,86 @@ public class WeatherWidget implements InternalWidget {
 			canvas.drawText("Wait", 12, 16, paintSmall);
 		}
 		
+		paintSmall.setTextAlign(Paint.Align.LEFT);
+		
+		return bitmap;
+	}
+
+	private Bitmap draw4() {
+		Bitmap bitmap = Bitmap.createBitmap(80, 16, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		if (WeatherData.received) {
+			
+			// icon
+			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);	
+			canvas.drawBitmap(image, 28, -4, null);
+			
+			// condition
+			Utils.drawWrappedOutlinedText(WeatherData.condition, canvas, 0, 0, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
+			
+			// temperatures
+			
+			paintSmall.setTextAlign(Paint.Align.RIGHT);
+						
+			StringBuilder string = new StringBuilder();
+			string.append(WeatherData.temp);
+			
+			if (WeatherData.celsius) {
+				string.append("°C");
+			}
+			else {
+				string.append("°F");
+			}
+			canvas.drawText(string.toString(), 80, 5, paintSmall);
+			
+			if (WeatherData.forecast!=null) {
+				string = new StringBuilder();
+				string.append(WeatherData.forecast[0].tempHigh);
+				string.append("/");
+				string.append(WeatherData.forecast[0].tempLow);
+						
+				canvas.drawText(string.toString(), 80, 16, paintSmall);
+			}
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+			
+			Utils.drawOutlinedText((String) TextUtils.ellipsize(WeatherData.locationName, paintSmall, 47, TruncateAt.END), canvas, 0, 16, paintSmall, paintSmallOutline);
+						
+		} else {
+			paintSmall.setTextAlign(Paint.Align.CENTER);
+			if (Preferences.weatherGeolocation) {
+				if( !LocationData.received ) {
+					canvas.drawText("Awaiting location", 40, 9, paintSmall);
+				}
+				else {
+					canvas.drawText("Awaiting weather", 40, 9, paintSmall);
+				}
+			}
+			else {
+				canvas.drawText("No data", 40, 9, paintSmall);
+			}
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
+		
+		return bitmap;
+	}
+	
+	private Bitmap draw5() {
+		Bitmap bitmap = Bitmap.createBitmap(16, 16, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		paintSmall.setTextAlign(Paint.Align.CENTER);
+		if (WeatherData.received && WeatherData.ageOfMoon!=-1) {
+			int moonPhase = WeatherData.ageOfMoon;
+			int moonImage = phaseImage[moonPhase];
+			int x = 0-(moonImage*16);
+			Bitmap image = Preferences.invertLCD ? Utils.loadBitmapFromAssets(context, "moon-inv_10.bmp") : Utils.loadBitmapFromAssets(context, "moon_10.bmp");
+			canvas.drawBitmap(image, x, 0, null);
+		} else {
+			canvas.drawText("--", 8, 9, paintSmall);
+		}
 		paintSmall.setTextAlign(Paint.Align.LEFT);
 		
 		return bitmap;
