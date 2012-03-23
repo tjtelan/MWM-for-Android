@@ -478,11 +478,6 @@ public class MetaWatchService extends Service {
 			SharedPreferences sharedPreferences = PreferenceManager
 					.getDefaultSharedPreferences(context);
 			
-			boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
-			if (displaySplash) {
-				Notification.addBitmapNotification(this, Utils.loadBitmapFromAssets(context, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000);
-			}
-			
 			/* Notify watch on connection if requested. */
 			boolean notifyOnConnect = sharedPreferences.getBoolean("NotifyWatchOnConnect", false);
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.connect(): notifyOnConnect=" + notifyOnConnect);
@@ -739,6 +734,14 @@ public class MetaWatchService extends Service {
 
 					Idle.toIdle(this);
 					Idle.updateIdle(this, true);
+					
+					SharedPreferences sharedPreferences = PreferenceManager
+							.getDefaultSharedPreferences(context);
+					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
+					if (displaySplash) {
+						Protocol.sendOledBitmap(Utils.loadBitmapFromAssets(context, "splash_16_0.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 0);
+						Protocol.sendOledBitmap(Utils.loadBitmapFromAssets(context, "splash_16_1.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 1);
+					}
 
 				} else {
 					watchType = WatchType.DIGITAL;
@@ -749,6 +752,14 @@ public class MetaWatchService extends Service {
 					Idle.toIdle(this);
 					Idle.updateIdle(this, true);
 
+					SharedPreferences sharedPreferences = PreferenceManager
+							.getDefaultSharedPreferences(context);
+					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
+					if (displaySplash) {
+						Notification.addBitmapNotification(this, Utils.loadBitmapFromAssets(context, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000);
+					}
+
+					
 					Protocol.queryNvalTime();
 
 				}
