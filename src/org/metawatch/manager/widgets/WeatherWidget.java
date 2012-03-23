@@ -350,8 +350,9 @@ public class WeatherWidget implements InternalWidget {
 		if (WeatherData.received) {
 			
 			// icon
-			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);	
-			canvas.drawBitmap(image, 28, -4, null);
+			String smallIcon = WeatherData.icon.replace(".bmp", "_12.bmp");
+			Bitmap image = Utils.loadBitmapFromAssets(context, smallIcon);	
+			canvas.drawBitmap(image, 46, 2, null);
 			
 			// condition
 			Utils.drawWrappedOutlinedText(WeatherData.condition, canvas, 0, 0, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);

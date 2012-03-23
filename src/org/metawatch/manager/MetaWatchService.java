@@ -738,6 +738,7 @@ public class MetaWatchService extends Service {
 							"MetaWatchService.readFromDevice(): device type response; analog watch");
 
 					Idle.toIdle(this);
+					Idle.updateIdle(this, true);
 
 				} else {
 					watchType = WatchType.DIGITAL;
@@ -877,6 +878,10 @@ public class MetaWatchService extends Service {
 			case Idle.IDLE_NEXT_PAGE:
 				Idle.nextPage();
 				Idle.updateIdle(this, true);
+				break;
+				
+			case Idle.IDLE_OLED_DISPLAY:
+				Idle.oledTest(this);
 				break;
 				
 			case Call.CALL_SPEAKER:

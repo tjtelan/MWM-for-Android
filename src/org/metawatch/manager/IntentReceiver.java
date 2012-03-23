@@ -110,9 +110,7 @@ public class IntentReceiver extends BroadcastReceiver {
 								+ recipient + "' is "
 								+ Monitors.getGmailUnreadCount(recipient));
 				
-				if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-					Idle.updateIdle(context, true);
-				}
+				Idle.updateIdle(context, true);
 				
 				return;
 			}

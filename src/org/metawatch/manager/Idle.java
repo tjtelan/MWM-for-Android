@@ -54,6 +54,7 @@ import android.util.Log;
 public class Idle {
 	
 	final static byte IDLE_NEXT_PAGE = 60;
+	final static byte IDLE_OLED_DISPLAY = 61;
 
 	static int currentPage = 0;
 	
@@ -345,7 +346,7 @@ public class Idle {
 		updateWidgetPages(context, refresh);
 		
 		for (int i=0;i<4;++i) {
-			//Protocol.sendOledBitmap(createOledIdle(context, false, i), MetaWatchService.WatchBuffers.IDLE, i);
+			Protocol.sendOledBitmap(createOledIdle(context, false, i), MetaWatchService.WatchBuffers.IDLE, i);
 		}
 			
 	}
@@ -365,6 +366,7 @@ public class Idle {
 		
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 0); // Middle immediate
 			sendOledIdle(context, true);
 		}
 
@@ -377,6 +379,14 @@ public class Idle {
 				sendLcdIdle(context, refresh);
 			else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
 				sendOledIdle(context, refresh);
+	}
+	
+	public static void oledTest(Context context) {
+		Idle.updateWidgetPages(context, true);
+		
+		for(int i=0;i<2;++i)
+			Protocol.sendOledBitmap(Idle.createOledIdle(context, false, i), MetaWatchService.WatchBuffers.NOTIFICATION, i);
+
 	}
 	
 }
