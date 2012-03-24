@@ -338,17 +338,16 @@ public class Idle {
 	}
 	
 	private static synchronized void sendOledIdle(Context context, Boolean refresh) {
-		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
-			return;
-		}
-		
-		updateWidgetPages(context, refresh);
-		
-		for (int i=0;i<4;++i) {
-			Protocol.sendOledBitmap(createOledIdle(context, false, i), MetaWatchService.WatchBuffers.IDLE, i);
-		}
-			
+//		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
+//			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
+//			return;
+//		}
+//		
+//		updateWidgetPages(context, refresh);
+//		
+//		for (int i=0;i<4;++i) {
+//			Protocol.sendOledBitmap(createOledIdle(context, false, i), MetaWatchService.WatchBuffers.IDLE, i);
+//		}	
 	}
 	
 	public static boolean toIdle(Context context) {
@@ -367,7 +366,7 @@ public class Idle {
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
 			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 0); // Middle immediate
-			sendOledIdle(context, true);
+			//sendOledIdle(context, true);
 		}
 
 		return true;
@@ -377,10 +376,11 @@ public class Idle {
 		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
 			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
 				sendLcdIdle(context, refresh);
-			else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
-				sendOledIdle(context, refresh);
+			//else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+			//	sendOledIdle(context, refresh);
 	}
 	
+	// Send oled widgets view as a notification (until I can work out how to get the proper idle to work)
 	public static void oledTest(Context context) {
 		Idle.updateWidgetPages(context, true);
 		
