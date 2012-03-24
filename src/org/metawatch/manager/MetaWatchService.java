@@ -856,6 +856,7 @@ public class MetaWatchService extends Service {
 		}
 	}
 
+	static long lastOledCrownPress = 0;
 	void pressedButton(byte button) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "button code: " + Byte.toString(button));
 		
@@ -887,13 +888,24 @@ public class MetaWatchService extends Service {
 				break;
 				
 			case Idle.IDLE_NEXT_PAGE:
-				Idle.nextPage();
-				Idle.updateIdle(this, true);
+								
+				if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
+					Idle.nextPage();
+					Idle.updateIdle(this, true);	
+				}
+
 				break;
 				
 			case Idle.IDLE_OLED_DISPLAY:
-				Idle.oledTest(this);
+				long time = System.currentTimeMillis();
+				
+				if(time-lastOledCrownPress < 1000*5)
+					Idle.nextPage();
+				
+				lastOledCrownPress = time;
+				Idle.oledWidgetNotification(this);
 				break;
+						
 				
 			case Call.CALL_SPEAKER:
 				MediaControl.ToggleSpeakerphone(audioManager);

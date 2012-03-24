@@ -282,7 +282,7 @@ public class Test extends PreferenceActivity {
 		    	
 		    	//Protocol.stopProtocolSender();
 				
-				Idle.oledTest(context);
+				Idle.oledWidgetNotification(context);
 				
 		    	return true;		    	
 			}
