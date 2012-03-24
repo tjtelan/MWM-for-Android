@@ -324,7 +324,7 @@ public class Idle {
 	  return canvas;
 	}
 	
-	private static synchronized void sendLcdIdle(Context context, Boolean refresh) {
+	private static synchronized void sendLcdIdle(Context context, boolean refresh) {
 		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
 			return;
@@ -339,7 +339,7 @@ public class Idle {
 		Protocol.updateDisplay(mode);
 	}
 	
-//	private static synchronized void sendOledIdle(Context context, Boolean refresh) {
+//	private static synchronized void sendOledIdle(Context context, boolean refresh) {
 //		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
 //			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
 //			return;
@@ -379,7 +379,7 @@ public class Idle {
 		return true;
 	}
 	
-	public static void updateIdle(Context context, Boolean refresh) {
+	public static void updateIdle(Context context, boolean refresh) {
 		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
 			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
 				sendLcdIdle(context, refresh);

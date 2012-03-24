@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,12 +183,21 @@ public class WidgetSetup extends Activity {
     			bmp = Idle.createOledIdle(this, true, i);
 
     		if (bmp!=null) {
+    			
+    			int backCol = Color.LTGRAY;
+    			
+        		if(Preferences.invertLCD || MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
+        			Utils.invertBitmap(bmp);
+        			backCol = Color.DKGRAY;
+        		}
+    			
 	    		LayoutInflater factory = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	
 	    		View v = factory.inflate(R.layout.idle_screen_preview, null);
 	    		ImageView iv = (ImageView)v.findViewById(R.id.image);
 	    		iv.setImageBitmap(bmp);
 	    		iv.setClickable(true);
+	    		iv.setBackgroundColor(backCol);
 	    		iv.setTag(i);
 	    		iv.setOnClickListener(new OnClickListener() {
 	    		    //@Override

@@ -9,7 +9,7 @@
 	    android:layout_width="150sp"
 	    android:layout_height="150sp"
 	    android:background="#FFCCCCCC"
-	    android:padding="5dip"
+	    android:padding="1dip"
 	    android:src="@drawable/icon" >
 	</ImageView>
 
