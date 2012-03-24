@@ -7,7 +7,9 @@ import java.util.Map;
 
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatch;
+import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.widgets.WidgetRow;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
 import org.metawatch.manager.widgets.GmailWidget;
@@ -20,14 +22,21 @@ import org.metawatch.manager.widgets.CalendarWidget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class WidgetManager {
 	static List<InternalWidget> widgets = new ArrayList<InternalWidget>();
 	static Map<String,WidgetData> dataCache;
 	static Object lock = new Object();
+	
+	public static String defaultWidgetsDigital = "weather_96_32|missedCalls_24_32,unreadSms_24_32,unreadGmail_24_32";
+	public static String defaultWidgetsAnalog = "weather_80_16|missedCalls_16_16,unreadSms_16_16,unreadGmail_16_16";
 	
 	public static void initWidgets(Context context, ArrayList<CharSequence> widgetsDesired) {
 		
@@ -84,9 +93,9 @@ public class WidgetManager {
 		return dataCache;
 	}	
 	
-	public static List<WidgetRow> getDesiredWidgetsFromPrefs() {
-		
-		String[] rows = Preferences.widgets.split("\\|");
+	public static List<WidgetRow> getDesiredWidgetsFromPrefs(Context context) {
+			
+		String[] rows = MetaWatchService.getWidgets(context).split("\\|");
 		
 		List<WidgetRow> result = new ArrayList<WidgetRow>();
 		
@@ -142,5 +151,25 @@ public class WidgetManager {
 			Idle.updateIdle(context, false); // false as we don't want to trigger another UPDATE broadcast
 			
 		}
+	}
+	
+	public static void resetWidgetsToDefaults(Context context) {
+		
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Editor editor = sharedPreferences.edit();
+
+		if(MetaWatchService.watchType == WatchType.ANALOG) {
+			editor.putString("widgetsAnalog", WidgetManager.defaultWidgetsAnalog);
+		}
+		else {	
+			editor.putString("widgets", WidgetManager.defaultWidgetsDigital);
+		}
+		editor.commit();
+		
+        Toast toast = Toast.makeText(context, "Reset widget layouts", Toast.LENGTH_SHORT);
+        toast.show();
+        
+        Idle.updateIdle(context, true);
 	}
 }

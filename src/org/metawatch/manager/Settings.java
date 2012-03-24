@@ -33,6 +33,7 @@
 package org.metawatch.manager;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.widgets.WidgetManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -55,6 +56,7 @@ public class Settings extends PreferenceActivity {
 	PreferenceScreen preferenceScreen;
 	Preference discovery;
 	Preference appBlacklist;
+	Preference resetWidgets;
 	Preference backup;
 	Preference restore;
 	
@@ -95,6 +97,14 @@ public class Settings extends PreferenceActivity {
 		appBlacklist.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
 				startActivity(new Intent(context, AppBlacklist.class));
+				return false;
+			}
+		});
+
+		backup = preferenceScreen.findPreference("ResetWidgets");
+		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			public boolean onPreferenceClick(Preference arg0) {
+				WidgetManager.resetWidgetsToDefaults(context);
 				return false;
 			}
 		});

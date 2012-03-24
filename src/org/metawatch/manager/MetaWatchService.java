@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.metawatch.manager.Notification.VibratePattern;
+import org.metawatch.manager.widgets.WidgetManager;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -167,7 +168,6 @@ public class MetaWatchService extends Service {
 		public static boolean notificationLarger = false;
 		public static boolean autoConnect = false;
 		public static boolean autoRestart = false;
-		public static String widgets = "weather_96_32|missedCalls_24_32,unreadSms_24_32,unreadGmail_24_32";
 		public static boolean hapticFeedback = false;
 		public static boolean readCalendarDuringMeeting = true;
 		public static int readCalendarMinDurationToMeetingEnd = 15;
@@ -240,8 +240,6 @@ public class MetaWatchService extends Service {
 				"AutoConnect", Preferences.autoConnect);	
 		Preferences.autoRestart = sharedPreferences.getBoolean("AutoRestart", 
 				Preferences.autoRestart);
-		Preferences.widgets = sharedPreferences.getString("widgets",
-				Preferences.widgets);
 		Preferences.hapticFeedback = sharedPreferences.getBoolean("HapticFeedback",
 				Preferences.hapticFeedback);
 		Preferences.readCalendarDuringMeeting = sharedPreferences.getBoolean("ReadCalendarDuringMeeting",
@@ -279,12 +277,31 @@ public class MetaWatchService extends Service {
 		editor.commit();
 	}
 	
+	public static String getWidgets(Context context) {
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		
+		if(watchType == WatchType.DIGITAL) {
+			return sharedPreferences.getString("widgets", WidgetManager.defaultWidgetsDigital);
+		}
+		else if(watchType == WatchType.ANALOG) {
+			return sharedPreferences.getString("widgetsAnalog", WidgetManager.defaultWidgetsAnalog);
+		}
+		
+		return "";
+	}
+	
 	public static void saveWidgets(Context context, String widgets) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		Editor editor = sharedPreferences.edit();
 
-		editor.putString("widgets", widgets);
+		if(watchType == WatchType.ANALOG) {
+			editor.putString("widgetsAnalog", widgets);
+		}
+		else {	
+			editor.putString("widgets", widgets);
+		}
 		editor.commit();
 	}
 	

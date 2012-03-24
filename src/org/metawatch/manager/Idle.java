@@ -103,7 +103,7 @@ public class Idle {
 			widgetsInitialised = true;
 		}
 		
-		List<WidgetRow> rows = WidgetManager.getDesiredWidgetsFromPrefs();
+		List<WidgetRow> rows = WidgetManager.getDesiredWidgetsFromPrefs(context);
 		
 		ArrayList<CharSequence> widgetsDesired = new ArrayList<CharSequence>();
 		for(WidgetRow row : rows) {

@@ -79,7 +79,7 @@ public class WidgetSetup extends Activity {
 	    childData = new ArrayList<List<Map<String, String>>>();
 
 	    // Add dummy entries at the end
-		ArrayList<String> rows = new ArrayList<String>(Arrays.asList(Preferences.widgets.split("\\|")));
+		ArrayList<String> rows = new ArrayList<String>(Arrays.asList(MetaWatchService.getWidgets(this).split("\\|")));
 		if (rows.size()>0 && rows.get(rows.size()-1).length()>0) {
 			rows.add("");
 		}
@@ -233,7 +233,6 @@ public class WidgetSetup extends Activity {
     		out.append(line);
     	}
     	
-    	Preferences.widgets = out.toString();
     	MetaWatchService.saveWidgets(this, out.toString());
     }
 }
