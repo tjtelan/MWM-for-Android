@@ -152,7 +152,7 @@ public class Test extends PreferenceActivity {
        
 		preferenceScreen.findPreference("k9").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-			   	NotificationBuilder.createK9(context, "The Doctor <doctor@gallifrey.net>", "Now drop your weapons, or I'll kill him with context deadly jelly baby!", "tardis:INBOX");
+			   	NotificationBuilder.createK9(context, "The Doctor <doctor@gallifrey.net>", "Now drop your weapons, or I'll kill him with this deadly jelly baby!", "tardis:INBOX");
 			   	return true;
 			}
 		});
