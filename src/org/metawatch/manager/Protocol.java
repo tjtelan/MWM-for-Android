@@ -276,23 +276,16 @@ public class Protocol {
 			MetaWatchService.notifyClients();
 	}
 
-	public static void sendAdvanceHands() {
+	public static void sendAdvanceHands(int hour, int minute, int second) {
 		try {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.sendAdvanceHands()");
-			Date date = new Date();
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(date);
-
-			int hour = calendar.get(Calendar.HOUR);
-			int minute = calendar.get(Calendar.MINUTE);
-			int second = calendar.get(Calendar.SECOND);
 
 			byte[] bytes = new byte[7];
 
 			bytes[0] = eMessageType.start;
-			bytes[1] = 9; // length
+			bytes[1] = (byte) (bytes.length+2); // length
 			bytes[2] = eMessageType.AdvanceWatchHandsMsg.msg; // advance watch hands
-			bytes[3] = 0x04; // complete
+			bytes[3] = 0x00; 
 
 			bytes[4] = (byte) hour;
 			bytes[5] = (byte) minute;
