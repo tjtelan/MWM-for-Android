@@ -7,6 +7,7 @@ import java.util.Map;
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Monitors;
 import org.metawatch.manager.Utils;
 
@@ -15,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
+import android.os.PowerManager;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -72,27 +74,37 @@ public class CalendarWidget implements InternalWidget {
 
 	public void refresh(ArrayList<CharSequence> widgetIds) {
 
-		boolean readCalendar = false;
-		long time = System.currentTimeMillis();
-		if ((time - lastRefresh > 5*60*1000) || (Monitors.calendarChanged)) {
-			readCalendar = true;
-			lastRefresh = System.currentTimeMillis();
-		}
-		if (!Preferences.readCalendarDuringMeeting) {
-			// Only update the current meeting if it is not ongoing
-			if ((time>=meetingStartTimestamp) && (time<meetingEndTimestamp-Preferences.readCalendarMinDurationToMeetingEnd*60*1000)) {
-				readCalendar = false;
+		// Run the refresh in its own thread, so as not to stall the main MWM process
+		
+		Thread thread = new Thread("CalendarWidget.refresh") {
+			@Override
+			public void run() {
+
+				boolean readCalendar = false;
+				long time = System.currentTimeMillis();
+				if ((time - lastRefresh > 5*60*1000) || (Monitors.calendarChanged)) {
+					readCalendar = true;
+					lastRefresh = System.currentTimeMillis();
+				}
+				if (!Preferences.readCalendarDuringMeeting) {
+					// Only update the current meeting if it is not ongoing
+					if ((time>=meetingStartTimestamp) && (time<meetingEndTimestamp-Preferences.readCalendarMinDurationToMeetingEnd*60*1000)) {
+						readCalendar = false;
+					}
+				}
+				if (readCalendar) {
+					if (Preferences.logging) Log.d(MetaWatch.TAG, "CalendarWidget.refresh() start");
+					meetingTime = Utils.readCalendar(context, 0);
+					meetingStartTimestamp = Utils.Meeting_StartTimestamp;
+					meetingEndTimestamp = Utils.Meeting_EndTimestamp;
+					meetingLocation = Utils.Meeting_Location;
+					meetingTitle = Utils.Meeting_Title;
+					if (Preferences.logging) Log.d(MetaWatch.TAG, "CalendarWidget.refresh() stop");   
+				}
+				
 			}
-		}
-		if (readCalendar) {
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "CalendarWidget.refresh() start");
-			meetingTime = Utils.readCalendar(context, 0);
-			meetingStartTimestamp = Utils.Meeting_StartTimestamp;
-			meetingEndTimestamp = Utils.Meeting_EndTimestamp;
-			meetingLocation = Utils.Meeting_Location;
-			meetingTitle = Utils.Meeting_Title;
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "CalendarWidget.refresh() stop");   
-		}
+		};
+		thread.start();
 	}
 
 	public void get(ArrayList<CharSequence> widgetIds, Map<String,WidgetData> result) {
