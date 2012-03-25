@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.metawatch.manager.Notification.VibratePattern;
+import org.metawatch.manager.apps.MediaPlayerApp;
 import org.metawatch.manager.widgets.WidgetManager;
 
 import android.app.ActivityManager;
@@ -791,19 +792,19 @@ public class MetaWatchService extends Service {
 							"MetaWatchService.readFromDevice(): music message");
 
 					switch (bytes[4]) {
-					case MediaControl.NEXT:
+					case MediaPlayerApp.NEXT:
 						MediaControl.next(context);
 						break;
-					case MediaControl.PREVIOUS:
+					case MediaPlayerApp.PREVIOUS:
 						MediaControl.previous(context);
 						break;
-					case MediaControl.TOGGLE:
+					case MediaPlayerApp.TOGGLE:
 						MediaControl.togglePause(context);
 						break;
-					case MediaControl.VOLUME_UP:
+					case MediaPlayerApp.VOLUME_UP:
 						MediaControl.volumeUp(audioManager);
 						break;
-					case MediaControl.VOLUME_DOWN:
+					case MediaPlayerApp.VOLUME_DOWN:
 						MediaControl.volumeDown(audioManager);
 						break;
 					}
@@ -885,19 +886,19 @@ public class MetaWatchService extends Service {
 		switch (watchState) {
 		case WatchStates.IDLE: {
 			switch (button) {
-			case MediaControl.VOLUME_UP:
+			case MediaPlayerApp.VOLUME_UP:
 				MediaControl.volumeUp(audioManager);
 				break;
-			case MediaControl.VOLUME_DOWN:
+			case MediaPlayerApp.VOLUME_DOWN:
 				MediaControl.volumeDown(audioManager);
 				break;
-			case MediaControl.NEXT:
+			case MediaPlayerApp.NEXT:
 				MediaControl.next(this);
 				break;
-			case MediaControl.PREVIOUS:
+			case MediaPlayerApp.PREVIOUS:
 				MediaControl.previous(this);
 				break;
-			case MediaControl.TOGGLE:
+			case MediaPlayerApp.TOGGLE:
 				MediaControl.togglePause(this);
 				break;
 			case Protocol.REPLAY:
@@ -920,7 +921,7 @@ public class MetaWatchService extends Service {
 					Idle.nextPage();
 				
 				lastOledCrownPress = time;
-				Idle.oledWidgetNotification(this);
+				Idle.sendOledIdle(this);
 				break;
 						
 				

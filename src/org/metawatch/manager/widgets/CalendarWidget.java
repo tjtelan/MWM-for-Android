@@ -7,7 +7,6 @@ import java.util.Map;
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.MetaWatchService.Preferences;
-import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Monitors;
 import org.metawatch.manager.Utils;
 
@@ -16,7 +15,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
-import android.os.PowerManager;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
