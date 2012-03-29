@@ -40,7 +40,7 @@ public class WeatherWidget implements InternalWidget {
 	public final static String id_5 = "moon_16_16";
 	final static String desc_5 = "Moon Phase (16x16)";
 	
-	private Context context;
+	private Context context = null;
 	private TextPaint paintSmall;
 	private TextPaint paintSmallOutline;
 	private TextPaint paintLarge;
@@ -78,6 +78,9 @@ public class WeatherWidget implements InternalWidget {
 	}
 
 	public void get(ArrayList<CharSequence> widgetIds, Map<String,WidgetData> result) {
+		
+		if(context ==null)
+			return;
 		
 		if(widgetIds == null || widgetIds.contains(id_0)) {
 			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();

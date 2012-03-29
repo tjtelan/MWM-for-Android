@@ -37,8 +37,8 @@ public class CalendarWidget implements InternalWidget {
 	private TextPaint paintNumerals;
 
 	private String meetingTime = "None";
-	private String meetingTitle;
-	private String meetingLocation;
+	private String meetingTitle = "";
+	private String meetingLocation = "";
 	private long meetingStartTimestamp = 0;
 	private long meetingEndTimestamp = 0;
 
