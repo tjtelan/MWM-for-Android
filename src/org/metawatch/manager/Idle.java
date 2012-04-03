@@ -64,6 +64,8 @@ public class Idle {
 	
 	static MediaPlayerApp mediaPlayer = new MediaPlayerApp();
 	
+	static Bitmap oledIdle = null;
+	
 	public static void nextPage() {
 		toPage(currentPage+1);
 	}
@@ -225,15 +227,14 @@ public class Idle {
 	}
 	
 	static synchronized Bitmap createOledIdle(Context context, boolean preview, int page) {
-		
-		Bitmap bitmap = Bitmap.createBitmap(80, 32, Bitmap.Config.RGB_565);
-		Canvas canvas = new Canvas(bitmap);
-		
-		canvas.drawColor(Color.WHITE);	
-		
+			
 		if( page != mediaPlayerPage ) {
 			
-					
+			Bitmap bitmap = Bitmap.createBitmap(80, 32, Bitmap.Config.RGB_565);
+			Canvas canvas = new Canvas(bitmap);
+			
+			canvas.drawColor(Color.WHITE);	
+			
 			if(widgetScreens.size() > page)
 			{
 				ArrayList<WidgetRow> rowsToDraw = widgetScreens.get(page);
@@ -259,12 +260,12 @@ public class Idle {
 	
 			}
 			
+			return bitmap;
+			
 		}
 		else {
 			return mediaPlayer.update(context, MetaWatchService.watchType);
 		}
-				
-		return bitmap;
 	}
 	
 	public static Canvas drawLine(Canvas canvas, int y) {
@@ -285,13 +286,27 @@ public class Idle {
 			return;
 		}
 		
-		updateWidgetPages(context, refresh);
+		if(currentPage!=mediaPlayerPage)
+			updateWidgetPages(context, refresh);
 		
 		final int mode = currentPage==mediaPlayerPage ? MetaWatchService.WatchBuffers.APPLICATION : MetaWatchService.WatchBuffers.IDLE;
 		
 		Protocol.sendLcdBitmap(createLcdIdle(context), mode);
 		Protocol.configureIdleBufferSize(currentPage==0);
 		Protocol.updateLcdDisplay(mode);
+	}
+	
+	public static void enableIdleKeys() {
+		
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
+			Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 0); // Right top immediate
+			Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 1); // Right top immediate	
+		}
+		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 0); // Middle immediate
+			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 1); // Middle immediate
+		}
+
 	}
 	
 	public static boolean toIdle(Context context) {
@@ -311,7 +326,6 @@ public class Idle {
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
 			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 0); // Middle immediate
 			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 1); // Middle immediate
-			//sendOledIdle(context, true);
 		}
 
 		return true;
@@ -321,27 +335,34 @@ public class Idle {
 		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
 			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
 				sendLcdIdle(context, refresh);
+			else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+				updateOledIdle(context, refresh);
+	}
+	
+	private static void updateOledIdle(Context context, boolean refresh) {	
+		if(currentPage!=mediaPlayerPage)
+			Idle.updateWidgetPages(context, refresh);
+				
+		// get the 32px full screen
+		oledIdle = Idle.createOledIdle(context, false, currentPage);
 	}
 	
 	// Send oled widgets view on demand
 	public static void sendOledIdle(Context context) {
-		Idle.updateWidgetPages(context, true);
-				
-		// get the 32px full screen
-		final Bitmap bmpPage = Idle.createOledIdle(context, false, currentPage);
-		
+		if(oledIdle == null) {
+	 		updateOledIdle(context, true);
+		}
+	 		
 		final int mode = currentPage==mediaPlayerPage ? MetaWatchService.WatchBuffers.APPLICATION : MetaWatchService.WatchBuffers.IDLE;
 
-		
 		// Split into top/bottom, and send
 		for(int i=0; i<2; ++i) {
 			Bitmap bitmap = Bitmap.createBitmap(80, 16, Bitmap.Config.RGB_565);
 			Canvas canvas = new Canvas(bitmap);
-			canvas.drawBitmap(bmpPage, 0, -(i*16), null);
+			canvas.drawBitmap(oledIdle, 0, -(i*16), null);
 			Protocol.sendOledBitmap(bitmap, mode, i);
 		}
-		Protocol.oledChangeMode(mode);
-					
+		Protocol.oledChangeMode(mode);					
 	}
 	
 	public static void oledTest(Context context, String msg) {

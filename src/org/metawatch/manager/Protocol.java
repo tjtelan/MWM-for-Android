@@ -783,9 +783,6 @@ public class Protocol {
 	public static byte[] createOled2lines(Context context, String line1,
 			String line2) {
 		int offset = 0;
-		/*
-		 * if (logo) offset += 17;
-		 */
 
 		/* Convert newlines to spaces */
 		line1 = line1.replace('\n', ' ');
@@ -800,13 +797,6 @@ public class Protocol {
 		canvas.drawColor(Color.WHITE);
 		canvas.drawText(line1, offset, 7, paint);
 		canvas.drawText(line2, offset, 15, paint);
-
-		/*
-		 * if (logo) { Bitmap imageImmutable =
-		 * BitmapFactory.decodeResource(context.getResources(), iconType);
-		 * Bitmap imageIcon = imageImmutable.copy(Bitmap.Config.RGB_565, true);
-		 * canvas.drawBitmap(imageIcon, 0, 0, null); }
-		 */
 
 		int poleInt[] = new int[16 * 80];
 		image.getPixels(poleInt, 0, 80, 0, 0, 80, 16);
@@ -840,9 +830,6 @@ public class Protocol {
 	public static int createOled2linesLong(Context context, String line,
 			byte[] display) {
 		int offset = 0 - 79;
-		/*
-		 * if (logo) offset += 17;
-		 */
 
 		/* Replace newlines with spaces */
 		line = line.replace('\n', ' ');
@@ -857,13 +844,6 @@ public class Protocol {
 		paint.setTypeface(FontCache.instance(context).Small.face);
 		canvas.drawColor(Color.WHITE);
 		canvas.drawText(line, offset, 7, paint);
-
-		/*
-		 * if (logo) { Bitmap imageImmutable =
-		 * BitmapFactory.decodeResource(context.getResources(), iconType);
-		 * Bitmap imageIcon = imageImmutable.copy(Bitmap.Config.RGB_565, true);
-		 * canvas.drawBitmap(imageIcon, 0, 0, null); }
-		 */
 
 		int poleInt[] = new int[8 * width];
 		image.getPixels(poleInt, 0, width, 0, 0, width, 8);
@@ -881,7 +861,6 @@ public class Protocol {
 					display[i] += Math.pow(2, j);
 			}
 		}
-		// int len = (int) paint.measureText(line);
 
 		return (int) paint.measureText(line) - 79;
 	}
@@ -924,8 +903,6 @@ public class Protocol {
 
 		sendOledBuffer(send, bufferType, page, false);
 	}
-
-//	static boolean SendOledBuffer(byte[] buffer, int bufferType) {
 	
 	public static void sendOledBuffer(byte[] display, int bufferType, int page,
 			boolean scroll) {
