@@ -291,7 +291,8 @@ public class Protocol {
 			bytes[5] = (byte) minute;
 			bytes[6] = (byte) second;
 
-			// send(bytes);
+			enqueue(bytes);
+			
 		} catch (Exception x) {
 		}
 	}
