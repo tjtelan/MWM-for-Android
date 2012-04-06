@@ -2,7 +2,9 @@ package org.metawatch.manager.apps;
 
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.MediaControl;
+import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.Utils;
+import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Protocol;
 
@@ -13,6 +15,7 @@ import android.graphics.Color;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.Log;
 
 public class MediaPlayerApp implements InternalApp {
 
@@ -35,6 +38,10 @@ public class MediaPlayerApp implements InternalApp {
 	}
 
 	public void activate(int watchType) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Entering media mode");
+		
+		MediaControl.mediaPlayerActive = true;
+		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 0, TOGGLE, 1); // right middle - immediate
 	
@@ -53,6 +60,10 @@ public class MediaPlayerApp implements InternalApp {
 	}
 	
 	public void deactivate(int watchType) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Leaving media mode");
+		
+		MediaControl.mediaPlayerActive = false;
+		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.disableButton(1, 0, 1);
 			

@@ -52,7 +52,7 @@ public class MediaControl {
 	public static String lastAlbum = "";
 	public static String lastTrack = "";
 	
-	static boolean mediaPlayerActive = false;
+	public static boolean mediaPlayerActive = false;
 	
 	public static void next(Context context) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "MediaControl.next()");

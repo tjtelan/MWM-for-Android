@@ -169,7 +169,7 @@ public class WidgetSetup extends Activity {
     }
     
     private void refreshPreview() {
-    	Idle.updateWidgetPages(this, true);
+    	Idle.updateIdlePages(this, true);
     	LinearLayout ll = (LinearLayout) findViewById(R.id.idlePreviews);
     	
     	ll.removeAllViews();
