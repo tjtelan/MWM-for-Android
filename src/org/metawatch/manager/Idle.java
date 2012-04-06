@@ -50,7 +50,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.text.TextPaint;
 import android.util.Log;
 
 public class Idle {
@@ -235,22 +234,14 @@ public class Idle {
 		idlePages = screens;
 	}
 
-	static synchronized Bitmap createLcdIdle(Context context) {
-		return createLcdIdle(context, false, currentPage);
+	static synchronized Bitmap createIdle(Context context) {
+		return createIdle(context, false, currentPage);
 	}
 
-	static synchronized Bitmap createLcdIdle(Context context, boolean preview, int page) {
-		Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.RGB_565);
-		
-		if(idlePages != null && idlePages.size()>page) {
-			return idlePages.get(page).draw(context, preview, bitmap, MetaWatchService.watchType);
-		}
-		
-		return bitmap;
-	}
-	
-	static synchronized Bitmap createOledIdle(Context context, boolean preview, int page) {		
-		Bitmap bitmap = Bitmap.createBitmap(80, 32, Bitmap.Config.RGB_565);
+	static synchronized Bitmap createIdle(Context context, boolean preview, int page) {
+		final int width = (MetaWatchService.watchType==WatchType.DIGITAL) ? 96 : 80;
+		final int height = (MetaWatchService.watchType==WatchType.DIGITAL) ? 96 : 32;
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
 		
 		if(idlePages != null && idlePages.size()>page) {
 			return idlePages.get(page).draw(context, preview, bitmap, MetaWatchService.watchType);
@@ -290,7 +281,7 @@ public class Idle {
 		if(mode ==  MetaWatchService.WatchBuffers.IDLE)
 			updateIdlePages(context, refresh);
 		
-		Protocol.sendLcdBitmap(createLcdIdle(context), mode);
+		Protocol.sendLcdBitmap(createIdle(context), mode);
 		Protocol.configureIdleBufferSize(currentPage==0);
 		Protocol.updateLcdDisplay(mode);
 	}
@@ -343,7 +334,7 @@ public class Idle {
 			updateIdlePages(context, refresh);
 				
 		// get the 32px full screen
-		oledIdle = createOledIdle(context, false, currentPage);
+		oledIdle = createIdle(context);
 	}
 	
 	// Send oled widgets view on demand
