@@ -88,14 +88,16 @@ public class WidgetSetup extends Activity {
 			
 		int i=1;
 		for(String line : rows) {
-	    	Map<String, String> curGroupMap = new HashMap<String, String>();
+
+			String[] widgets = (line).split(",");
+			
+			Map<String, String> curGroupMap = new HashMap<String, String>();
 	        groupData.add(curGroupMap);
-	        curGroupMap.put(NAME, "Row " + (i++));
-	        curGroupMap.put(ID, "Id");
 	        
 	        List<Map<String, String>> children = new ArrayList<Map<String, String>>();
 	        
-			String[] widgets = (line).split(",");
+	        int widgetCount = 0;
+	        
 			for(String widget : widgets) {
 				widget = widget.trim();
 	        	Map<String, String> curChildMap = new HashMap<String, String>();
@@ -103,8 +105,10 @@ public class WidgetSetup extends Activity {
 	            String name = widget;
 	            if(widget==null || widget=="")
 	            	name="<empty>";
-	            if(widgetMap.containsKey(widget))
+	            if(widgetMap.containsKey(widget)) {
 	            	name = widgetMap.get(widget).description;
+	            	widgetCount++;
+	            }
 	            curChildMap.put(NAME, name);
 	            curChildMap.put(ID, widget);
 	        }
@@ -115,6 +119,11 @@ public class WidgetSetup extends Activity {
 	            curChildMap.put(NAME, "<empty>");
 	            curChildMap.put(ID, "");
 			}
+			
+			
+	        
+	        curGroupMap.put(NAME, getGroupName(i++, widgetCount));
+	        curGroupMap.put(ID, "Id");
 			
 	        childData.add(children);
 		}	    
@@ -134,6 +143,27 @@ public class WidgetSetup extends Activity {
 	    widgetList.setAdapter(adapter);
 		
 		refreshPreview();
+	}
+	
+	private String getGroupName(int group, int widgetCount) {
+        StringBuilder nameSb = new StringBuilder();
+        nameSb.append("Row ");
+        nameSb.append(group);
+        nameSb.append(" ");
+
+        if(widgetCount==0) {
+        	nameSb.append("(empty)");
+        }
+        else if(widgetCount==1) {
+        	nameSb.append("(1 widget)");
+        }
+        else {
+        	nameSb.append("(");
+        	nameSb.append(widgetCount);
+        	nameSb.append(" widgets)");
+        }
+        
+        return nameSb.toString();
 	}
     
     @Override
@@ -161,6 +191,18 @@ public class WidgetSetup extends Activity {
 		            curChildMap.put(ID, id);
         		}
         	}
+        	
+        	int widgetCount = 0;
+        	int childCount = childData.get(groupPosition).size();
+        	for(int i=0; i<childCount;++i) {
+        		Map<String,String> curChildMap = childData.get(groupPosition).get(i);
+        		if(!curChildMap.get(ID).equalsIgnoreCase("")) {
+        			widgetCount++;
+        		}
+        	}
+        	
+        	groupData.get(groupPosition).put(NAME, getGroupName(groupPosition+1, widgetCount));
+        	
         	adapter.notifyDataSetChanged();
         	storeWidgetLayout();
         	refreshPreview();
