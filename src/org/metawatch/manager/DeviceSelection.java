@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
 
@@ -47,9 +48,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -102,6 +105,7 @@ public class DeviceSelection extends Activity {
 	Context context;
 	ListView listView;
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+	Set<String> foundMacs = new TreeSet<String>();
 	private Receiver receiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -160,8 +164,16 @@ public class DeviceSelection extends Activity {
 		    }
 		}
 		
-		startDiscovery();
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		boolean showFakeWatches = sharedPreferences.getBoolean("ShowFakeWatches", false);
 		
+		if(showFakeWatches) {		
+			addToList("DIGITAL", "Fake Digital Watch (Use for debugging digital functionality within MWM)");
+			addToList("ANALOG", "Fake Analog Watch (Use for debugging analog functionality within MWM)");
+		}
+		
+		startDiscovery();
 	
 	}
 	
@@ -183,12 +195,16 @@ public class DeviceSelection extends Activity {
 	}
 	
 	void addToList(String mac, String name) {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put("mac", mac);
-		map.put("name", name);
-		list.add(map);
-		//menuList.add(mac);
-		displayList();
+		
+		if(!foundMacs.contains(mac)) {	
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("mac", mac);
+			map.put("name", name);
+					
+			list.add(map);
+			foundMacs.add(mac);
+			displayList();
+		}
 	}
 	
 	void displayList() {

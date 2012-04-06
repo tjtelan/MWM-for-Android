@@ -18,6 +18,13 @@
 			android:summary="Enter watch MAC address manually"
 			android:defaultValue=""
 			/>
+							
+		<CheckBoxPreference
+			android:title="Show fake watches"
+			android:key="ShowFakeWatches"
+			android:summary="Show fake watch entries in the discovery screen, to emulate connection to an analog or digital watch, without actually connecting."
+			android:defaultValue="false"
+			/>	
 	</PreferenceScreen>
     
 	<PreferenceScreen
