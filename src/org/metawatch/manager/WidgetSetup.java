@@ -226,14 +226,15 @@ public class WidgetSetup extends Activity {
     		if (bmp!=null) {
     			
     			int backCol = Color.LTGRAY;
-    			int viewId = R.layout.idle_screen_preview;
+    			int viewId = (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) 
+    					? R.layout.idle_screen_preview_oled
+    				    : R.layout.idle_screen_preview;
     			
         		if(Preferences.invertLCD || MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
         			Utils.invertBitmap(bmp);
         			backCol = 0xff111111;
-        			viewId = R.layout.idle_screen_preview_oled;
         		}
-    			
+        		    			
 	    		LayoutInflater factory = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	
 	    		View v = factory.inflate(viewId, null);
