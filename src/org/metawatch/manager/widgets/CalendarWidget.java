@@ -156,8 +156,11 @@ public class CalendarWidget implements InternalWidget {
 			canvas.drawBitmap(icon, 2, 0, null);
 			if(meetingTime.equals("None"))
 				canvas.drawText("-", 8, 15, paintSmallNumerals);
-			else
-				canvas.drawText(meetingTime, 8, 15, paintSmallNumerals);
+			else {
+				// Strip out colon to make it fit;
+				String time = meetingTime.replace(":", "");
+				canvas.drawText(time, 8, 15, paintSmallNumerals);
+			}
 		}
 		else {
 			canvas.drawBitmap(icon, 0, 3, null);
