@@ -494,14 +494,14 @@ public class WeatherWidget implements InternalWidget {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
 			if (Preferences.weatherGeolocation) {
 				if( !LocationData.received ) {
-					canvas.drawText("Awaiting location", 48, 18, paintSmall);
+					canvas.drawText("Awaiting location", 40, 8, paintSmall);
 				}
 				else {
-					canvas.drawText("Awaiting weather", 48, 18, paintSmall);
+					canvas.drawText("Awaiting weather", 40, 8, paintSmall);
 				}
 			}
 			else {
-				canvas.drawText("No data", 48, 18, paintSmall);
+				canvas.drawText("No data", 40, 8, paintSmall);
 			}
 			paintSmall.setTextAlign(Paint.Align.LEFT);
 		}
