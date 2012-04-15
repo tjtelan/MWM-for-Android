@@ -118,6 +118,10 @@ public class AppBlacklist extends Activity {
 			final AppInfo appInfo = apps.get(position);
 			icon.setImageDrawable(appInfo.icon);
 			appName.setText(appInfo.name);
+			
+			// Remove any previous listener to not confuse the system...
+			checkbox.setOnCheckedChangeListener(null);
+			// ...otherwise this row triggers for the old app when the View is reused.
 			checkbox.setChecked(appInfo.isBlacklisted);
 			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
