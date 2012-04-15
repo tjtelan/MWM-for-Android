@@ -1,6 +1,7 @@
 package org.metawatch.manager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,8 +47,10 @@ public class AppBlacklist extends Activity {
 		protected List<AppInfo> doInBackground(Void... params) {
 			SharedPreferences sharedPreferences = PreferenceManager
 					.getDefaultSharedPreferences(AppBlacklist.this);
-			String blacklist = sharedPreferences.getString("appBlacklist",
-					DEFAULT_BLACKLIST);
+			String[] blacklist = sharedPreferences.getString("appBlacklist",
+					DEFAULT_BLACKLIST).split(",");
+			Arrays.sort(blacklist);
+			
 			PackageManager pm = getPackageManager();
 			List<PackageInfo> packages = pm.getInstalledPackages(0);
 			List<AppInfo> appInfos = new ArrayList<AppInfo>();
@@ -64,7 +67,8 @@ public class AppBlacklist extends Activity {
 				appInfo.name = pi.applicationInfo.loadLabel(pm).toString();
 				appInfo.icon = pi.applicationInfo.loadIcon(pm);
 				appInfo.packageName = pi.packageName;
-				appInfo.isBlacklisted = blacklist.contains(pi.packageName);
+				appInfo.isBlacklisted = 
+					(Arrays.binarySearch(blacklist, pi.packageName) >= 0);
 				appInfos.add(appInfo);
 			}
 			Collections.sort(appInfos);
