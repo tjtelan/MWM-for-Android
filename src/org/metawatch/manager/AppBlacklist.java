@@ -61,31 +61,20 @@ public class AppBlacklist extends Activity {
 					continue;
 				}
 				AppInfo appInfo = new AppInfo();
-				appInfo.packageInfo = pi;
-				appInfo.name = appInfo.packageInfo.applicationInfo
-						.loadLabel(pm).toString();
-				appInfo.icon = appInfo.packageInfo.applicationInfo.loadIcon(pm);
+				appInfo.name = pi.applicationInfo.loadLabel(pm).toString();
+				appInfo.icon = pi.applicationInfo.loadIcon(pm);
+				appInfo.packageName = pi.packageName;
 				appInfo.isBlacklisted = blacklist.contains(pi.packageName);
 				appInfos.add(appInfo);
 			}
 			Collections.sort(appInfos);
-
-			// for (AppInfo appInfo : appInfos) {
-			// if (Preferences.logging) Log.d(MetaWatch.TAG, "appName='" + appInfo.name
-			// + "' packageName='" + appInfo.packageInfo.packageName +
-			// "' selected="
-			// + appInfo.selected);
-			// }
 
 			return appInfos;
 		}
 
 		@Override
 		protected void onPostExecute(List<AppInfo> appInfos) {
-
 			ListView listView = (ListView) findViewById(android.R.id.list);
-			// listView.setAdapter(new ArrayAdapter<String>(this,
-			// android.R.layout.simple_list_item_1, menuList));
 			listView.setAdapter(new BlacklistAdapter(appInfos));
 			AppBlacklist.this.appInfos = appInfos;
 			pdWait.dismiss();
@@ -97,7 +86,7 @@ public class AppBlacklist extends Activity {
 	public class AppInfo implements Comparable<AppInfo> {
 		String name;
 		Drawable icon;
-		PackageInfo packageInfo;
+		String packageName;
 		boolean isBlacklisted;
 
 		public int compareTo(AppInfo another) {
@@ -160,7 +149,7 @@ public class AppBlacklist extends Activity {
 					if (sb.length() > 0) {
 						sb.append(",");
 					}
-					sb.append(appInfo.packageInfo.packageName);
+					sb.append(appInfo.packageName);
 				}
 			}
 			SharedPreferences sharedPreferences = PreferenceManager
@@ -171,7 +160,6 @@ public class AppBlacklist extends Activity {
 			editor.commit();		
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "App blacklist: " + blacklist);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
