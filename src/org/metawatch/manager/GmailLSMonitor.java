@@ -106,8 +106,8 @@ public class GmailLSMonitor implements GmailMonitor {
 
 			if (Preferences.notifyGmail && currentUnreadCount > lastUnreadCount)
 			{
-					if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
-					sendUnreadGmail();						
+				if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
+				sendUnreadGmail();						
 			}
 			
 			if (currentUnreadCount != lastUnreadCount)

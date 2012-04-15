@@ -112,9 +112,9 @@ public class GmailAPIMonitor implements GmailMonitor {
 
 			if (Preferences.notifyGmail && currentUnreadCount > lastUnreadCount)
 			{
-					if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
+				if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
 
-					NotificationBuilder.createGmailBlank(context, account, currentUnreadCount);
+				NotificationBuilder.createGmailBlank(context, account, currentUnreadCount);
 			}
 			
 			if (currentUnreadCount != lastUnreadCount)
