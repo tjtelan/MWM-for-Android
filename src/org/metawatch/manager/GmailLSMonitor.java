@@ -65,7 +65,7 @@ public class GmailLSMonitor implements GmailMonitor {
 	MyContentObserver contentObserver = new MyContentObserver();
 	
 	public static String account = "";
-	public static int lastUnreadGmailCount = 0;
+	public static int lastUnreadCount = 0;
 	
 	public GmailLSMonitor(Context ctx) {
 		super();		
@@ -76,7 +76,7 @@ public class GmailLSMonitor implements GmailMonitor {
 			throw new IllegalArgumentException("No account found.");
 		}
 		
-		lastUnreadGmailCount = getUnreadCount("^u");
+		lastUnreadCount = getUnreadCount("^u");
 	}
 
 	public void startMonitor() {
@@ -100,20 +100,22 @@ public class GmailLSMonitor implements GmailMonitor {
 
 			if (Preferences.logging) Log.d("ow", "onChange observer - unread");
 
-			if (Preferences.notifyGmail) 
+			int currentUnreadCount = getUnreadCount("^u");
+
+			//if (Preferences.logging) Log.d("ow", "current gmail unread count: " + Integer.toString(currentGmailUnreadCount));
+
+			if (Preferences.notifyGmail && currentUnreadCount > lastUnreadCount)
 			{
-				int currentGmailUnreadCount = getUnreadCount("^u");
-
-				//if (Preferences.logging) Log.d("ow", "current gmail unread count: " + Integer.toString(currentGmailUnreadCount));
-
-				if (currentGmailUnreadCount > lastUnreadGmailCount)
-				{
-						if (Preferences.logging) Log.d("ow", Integer.toString(currentGmailUnreadCount) + " > " + Integer.toString(lastUnreadGmailCount));
-						sendUnreadGmail();						
-				}
-				
-				lastUnreadGmailCount = currentGmailUnreadCount;
+					if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
+					sendUnreadGmail();						
 			}
+			
+			if (currentUnreadCount != lastUnreadCount)
+			{
+				Idle.updateIdle(context, true);
+			}
+			
+			lastUnreadCount = currentUnreadCount;
 		}
 	}
 	

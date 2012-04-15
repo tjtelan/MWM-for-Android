@@ -106,21 +106,23 @@ public class GmailAPIMonitor implements GmailMonitor {
 
 			if (Preferences.logging) Log.d("ow", "onChange observer - unread");
 
-			if (Preferences.notifyGmail) 
+			int currentUnreadCount = getUnreadCount();
+
+			//if (Preferences.logging) Log.d("ow", "current gmail unread count: " + Integer.toString(currentGmailUnreadCount));
+
+			if (Preferences.notifyGmail && currentUnreadCount > lastUnreadCount)
 			{
-				int currentUnreadCount = getUnreadCount();
+					if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
 
-				//if (Preferences.logging) Log.d("ow", "current gmail unread count: " + Integer.toString(currentGmailUnreadCount));
-
-				if (currentUnreadCount > lastUnreadCount)
-				{
-						if (Preferences.logging) Log.d("ow", Integer.toString(currentUnreadCount) + " > " + Integer.toString(lastUnreadCount));
-
-						NotificationBuilder.createGmailBlank(context, account, currentUnreadCount);
-				}
-				
-				lastUnreadCount = currentUnreadCount;
+					NotificationBuilder.createGmailBlank(context, account, currentUnreadCount);
 			}
+			
+			if (currentUnreadCount != lastUnreadCount)
+			{
+				Idle.updateIdle(context, true);
+			}
+			
+			lastUnreadCount = currentUnreadCount;
 		}
 	}
 	
