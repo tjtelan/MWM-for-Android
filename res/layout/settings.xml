@@ -301,6 +301,12 @@
 			android:defaultValue="false"
 			/>
 		<CheckBoxPreference
+			android:title="@string/settings_Event_date_in_calendar_widget"
+			android:key="EventDateInCalendarWidget"
+			android:summary="@string/settings_Event_date_in_calendar_widget_desc"
+			android:defaultValue="false"
+			/>
+		<CheckBoxPreference
 			android:title="@string/settings_Overlay_weather_text"
 			android:key="OverlayWeatherText"
 			android:summary="@string/settings_Overlay_weather_text_desc"
