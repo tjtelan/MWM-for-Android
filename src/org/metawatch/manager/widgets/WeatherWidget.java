@@ -348,7 +348,7 @@ public class WeatherWidget implements InternalWidget {
 		return bitmap;
 	}
 	
-	final static int[] phaseImage = {0,0,1,1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5,5,6,6,7,7,7,7,0,0};
+	final static int[] phaseImage = {0,0,1,1,1,1,1,2,2,2,3,3,3,3,4,4,4,5,5,5,5,5,6,6,7,7,7,7,0,0,0};
 	
 	private Bitmap draw3() {
 		Bitmap bitmap = Bitmap.createBitmap(24, 32, Bitmap.Config.RGB_565);
@@ -359,7 +359,7 @@ public class WeatherWidget implements InternalWidget {
 		
 		final boolean shouldInvert = Preferences.invertLCD || (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG);
 		
-		if (WeatherData.received && WeatherData.ageOfMoon!=-1) {
+		if (WeatherData.received && WeatherData.ageOfMoon >=0 && WeatherData.ageOfMoon < phaseImage.length ) {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*24);
@@ -447,7 +447,7 @@ public class WeatherWidget implements InternalWidget {
 		final boolean shouldInvert = Preferences.invertLCD || (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG);
 		
 		paintSmall.setTextAlign(Paint.Align.CENTER);
-		if (WeatherData.received && WeatherData.ageOfMoon!=-1) {
+		if (WeatherData.received && WeatherData.ageOfMoon >=0 && WeatherData.ageOfMoon < phaseImage.length) {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*16);
