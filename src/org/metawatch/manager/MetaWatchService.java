@@ -858,6 +858,12 @@ public class MetaWatchService extends Service {
 				connectionState = ConnectionState.CONNECTING;
 				broadcastConnection(false);
 			}
+		} catch(ArrayIndexOutOfBoundsException e) {
+			wakeLock.acquire(5000);
+			if (connectionState != ConnectionState.DISCONNECTING) {
+				connectionState = ConnectionState.CONNECTING;
+				broadcastConnection(false);
+			}
 		}
 	}
 
