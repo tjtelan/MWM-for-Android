@@ -211,15 +211,18 @@ public class NotificationBuilder {
 	public static void createBatterylow(Context context) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(
 				context, "settingsBatteryNumberBuzzes");
+		StringBuilder builder = new StringBuilder();
+		builder.append(Monitors.BatteryData.level);
+		builder.append("%");
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, "batterylow.bmp",
-					"Battery", new String[] { "Phone Battery Low" });
+					"Battery", new String[] { "Phone battery at", builder.toString() });
 			Notification.addBitmapNotification(context, bitmap, vibratePattern,
 					Notification.getDefaultNotificationTimeout(context));
 		} else {
 			Notification.addOledNotification(context, Protocol.createOled1line(
 					context, "batterylow.bmp", "Warning!"), Protocol
-					.createOled1line(context, null, "PhoneBatLow!"), null, 0,
+					.createOled2lines(context, "Phone battery at", builder.toString()), null, 0,
 					vibratePattern);
 		}
 	}	
