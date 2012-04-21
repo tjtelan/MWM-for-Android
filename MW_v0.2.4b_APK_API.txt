@@ -1,21 +1,31 @@
-Handled:
+Intents listened for:
 
 org.metawatch.manager.NOTIFICATION
-  "array" - int[96*96]
-  or
-  "buffer" - byte[96*96/8] // encoded buffer
-  --
+  - Display a notification on the watch 
+  
   "vibrate_on" - int // ms
   "vibrate_off" - int // ms
   "vibrate_cycles" - int 
-  --
-  - text: Displays text on the digital watch. (digital only, untested)
-  - oled1: Displays large text on the top OLED. (analog only)
-  - oled1a: Displays small text on the upper half of the top OLED (analog only)
-  - oled1b: Displays small text on the lower half of the top OLED (analog only)
-  - oled2: Displays large text on the bottom OLED. (analog only)
-  - oled2a: Displays small text on the upper half of the bottom OLED (analog only)
-  - oled2b: Displays small text on the lower half of the bottom OLED (analog only)  
+	(optional - notification will display without vibration if omitted)
+
+DIGITAL:
+  "array" - int[96*96]
+  or
+  "buffer" - byte[96*96/8] // encoded buffer
+  
+OLED:
+  "oled1"  - Displays large text on the top OLED.
+  "oled1a" - Displays small text on the upper half of the top OLED 
+  "oled1b" - Displays small text on the lower half of the top OLED 
+  "oled2"  - Displays large text on the bottom OLED. 
+  "oled2a" - Displays small text on the upper half of the bottom OLED 
+  "oled2b" - Displays small text on the lower half of the bottom OLED  
+
+DIGITAL and OLED (from rm14 onwards)
+  "text" - Displays text on the digital watch.
+  "title" (optional) - Title for the notification when using "text"
+  
+-------------------------------------------------------------------------------
 
 org.metawatch.manager.APPLICATION_UPDATE
   "array" - int[96*96]
@@ -26,20 +36,49 @@ org.metawatch.manager.APPLICATION_START
 
 org.metawatch.manager.APPLICATION_STOP
 
+-------------------------------------------------------------------------------
 
-org.metawatch.manager.IDLE_BUTTONS_OVERRIDE
-  "buttons" - byte[] // buttons to override
+org.metawatch.manager.VIBRATE
+  - Vibrate the watch, but don't display anything
+  
+  "vibrate_on" - int // ms
+  "vibrate_off" - int // ms
+  "vibrate_cycles" - int 
+  
+-------------------------------------------------------------------------------
 
+org.metawatch.manager.WIDGET_UPDATE
+  - Update a widget's image from an external app
+  - Note that a widget won't automatically be displayed - the user has to
+    manually add it with the widget setup screen in MWM
+    
+  "id"       - Unique id for this widget - usually APPNAME_WIDTH_HEIGHT - e.g myApp_32_32
+  "desc"     - Textual description of the widget - e.g. "My App (32x32)"
+  "width"    - Width of the widget in pixels
+  "height"   - height of the widget in pixels
+  "priority" - priority of the widget (0 if no data, >0 otherwise) - bigger means less likely to be culled for space
+  "array"    - pixel array : int[width*height]
 
-
-
-
+===============================================================================
 
 Broadcasted:
 
 org.metawatch.manager.BUTTON_PRESS
+  - When in application mode:
   "button" - byte
   "mode" - String // ("application", "idle")
 
+-------------------------------------------------------------------------------
 
-
+org.metawatch.manager.REFRESH_WIDGET_REQUEST
+  - MWM requesting for external apps to refresh/announce any widgets
+  
+  "org.metawatch.manager.get_previews" 
+      - Previews are being requested, so reply with a WIDGET_UPDATE for all possible
+        widgets displaying a dummy image if necessary
+or
+  "org.metawatch.manager.widgets_desired"
+      - ArrayList<String> of the widget ids requested by the user - reply with a 
+        WIDGET_UPDATE if your widget_id is in the list
+        
+-------------------------------------------------------------------------------
