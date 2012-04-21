@@ -128,9 +128,14 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 				Notification.addOledNotification(context, line1, line2, scroll, scrollLen, vibrate);
 				
 			} else if (intent.hasExtra("text")) {
+				String title = "Notification";
+				if (intent.hasExtra("title")) {
+					title = intent.getStringExtra("title");
+				}
 				String text = intent.getStringExtra("text");
-				Notification.addTextNotification(context, text, vibrate,
-						Notification.getDefaultNotificationTimeout(context));
+				
+				NotificationBuilder.createSmart(context, title, text, vibrate);
+				
 				if (Preferences.logging) Log.d(MetaWatch.TAG,
 						"ApiIntentReceiver.onReceive(): sending text notification; text='"
 								+ text + "'");

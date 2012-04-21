@@ -86,6 +86,10 @@ public class NotificationBuilder {
 	
 	public static void createSmart(Context context, String title, String text) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsOtherNotificationNumberBuzzes");
+		createSmart(context, title, text, vibratePattern);
+	}
+	
+	public static void createSmart(Context context, String title, String text, VibratePattern vibratePattern) {
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {		
 			Bitmap[] bitmaps = smartNotify(context, "notify.bmp", title, text);
 			Notification.addBitmapNotification(context, bitmaps, vibratePattern, -1);
