@@ -40,6 +40,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
@@ -280,6 +281,20 @@ public class IntentReceiver extends BroadcastReceiver {
 			
 			MediaControl.updateNowPlaying(context, artist, album, track, intent.getAction());
 					
+		}
+		else if (intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
+			boolean noConnectivity = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+			
+			if (noConnectivity) {
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "IntentReceiver.onReceive(): No data connectivity.");
+			}
+			else {
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "IntentReceiver.onReceive(): Data connectivity available.");
+				
+				Monitors.updateWeatherData(context);
+			}
+
+			
 		}
 		
 	}

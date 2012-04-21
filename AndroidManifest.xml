@@ -9,6 +9,7 @@
     	android:largeScreens="true" android:smallScreens="true"/>
     
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCOUNT_MANAGER"/>
 	<uses-permission android:name="android.permission.BATTERY_STATS"/>
 	<uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -116,7 +117,10 @@
 			</intent-filter>
 			<intent-filter>
 				<action android:name="com.nullsoft.winamp.metachanged" />
-			</intent-filter>				
+			</intent-filter>	
+			<intent-filter>
+            	<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>			
         </receiver> 
         <receiver android:name=".BootCompletedReceiver" android:exported="true">
             <intent-filter>
