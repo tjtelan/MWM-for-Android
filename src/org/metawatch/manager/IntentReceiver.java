@@ -297,7 +297,7 @@ public class IntentReceiver extends BroadcastReceiver {
 				
 				if (diff < 30 * 60*1000) {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
-							"Skipping weather update - updated less than 5m ago");
+							"Skipping weather update - updated less than 30m ago");
 				}
 				else {			
 					Monitors.updateWeatherData(context);
