@@ -96,7 +96,7 @@ public class NotificationBuilder {
 		} else {
 			byte[] scroll = new byte[800];
 			int len = Protocol.createOled2linesLong(context, text, scroll);
-			Notification.addOledNotification(context, Protocol.createOled1line(context, "notify.bmp", title), Protocol.createOled2lines(context, "Notification", text), scroll, len, vibratePattern);
+			Notification.addOledNotification(context, Protocol.createOled1line(context, "notify.bmp", title), Protocol.createOled2lines(context, title, text), scroll, len, vibratePattern);
 		}
 	}
 	
