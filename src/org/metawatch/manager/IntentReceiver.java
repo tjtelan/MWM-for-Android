@@ -32,6 +32,8 @@
 
 package org.metawatch.manager;
 
+import java.util.TimeZone;
+
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.content.BroadcastReceiver;
@@ -45,6 +47,8 @@ import android.util.Log;
 
 public class IntentReceiver extends BroadcastReceiver {
 		
+	static String lastTimeZoneName = "";
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();		
@@ -195,12 +199,23 @@ public class IntentReceiver extends BroadcastReceiver {
 			 * Notify the watch.
 			 */
 			Protocol.sendRtcNow(context);
-
-			SharedPreferences sharedPreferences = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			if (sharedPreferences.getBoolean("settingsNotifyTimezoneChange",
-					false)) {
-				NotificationBuilder.createTimezonechange(context);
+			
+			/*
+			 * Check that the timezone has actually changed, so that we don't
+			 * spam the user with notifications.
+			 */
+			
+			TimeZone tz = TimeZone.getDefault();
+			if (!tz.getDisplayName().equals(lastTimeZoneName))
+			{
+				lastTimeZoneName = tz.getDisplayName();
+				
+				SharedPreferences sharedPreferences = PreferenceManager
+						.getDefaultSharedPreferences(context);
+				if (sharedPreferences.getBoolean("settingsNotifyTimezoneChange",
+						false)) {
+					NotificationBuilder.createTimezonechange(context);
+				}				
 			}
 			return;
 		}

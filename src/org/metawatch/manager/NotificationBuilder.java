@@ -35,6 +35,7 @@ package org.metawatch.manager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.metawatch.manager.FontCache.FontInfo;
 import org.metawatch.manager.MetaWatchService.Preferences;
@@ -170,14 +171,15 @@ public class NotificationBuilder {
 	}
 	
 	public static void createTimezonechange(Context context) {
-		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsTimezoneNumberBuzzes");				
+		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsTimezoneNumberBuzzes");	
+		TimeZone tz = TimeZone.getDefault();
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
-			Bitmap bitmap = smartLines(context, "timezone.bmp", "Timezone", new String[] {"Timezone Changed"});		
+			Bitmap bitmap = smartLines(context, "timezone.bmp", "Timezone", new String[] {"Timezone Changed", tz.getDisplayName()});		
 			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context));
 		} else {
 			Notification.addOledNotification(context, Protocol.createOled1line(
 					context, "timezone.bmp", "Timezone"), Protocol
-					.createOled1line(context, null, "Changed"), null, 0,
+					.createOled1line(context, null, tz.getDisplayName()), null, 0,
 					vibratePattern);
 		}
 	}
