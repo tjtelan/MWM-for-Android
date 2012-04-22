@@ -853,18 +853,21 @@ public class MetaWatchService extends Service {
 			}
 
 		} catch (IOException e) {
+			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 			wakeLock.acquire(5000);
-			if (connectionState != ConnectionState.DISCONNECTING) {
-				connectionState = ConnectionState.CONNECTING;
-				broadcastConnection(false);
-			}
+			resetConnection();
 		} catch(ArrayIndexOutOfBoundsException e) {
-			wakeLock.acquire(5000);
-			if (connectionState != ConnectionState.DISCONNECTING) {
-				connectionState = ConnectionState.CONNECTING;
-				broadcastConnection(false);
-			}
+			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
+			resetConnection();
 		}
+	}
+	
+	private void resetConnection() {
+		wakeLock.acquire(5000);
+		if (connectionState != ConnectionState.DISCONNECTING) {
+			connectionState = ConnectionState.CONNECTING;
+			broadcastConnection(false);
+		}	
 	}
 
 	void broadcastConnection(boolean connected) {
