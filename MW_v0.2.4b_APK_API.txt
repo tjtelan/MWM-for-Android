@@ -22,7 +22,7 @@ OLED:
   "oled2b" - Displays small text on the lower half of the bottom OLED  
 
 DIGITAL and OLED (from rm14 onwards)
-  "text" - Displays text on the digital watch.
+  "text" - Displays text on the watch.
   "title" (optional) - Title for the notification when using "text"
   
 -------------------------------------------------------------------------------
