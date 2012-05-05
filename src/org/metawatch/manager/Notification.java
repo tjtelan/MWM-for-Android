@@ -45,7 +45,7 @@ public class Notification {
 
 	private static NotificationType lastNotification = null;
 
-	final static byte NOTIFICATION_TIMEOUT = 0;
+	final static byte NOTIFICATION_NONE = 0;
 	final static byte NOTIFICATION_UP = 30;
 	final static byte NOTIFICATION_DOWN = 31;
 	final static byte NOTIFICATION_DISMISS = 32;
@@ -184,7 +184,8 @@ public class Notification {
 					/* Give some space between notifications. */
 					
 					if (notification.timeout < 0) {
-						notifyButtonPress = NOTIFICATION_TIMEOUT;
+						notifyButtonPress = NOTIFICATION_NONE;
+						long startTicks = System.currentTimeMillis(); 
 						if (notification.bitmaps!=null & notification.bitmaps.length>1) {
 							Protocol.enableButton(0, 0, NOTIFICATION_UP, 2); // Right top immediate
 							Protocol.enableButton(1, 0, NOTIFICATION_DOWN, 2); // Right middle immediate
@@ -202,6 +203,7 @@ public class Notification {
 									buttonPressed.wait(timeout);	
 								}
 							} catch (InterruptedException e) {
+								if (Preferences.logging) Log.d(MetaWatch.TAG, "Button wait interrupted - " + e.getMessage());
 								e.printStackTrace();
 							}
 							
@@ -215,7 +217,8 @@ public class Notification {
 								Protocol.sendLcdBitmap(notification.bitmaps[currentNotificationPage],
 										MetaWatchService.WatchBuffers.NOTIFICATION);
 							}
-							else if (notifyButtonPress==NOTIFICATION_TIMEOUT) {
+							
+							if( (System.currentTimeMillis() - startTicks) > timeout ) {
 								notifyButtonPress = NOTIFICATION_DISMISS;
 							}
 							
