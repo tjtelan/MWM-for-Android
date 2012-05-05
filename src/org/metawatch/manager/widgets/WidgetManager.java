@@ -55,6 +55,8 @@ public class WidgetManager {
 		for(InternalWidget widget : widgets) {
 			widget.init(context, widgetsDesired);
 		}
+		
+		refreshWidgets(context, null);
 	}
 	
 	public static Map<String,WidgetData> refreshWidgets(Context context, ArrayList<CharSequence> widgetsDesired) {
