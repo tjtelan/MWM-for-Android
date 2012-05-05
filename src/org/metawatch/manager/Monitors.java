@@ -769,7 +769,7 @@ public class Monitors {
 				// Restart location updates at a much lower frequency
 
 				locationManager.removeUpdates(networkLocationListener);
-				//locationManager.requestLocationUpdates(locationProvider, 30 * 60 * 1000, 500, networkLocationListener);
+				locationManager.requestLocationUpdates(locationProvider, 30 * 60 * 1000, 500, networkLocationListener);
 				fastUpdates = false;
 			}
 			
