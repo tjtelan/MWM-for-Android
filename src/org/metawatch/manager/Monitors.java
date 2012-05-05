@@ -210,7 +210,8 @@ public class Monitors {
 				
 				networkLocationListener = new NetworkLocationListener(context);
 				
-				locationManager.requestLocationUpdates(locationProvider, 30 * 60 * 1000, 500, networkLocationListener);
+				// Start with frequent updates, to get a quick location fix
+				locationManager.requestLocationUpdates(locationProvider, 10 * 1000, 0, networkLocationListener);
 				
 				RefreshLocation();
 			}
@@ -745,6 +746,7 @@ public class Monitors {
 		private static class NetworkLocationListener implements LocationListener {
 
 		Context context;
+		boolean fastUpdates = true;
 		
 		public NetworkLocationListener(Context context) {
 			this.context = context;
@@ -762,8 +764,18 @@ public class Monitors {
 			LocationData.received = true;
 			MetaWatchService.notifyClients();
 			
+			if (fastUpdates) {
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Switching to 30min location updates");
+				// Restart location updates at a much lower frequency
+
+				locationManager.removeUpdates(networkLocationListener);
+				//locationManager.requestLocationUpdates(locationProvider, 30 * 60 * 1000, 500, networkLocationListener);
+				fastUpdates = false;
+			}
+			
 			if (!WeatherData.received && !WeatherData.updating) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "First location - getting weather");
+				
 				Monitors.updateWeatherData(context);
 			}
 		}
