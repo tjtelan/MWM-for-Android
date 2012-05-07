@@ -105,7 +105,7 @@ public class Idle {
 				yPos += row.getHeight() + space;
 			}
 
-			if (Preferences.displayWidgetRowSeparator) {
+			if (watchType == WatchType.DIGITAL && Preferences.displayWidgetRowSeparator) {
 				yPos = space/2; // Center the separators between rows.
 				if (pageIndex == 0) {
 					yPos += 32;

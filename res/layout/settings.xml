@@ -263,6 +263,13 @@
 			android:defaultValue="false"
 			/>
 
+	    <CheckBoxPreference
+			android:title="@string/settings_Display_widget_row_separator"
+			android:key="DisplayWidgetRowSeparator"
+			android:summary="@string/settings_Display_widget_row_separator_desc"
+			android:defaultValue="false"
+			/>
+
 	</PreferenceScreen>	
 	
 	<PreferenceScreen
@@ -275,12 +282,6 @@
 			android:summary="Reset widgets to default layout"
 			/>
 	    
-	    <CheckBoxPreference
-			android:title="@string/settings_Display_widget_row_separator"
-			android:key="DisplayWidgetRowSeparator"
-			android:summary="@string/settings_Display_widget_row_separator_desc"
-			android:defaultValue="false"
-			/>
 		<CheckBoxPreference
 			android:title="@string/settings_Read_calendar_during_meeting"
 			android:key="ReadCalendarDuringMeeting"
