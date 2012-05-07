@@ -270,6 +270,13 @@
 			android:defaultValue="false"
 			/>
 
+		<CheckBoxPreference
+			android:title="Clock on Every Page"
+			android:key="ClockOnEveryPage"
+			android:summary="Show the clock on all widget pages"
+			android:defaultValue="false"
+			/>
+
 	</PreferenceScreen>	
 	
 	<PreferenceScreen
