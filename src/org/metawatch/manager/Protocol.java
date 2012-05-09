@@ -731,7 +731,7 @@ public class Protocol {
 		enqueue(bytes);		
 	}	
 
-	public static byte[] createOled1line(Context context, String icon,
+	public static byte[] createOled1line(Context context, Bitmap icon,
 			String line) {
 		int offset = 0;
 
@@ -748,7 +748,7 @@ public class Protocol {
 		canvas.drawText(line, offset, 14, paint);
 
 		if (icon != null) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, icon), 0, 0,
+			canvas.drawBitmap(icon, 0, 0,
 					null);
 		}
 

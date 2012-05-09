@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -142,13 +143,17 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 					return;
 				}
 	
+				Bitmap icon = null;
 				PackageManager pm = getPackageManager();
 				PackageInfo packageInfo = null;
 				String appName = null;
 				try {
 					packageInfo = pm.getPackageInfo(packageName.toString(), 0);
 					appName = packageInfo.applicationInfo.loadLabel(pm).toString();
-	
+					int iconId = notification.icon;
+					icon = NotificationIconShrinker.shrink(
+							pm.getResourcesForApplication(packageInfo.applicationInfo),
+							iconId, packageName.toString(), NotificationIconShrinker.NOTIFICATION_ICON_SIZE);
 				} catch (NameNotFoundException e) {
 					/* OK, appName is null */
 				}
@@ -157,14 +162,14 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Unknown app -- sending notification: '"
 									+ notification.tickerText + "'.");
-					NotificationBuilder.createOtherNotification(this,
+					NotificationBuilder.createOtherNotification(this, icon,
 							"Notification", notification.tickerText.toString());
 				} else {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Sending notification: app='"
 									+ appName + "' notification='"
 									+ notification.tickerText + "'.");
-					NotificationBuilder.createOtherNotification(this, appName,
+					NotificationBuilder.createOtherNotification(this, icon, appName,
 							notification.tickerText.toString());
 				}
 			}

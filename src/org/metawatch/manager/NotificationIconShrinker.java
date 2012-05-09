@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 public class NotificationIconShrinker
 {
 	static final int ICON_SIZE = 11;
+	static final int NOTIFICATION_ICON_SIZE = 16;
 
 	static double luminance(int color)
 	{

@@ -506,7 +506,7 @@ public class MetaWatchService extends Service {
 			boolean notifyOnConnect = sharedPreferences.getBoolean("NotifyWatchOnConnect", false);
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.connect(): notifyOnConnect=" + notifyOnConnect);
 			if (notifyOnConnect) {
-				NotificationBuilder.createOtherNotification(context, "MetaWatch", "Connected");
+				NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected");
 			}
 
 		} catch (IOException ioexception) {
