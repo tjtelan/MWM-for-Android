@@ -36,11 +36,8 @@ public class AppBlacklist extends Activity {
 	private class AppLoader extends AsyncTask<Void, Void, List<AppInfo>> {
 		private ProgressDialog pdWait;
 
-		@Override
 		protected void onPreExecute() {
-			pdWait = new ProgressDialog(AppBlacklist.this);
-			pdWait.setTitle("Loading apps, please wait...");
-			pdWait.show();
+			pdWait = ProgressDialog.show(AppBlacklist.this, "", "Loading apps, please wait...");
 		}
 
 		@Override
