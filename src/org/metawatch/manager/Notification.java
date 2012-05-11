@@ -98,7 +98,7 @@ public class Notification {
 							continue;
 						}
 
-						Protocol.updateLcdDisplay(2);
+						Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.NOTIFICATION);
 
 						if (notification.vibratePattern.vibrate)
 							Protocol.vibrate(notification.vibratePattern.on,
