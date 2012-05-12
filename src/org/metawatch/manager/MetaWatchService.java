@@ -908,63 +908,72 @@ public class MetaWatchService extends Service {
 				+ watchState);
 		switch (watchState) {
 		case WatchStates.IDLE: {
-			switch (button) {
 			
-			case MediaPlayerApp.VOLUME_UP:
-				MediaControl.volumeUp(audioManager);
-				break;
-			case MediaPlayerApp.VOLUME_DOWN:
-				MediaControl.volumeDown(audioManager);
-				break;
-			case MediaPlayerApp.NEXT:
-				MediaControl.next(this);
-				break;
-			case MediaPlayerApp.PREVIOUS:
-				MediaControl.previous(this);
-				break;
-			case MediaPlayerApp.TOGGLE:
-				MediaControl.togglePause(this);
-				break;
+			if( Idle.appButtonPressed(this, button) == false )
+			{
 				
-			case Protocol.REPLAY:
-				Notification.replay(this);
-				break;
+				switch (button) {
 				
-			case Idle.IDLE_NEXT_PAGE:							
-				if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-					Idle.nextPage();
-					Idle.updateIdle(this, true);	
+				case MediaPlayerApp.VOLUME_UP:
+					MediaControl.volumeUp(audioManager);
+					break;
+				case MediaPlayerApp.VOLUME_DOWN:
+					MediaControl.volumeDown(audioManager);
+					break;
+				case MediaPlayerApp.NEXT:
+					MediaControl.next(this);
+					break;
+				case MediaPlayerApp.PREVIOUS:
+					MediaControl.previous(this);
+					break;
+				case MediaPlayerApp.TOGGLE:
+					MediaControl.togglePause(this);
+					break;
+					
+				case Protocol.REPLAY:
+					Notification.replay(this);
+					break;
+					
+				case Idle.IDLE_NEXT_PAGE:							
+					if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
+						Idle.nextPage();
+						Idle.updateIdle(this, true);	
+					}
+	
+					break;
+					
+				case Idle.IDLE_OLED_DISPLAY:
+					long time = System.currentTimeMillis();
+					
+					if(time-lastOledCrownPress < 1000*5)
+					{
+						Idle.nextPage();
+						Idle.updateIdle(this, true);
+					}
+					
+					lastOledCrownPress = time;
+					Idle.sendOledIdle(this);
+					break;
+							
+					
+				case Call.CALL_SPEAKER:
+					MediaControl.ToggleSpeakerphone(audioManager);
+					break;			
+				case Call.CALL_ANSWER:
+					MediaControl.AnswerCall(context);
+					break;
+				case Call.CALL_DISMISS:
+					MediaControl.DismissCall(context);
+					break;
+			
 				}
-
-				break;
-				
-			case Idle.IDLE_OLED_DISPLAY:
-				long time = System.currentTimeMillis();
-				
-				if(time-lastOledCrownPress < 1000*5)
-				{
-					Idle.nextPage();
-					Idle.updateIdle(this, true);
-				}
-				
-				lastOledCrownPress = time;
-				Idle.sendOledIdle(this);
-				break;
-						
-				
-			case Call.CALL_SPEAKER:
-				MediaControl.ToggleSpeakerphone(audioManager);
-				break;			
-			case Call.CALL_ANSWER:
-				MediaControl.AnswerCall(context);
-				break;
-			case Call.CALL_DISMISS:
-				MediaControl.DismissCall(context);
-				break;
-		
 			}
-		}
+			else
+			{
+				Idle.updateIdle(this, true);
+			}
 			break;
+		}
 			
 		case WatchStates.APPLICATION:
 			broadcastButton(button, watchState);

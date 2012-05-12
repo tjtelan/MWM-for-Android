@@ -232,4 +232,8 @@ public class MediaPlayerApp implements InternalApp {
 		return null;
 	}
 
+	public boolean buttonPressed(Context context, int id) {
+		return false; // Not handling keys inside the class (yet) so let the framework know to try
+	}
+
 }

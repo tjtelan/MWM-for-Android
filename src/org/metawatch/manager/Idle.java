@@ -39,6 +39,7 @@ import java.util.Map;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Notification.VibratePattern;
+import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.InternalApp;
 import org.metawatch.manager.apps.MediaPlayerApp;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
@@ -65,6 +66,7 @@ public class Idle {
 		public void deactivate(int watchType);
 		Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType);
 		public int screenMode();
+		public boolean buttonPressed(Context context, int id);
 	}
 	
 	private class WidgetPage implements IdlePage {
@@ -128,6 +130,10 @@ public class Idle {
 		public int screenMode() {
 			return MetaWatchService.WatchBuffers.IDLE;
 		}
+
+		public boolean buttonPressed(Context context, int id) {
+			return false;
+		}
 	}
 	
 	private class AppPage implements IdlePage {
@@ -152,6 +158,10 @@ public class Idle {
 		
 		public int screenMode() {
 			return MetaWatchService.WatchBuffers.APPLICATION;
+		}
+
+		public boolean buttonPressed(Context context, int id) {
+			return app.buttonPressed(context, id);
 		}
 	}
 
@@ -236,6 +246,8 @@ public class Idle {
 		if(Preferences.idleMusicControls) {
 			screens.add(i.new AppPage(new MediaPlayerApp()));
 		}
+		
+		screens.add(i.new AppPage(new ActionsApp()));
 		
 		idlePages = screens;
 	}
@@ -367,6 +379,10 @@ public class Idle {
 	public static void oledTest(Context context, String msg) {
 		VibratePattern vibratePattern = new VibratePattern(false, 0, 0, 1);
 		Notification.addOledNotification(context, Protocol.createOled1line(context, null, "Testing"), Protocol.createOled1line(context, null, msg), null, 0, vibratePattern, "oled test");
+	}
+	
+	public static boolean appButtonPressed(Context context, int id) {
+		return idlePages.get(currentPage).buttonPressed(context, id);
 	}
 	
 }

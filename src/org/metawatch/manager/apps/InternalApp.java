@@ -20,5 +20,7 @@ public interface InternalApp {
 	public void deactivate(int watchType);
 	
 	public Bitmap update(Context context, int watchType);
+	
+	public boolean buttonPressed(Context context, int id);
 
 }

@@ -28,6 +28,8 @@
 
 package org.metawatch.manager;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -43,7 +45,6 @@ import android.util.Log;
 
 public class Notification {
 
-	private static NotificationType lastNotification = null;
 	private static NotificationType currentNotification = null;
 
 	final static byte NOTIFICATION_NONE = 0;
@@ -55,6 +56,7 @@ public class Notification {
 	
 	private static BlockingQueue<NotificationType> notificationQueue = new LinkedBlockingQueue<NotificationType>();
 	private static volatile boolean notificationSenderRunning = false;
+	private static Queue<NotificationType> notificationHistory = new LinkedList<NotificationType>();
 
 	private static void addToNotificationQueue(NotificationType notification) {
 		if (MetaWatchService.connectionState == MetaWatchService.ConnectionState.CONNECTED) {
@@ -365,8 +367,9 @@ public class Notification {
 		int timeout;
 
 		VibratePattern vibratePattern;
-		String description;
-		long timestamp;
+		public String description;
+		public long timestamp;
+		public boolean isNew = true; // Prevent notification replays from getting re-added to the recent list
 	}
 
 	public static class VibratePattern {
@@ -486,11 +489,15 @@ public class Notification {
 	}
 
 	public static void replay(Context context) {
+		replay(context, lastNotification);
+	}
+	
+	public static void replay(Context context, NotificationType notification) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Notification.replay()");
-		if (lastNotification != null) {
-			lastNotification.vibratePattern.vibrate = false;
-			addToNotificationQueue(lastNotification);
-
+		if (notification != null) {
+			notification.vibratePattern.vibrate = false;
+			notification.isNew = false;
+			addToNotificationQueue(notification);
 		}
 	}
 	
@@ -532,6 +539,10 @@ public class Notification {
 			builder.append("\n");
 		}
 		return builder.toString();
+	}
+	
+	public static NotificationType lastNotification() {
+		return lastNotification;
 	}
 
 }
