@@ -11,9 +11,8 @@
     	<Preference android:key="sms" android:title="SMS (LCD/OLED)"/>
     	<Preference android:key="mms" android:title="MMS (LCD/OLED)"/>
     	<Preference android:key="k9" android:title="K9 (LCD/OLED)"/>
-    	<Preference android:key="gmail" android:title="Gmail (OLED)"/>
-    	<Preference android:key="gmail_short" android:title="Gmail Short (OLED)"/>
-    	<Preference android:key="gmail_full" android:title="Gmail Long (OLED)"/>
+    	<Preference android:key="gmail_short" android:title="Gmail Short (LCD/OLED)"/>
+    	<Preference android:key="gmail_full" android:title="Gmail Long (LCD/OLED)"/>
     	<Preference android:key="testShortMessage" android:title="Short Message (OLED)"/>
     	<Preference android:key="alarm" android:title="Alarm (LCD/OLED)"/>
     	<Preference android:key="music" android:title="Music (LCD/OLED)"/>
