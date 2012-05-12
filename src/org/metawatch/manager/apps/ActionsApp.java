@@ -43,8 +43,37 @@ public class ActionsApp implements InternalApp {
 		return appData;
 	}
 	
+	List<Action> internalActions = new ArrayList<Action>();
 	List<Action> actions;
 	int currentSelection = 0;
+	
+	public ActionsApp() {
+
+		internalActions.add(new Action() {
+
+			int count = 0;
+			
+			public String getName() {
+				return "Clicker: "+count;
+			}
+
+			public void performAction(Context context) {
+				count++;
+			} });
+		
+		internalActions.add(new Action() {
+			
+			String name = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
+			
+			public String getName() {
+				return name;
+			}
+
+			public void performAction(Context context) {
+				name = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
+			} });
+	
+	}
 
 	public void activate(int watchType) {
 		if (watchType == WatchType.DIGITAL) {
@@ -96,25 +125,7 @@ public class ActionsApp implements InternalApp {
 				} });
 		}
 		
-		{
-			actions.add(new Action() {
-	
-				public String getName() {
-					return "Dummy 1";
-				}
-	
-				public void performAction(Context context) {				
-				} });
-			
-			actions.add(new Action() {
-				
-				public String getName() {
-					return "Dummy 2";
-				}
-	
-				public void performAction(Context context) {				
-				} });
-		}
+		actions.addAll(internalActions);
 		
 		if (watchType == WatchType.DIGITAL) {
 			

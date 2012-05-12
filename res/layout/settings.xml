@@ -344,6 +344,12 @@
  			android:enabled="true" 
  			android:defaultValue="0"
  			/>	
+		<CheckBoxPreference
+		    android:title="Actions"
+		    android:key="Actions"
+		    android:summary="Enable the Actions screen, to view recent notifications, launch apps, and much more (via top-right button on Digital, or crown button on Analog)"
+		    android:defaultValue="false"
+		    />
 	    			    
 	</PreferenceScreen>
 	

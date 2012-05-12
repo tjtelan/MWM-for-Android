@@ -205,9 +205,9 @@ public class Notification {
 					}
 
 					if(notification.isNew) {
-						notificationHistory.add(notification);
+						notificationHistory.add(0, notification);
 						while(notificationHistory.size()>NOTIFICATION_HISTORY_SIZE)
-							notificationHistory.remove(0);
+							notificationHistory.remove(notificationHistory.size()-1);
 					}
 
 					/* Wait until the watch shows the notification before starting the timeout. */
@@ -560,7 +560,7 @@ public class Notification {
 			return null;
 		}
 		else {
-			return notificationHistory.get(notificationHistory.size()-1);
+			return notificationHistory.get(0);
 		}
 	}
 	

@@ -243,11 +243,14 @@ public class Idle {
 		}
 		screens.add(i.new WidgetPage(screenRow, screens.size()));
 		
+		// TODO: Implement a better method of configuring enabled apps
 		if(Preferences.idleMusicControls) {
 			screens.add(i.new AppPage(new MediaPlayerApp()));
 		}
 		
-		screens.add(i.new AppPage(new ActionsApp()));
+		if(Preferences.actionsEnabled) {
+			screens.add(i.new AppPage(new ActionsApp()));
+		}
 		
 		idlePages = screens;
 	}
