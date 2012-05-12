@@ -80,18 +80,18 @@ public class ActionsApp implements InternalApp {
 
 		actions = new ArrayList<Action>();
 		
-		final NotificationType lastNotification = Notification.lastNotification();
-		if(lastNotification!=null) {
+		final ArrayList<NotificationType>  notificationHistory = Notification.history();
+		for(final NotificationType n : notificationHistory) {
 			actions.add(new Action() {
+			
+				NotificationType notification = n;
 				
-				NotificationType notification = lastNotification;
-
 				public String getName() {
 					return notification.description;
 				}
 
 				public void performAction(Context context) {
-					Notification.replay(context);
+					Notification.replay(context, notification);
 					
 				} });
 		}

@@ -28,6 +28,7 @@
 
 package org.metawatch.manager;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -56,7 +57,8 @@ public class Notification {
 	
 	private static BlockingQueue<NotificationType> notificationQueue = new LinkedBlockingQueue<NotificationType>();
 	private static volatile boolean notificationSenderRunning = false;
-	private static Queue<NotificationType> notificationHistory = new LinkedList<NotificationType>();
+	private static ArrayList<NotificationType> notificationHistory = new ArrayList<NotificationType>();
+	final static byte NOTIFICATION_HISTORY_SIZE = 5;
 
 	private static void addToNotificationQueue(NotificationType notification) {
 		if (MetaWatchService.connectionState == MetaWatchService.ConnectionState.CONNECTED) {
@@ -199,7 +201,11 @@ public class Notification {
 						Protocol.enableButton(2, 0, NOTIFICATION_DISMISS, 2); // Right bottom immediate
 					}
 
-					lastNotification = notification;
+					if(notification.isNew) {
+						notificationHistory.add(notification);
+						while(notificationHistory.size()>NOTIFICATION_HISTORY_SIZE)
+							notificationHistory.remove(0);
+					}
 
 					/* Wait until the watch shows the notification before starting the timeout. */
 					synchronized (Notification.modeChanged) {
@@ -490,7 +496,7 @@ public class Notification {
 	}
 
 	public static void replay(Context context) {
-		replay(context, lastNotification);
+		replay(context, lastNotification());
 	}
 	
 	public static void replay(Context context, NotificationType notification) {
@@ -534,6 +540,7 @@ public class Notification {
 			}
 		}
 		
+		NotificationType lastNotification = lastNotification();
 		if(lastNotification!=null) {
 			builder.append("\n Last: ");
 			builder.append(lastNotification.description);
@@ -543,7 +550,16 @@ public class Notification {
 	}
 	
 	public static NotificationType lastNotification() {
-		return lastNotification;
+		if(notificationHistory.isEmpty()) {
+			return null;
+		}
+		else {
+			return notificationHistory.get(notificationHistory.size()-1);
+		}
+	}
+	
+	public static ArrayList<NotificationType> history() {
+		return notificationHistory;
 	}
 
 }
