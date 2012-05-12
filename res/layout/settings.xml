@@ -473,6 +473,13 @@
 			android:defaultValue="false"
 			/>	
 			
+		<CheckBoxPreference
+		    android:title="Show notification queue"
+		    android:key="ShowNotificationQueue"
+		    android:summary="Display what's in the notification queue on the status screen."
+		    android:defaultValue="false"
+		    />
+			
 	</PreferenceScreen>	
 	
 	<PreferenceScreen

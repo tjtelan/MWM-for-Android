@@ -115,7 +115,7 @@ public class Call {
 					.addOledNotification(context, Protocol.createOled1line(
 							context, icon, "Call from"), Protocol
 							.createOled1line(context, null, name), null, 0,
-							new VibratePattern(true, 500, 500, 3));
+							new VibratePattern(true, 500, 500, 3), "Phonecall");
 		}
 		
 		Thread ringer = new Thread(new CallVibrate());

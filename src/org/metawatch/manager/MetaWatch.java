@@ -352,6 +352,10 @@ public class MetaWatch extends TabActivity {
     
     	textView.append("\nMessage Queue Length: " + Protocol.getQueueLength());
     	textView.append("\nNotification Queue Length: " + Notification.getQueueLength() + "\n");
+    	
+    	if(Preferences.showNotificationQueue) {
+    		textView.append(Notification.dumpQueue());
+    	}
     }
     
     private void printDate(long ticks) {
@@ -359,10 +363,7 @@ public class MetaWatch extends TabActivity {
     		textView.append("...loading...");
     	}
     	else {
-	    	final Calendar cal = Calendar.getInstance();
-	    	cal.setTimeInMillis(ticks);
-	    	Date date = cal.getTime();
-	    	textView.append(DateFormat.getDateFormat(this).format(date)+" "+DateFormat.getTimeFormat(this).format(date));
+	    	textView.append(Utils.ticksToText(this, ticks));
     	}
     	textView.append("\n");
     }

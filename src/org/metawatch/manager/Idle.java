@@ -366,7 +366,7 @@ public class Idle {
 	
 	public static void oledTest(Context context, String msg) {
 		VibratePattern vibratePattern = new VibratePattern(false, 0, 0, 1);
-		Notification.addOledNotification(context, Protocol.createOled1line(context, null, "Testing"), Protocol.createOled1line(context, null, msg), null, 0, vibratePattern);
+		Notification.addOledNotification(context, Protocol.createOled1line(context, null, "Testing"), Protocol.createOled1line(context, null, msg), null, 0, vibratePattern, "oled test");
 	}
 	
 }

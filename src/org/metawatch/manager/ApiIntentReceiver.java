@@ -125,7 +125,7 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 						line2 = Protocol.createOled2lines(context, oled2a, oled2b);
 					}
 				}
-				Notification.addOledNotification(context, line1, line2, scroll, scrollLen, vibrate);
+				Notification.addOledNotification(context, line1, line2, scroll, scrollLen, vibrate, "API oled notification");
 				
 			} else if (intent.hasExtra("text")) {
 				String title = "Notification";
@@ -141,10 +141,10 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 								+ text + "'");
 			} else if (intent.hasExtra("array")) {
 				int[] array = intent.getIntArrayExtra("array");
-				Notification.addArrayNotification(context, array, vibrate);
+				Notification.addArrayNotification(context, array, vibrate, "API Array notification");
 			} else if (intent.hasExtra("buffer")) {
 				byte[] buffer = intent.getByteArrayExtra("buffer");
-				Notification.addBufferNotification(context, buffer, vibrate);
+				Notification.addBufferNotification(context, buffer, vibrate, "API Buffer notification");
 			}
 			return;
 		}

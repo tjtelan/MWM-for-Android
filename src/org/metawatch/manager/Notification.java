@@ -44,6 +44,7 @@ import android.util.Log;
 public class Notification {
 
 	private static NotificationType lastNotification = null;
+	private static NotificationType currentNotification = null;
 
 	final static byte NOTIFICATION_NONE = 0;
 	final static byte NOTIFICATION_UP = 30;
@@ -73,9 +74,16 @@ public class Notification {
 			int currentNotificationPage = 0;
 			while (notificationSenderRunning) {
 				try {
+					currentNotification = null;
+					if(Preferences.showNotificationQueue)
+						MetaWatchService.notifyClients();
 					NotificationType notification = notificationQueue.take();
+					currentNotification = notification;
 					MetaWatchService.watchState = MetaWatchService.WatchStates.NOTIFICATION;
 					MetaWatchService.WatchModes.NOTIFICATION = true;
+					
+					if (Preferences.logging) Log.d(MetaWatch.TAG,
+							"Notification:" + notification.description + " @ " + Utils.ticksToText(context, notification.timestamp) );
 
 					if (MetaWatchService.watchType == WatchType.DIGITAL) {
 
@@ -341,6 +349,10 @@ public class Notification {
 	public static Object modeChanged = new Object();
 
 	public static class NotificationType {
+		public NotificationType() {
+			this.timestamp = System.currentTimeMillis();
+		}
+		
 		Bitmap[] bitmaps;
 		int[] array;
 		byte[] buffer;
@@ -353,6 +365,8 @@ public class Notification {
 		int timeout;
 
 		VibratePattern vibratePattern;
+		String description;
+		long timestamp;
 	}
 
 	public static class VibratePattern {
@@ -377,6 +391,7 @@ public class Notification {
 		NotificationType notification = new NotificationType();
 		notification.bitmaps = new Bitmap[]{ Protocol.createTextBitmap(context, text) };
 		notification.timeout = timeout;
+		notification.description = "Text: "+text;
 		if (vibratePattern == null)
 			notification.vibratePattern = VibratePattern.NO_VIBRATE;
 		else
@@ -385,15 +400,15 @@ public class Notification {
 	}
 	
 	public static void addBitmapNotification(Context context, Bitmap bitmap,
-			VibratePattern vibratePattern, int timeout) {
-		addBitmapNotification(context, new Bitmap[] {bitmap}, vibratePattern, timeout);
+			VibratePattern vibratePattern, int timeout, String description) {
+		addBitmapNotification(context, new Bitmap[] {bitmap}, vibratePattern, timeout, description);
 	}
 
 	public static void addBitmapNotification(Context context, Bitmap[] bitmaps,
-			VibratePattern vibratePattern, int timeout) {
+			VibratePattern vibratePattern, int timeout, String description) {
 		
 		if (bitmaps!=null) {
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "Notification comprised of "+bitmaps.length+" bitmaps");
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Notification comprised of "+bitmaps.length+" bitmaps - "+description);
 		}
 		
 		NotificationType notification = new NotificationType();
@@ -403,11 +418,12 @@ public class Notification {
 			notification.vibratePattern = VibratePattern.NO_VIBRATE;
 		else
 			notification.vibratePattern = vibratePattern;
+		notification.description = description;
 		addToNotificationQueue(notification);
 	}
 
 	public static void addArrayNotification(Context context, int[] array,
-			VibratePattern vibratePattern) {
+			VibratePattern vibratePattern, String description) {
 		NotificationType notification = new NotificationType();
 		notification.array = array;
 
@@ -417,12 +433,13 @@ public class Notification {
 			notification.vibratePattern = VibratePattern.NO_VIBRATE;
 		else
 			notification.vibratePattern = vibratePattern;
+		notification.description = description;
 		addToNotificationQueue(notification);
 
 	}
 
 	public static void addBufferNotification(Context context, byte[] buffer,
-			VibratePattern vibratePattern) {
+			VibratePattern vibratePattern, String description) {
 		NotificationType notification = new NotificationType();
 		notification.buffer = buffer;
 		int notificationTimeout = getDefaultNotificationTimeout(context);
@@ -431,13 +448,14 @@ public class Notification {
 			notification.vibratePattern = VibratePattern.NO_VIBRATE;
 		else
 			notification.vibratePattern = vibratePattern;
+		notification.description = description;
 		addToNotificationQueue(notification);
 
 	}
 
 	public static void addOledNotification(Context context, byte[] top,
 			byte[] bottom, byte[] scroll, int scrollLength,
-			VibratePattern vibratePattern) {
+			VibratePattern vibratePattern, String description) {
 		NotificationType notification = new NotificationType();
 		notification.oledTop = top;
 		notification.oledBottom = bottom;
@@ -449,6 +467,7 @@ public class Notification {
 			notification.vibratePattern = VibratePattern.NO_VIBRATE;
 		else
 			notification.vibratePattern = vibratePattern;
+		notification.description = description;
 		addToNotificationQueue(notification);
 
 	}
@@ -487,6 +506,32 @@ public class Notification {
 	
 	public static int getQueueLength() {
 		return notificationQueue.size();
+	}
+	
+	public static String dumpQueue() {
+
+		StringBuilder builder = new StringBuilder();
+		
+		if(currentNotification!=null) {
+			builder.append(" Displaying: ");
+			builder.append(currentNotification.description);
+			builder.append("\n\n");
+		}
+		
+		if(notificationQueue.size()>0) {
+			for(NotificationType notification : notificationQueue){
+				builder.append(" * ");
+			    builder.append(notification.description);
+			    builder.append("\n");		    
+			}
+		}
+		
+		if(lastNotification!=null) {
+			builder.append("\n Last: ");
+			builder.append(lastNotification.description);
+			builder.append("\n");
+		}
+		return builder.toString();
 	}
 
 }

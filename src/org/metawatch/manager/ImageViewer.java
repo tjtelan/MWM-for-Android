@@ -84,7 +84,7 @@ public class ImageViewer extends Activity {
 		        
 		        VibratePattern vibratePattern = new VibratePattern(false, 1,1,1);
 		        		
-		        Notification.addBitmapNotification(this, dithered, vibratePattern, -1);
+		        Notification.addBitmapNotification(this, dithered, vibratePattern, -1, "Image viewer");
 	        }
         
 		} catch (FileNotFoundException e) {

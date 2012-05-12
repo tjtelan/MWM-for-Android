@@ -177,6 +177,7 @@ public class MetaWatchService extends Service {
 		public static boolean displayWidgetRowSeparator = false;
 		public static boolean overlayWeatherText = false;
 		public static boolean clockOnEveryPage = false;
+		public static boolean showNotificationQueue = false;
 	}
 
 	public final class WatchType {
@@ -260,6 +261,8 @@ public class MetaWatchService extends Service {
 				Preferences.overlayWeatherText);
 		Preferences.clockOnEveryPage = sharedPreferences.getBoolean("ClockOnEveryPage",
 				Preferences.clockOnEveryPage);
+		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
+				Preferences.showNotificationQueue);
 
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
@@ -788,7 +791,7 @@ public class MetaWatchService extends Service {
 							.getDefaultSharedPreferences(context);
 					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
 					if (displaySplash) {
-						Notification.addBitmapNotification(this, Utils.loadBitmapFromAssets(context, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000);
+						Notification.addBitmapNotification(this, Utils.loadBitmapFromAssets(context, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000, "Splash");
 					}
 					
 					Protocol.queryNvalTime();

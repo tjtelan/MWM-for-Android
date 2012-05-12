@@ -88,6 +88,7 @@ import android.provider.Settings.SettingNotFoundException;
 import android.text.Spannable;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -883,4 +884,11 @@ public class Utils {
 		bitmap.setPixels(pixelArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 	}
 
+    public static String ticksToText(Context context, long ticks) {   	
+    	final Calendar cal = Calendar.getInstance();
+    	cal.setTimeInMillis(ticks);
+    	Date date = cal.getTime();
+    	return(DateFormat.getDateFormat(context).format(date)+" "+DateFormat.getTimeFormat(context).format(date));
+    }
+	
 }

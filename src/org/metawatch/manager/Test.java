@@ -88,7 +88,7 @@ public class Test extends PreferenceActivity {
 							.createOled2lines(context, "Display A, line 1",
 									"Display A, line 2"), Protocol
 							.createOled2lines(context, "Display B, line 1",
-									"Display B, line 2"), null, 0, null);
+									"Display B, line 2"), null, 0, null, "notification");
 					if (Preferences.logging) Log.d(MetaWatch.TAG, "Notification timeout is: " + Notification.getDefaultNotificationTimeout(context));
 					
 				}
