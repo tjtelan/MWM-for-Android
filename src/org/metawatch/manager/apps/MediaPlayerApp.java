@@ -24,7 +24,7 @@ public class MediaPlayerApp implements InternalApp {
 		name = "Media Player";
 		
 		supportsAnalog = true;
-		supportsDigital = false;
+		supportsDigital = true;
 	}};
 	
 	public final static byte VOLUME_UP = 10;
