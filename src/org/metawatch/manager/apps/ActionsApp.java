@@ -9,9 +9,9 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.WatchType;
-import org.metawatch.manager.Monitors.WeatherData;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -24,6 +24,8 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 
 public class ActionsApp implements InternalApp {
+	
+	public final static String APP_ID = "org.metawatch.manager.apps.ActionsApp";
 
 	public interface Action {
 		public String getName();
@@ -32,7 +34,7 @@ public class ActionsApp implements InternalApp {
 	}
 	
 	static AppData appData = new AppData() {{
-		id = "org.metawatch.manager.apps.ActionsApp";
+		id = APP_ID;
 		name = "Actions";
 		
 		supportsAnalog = true;
@@ -47,47 +49,73 @@ public class ActionsApp implements InternalApp {
 		return appData;
 	}
 	
-	List<Action> internalActions = new ArrayList<Action>();
+	List<Action> internalActions = null;
 	List<Action> actions;
 	int currentSelection = 0;
 	
-	public ActionsApp() {
+	private void init() {
+		if (internalActions==null) {
+			internalActions = new ArrayList<Action>();
+			
+			internalActions.add(new Action() {
 
-		internalActions.add(new Action() {
+				int count = 0;
+				
+				public String getName() {
+					return "Clicker: "+count;
+				}
+				
+				public String bulletIcon() {
+					return "bullet_circle.bmp";
+				}
 
-			int count = 0;
+				public void performAction(Context context) {
+					count++;
+				} 
+			});
 			
-			public String getName() {
-				return "Clicker: "+count;
-			}
-			
-			public String bulletIcon() {
-				return "bullet_circle.bmp";
-			}
+			internalActions.add(new Action() {
+				
+				String name = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
+				
+				public String getName() {
+					return name;
+				}
+				
+				public String bulletIcon() {
+					return "bullet_square.bmp";
+				}
 
-			public void performAction(Context context) {
-				count++;
-			} });
-		
-		internalActions.add(new Action() {
+				public void performAction(Context context) {
+					name = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
+				} 
+			});	
 			
-			String name = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
-			
-			public String getName() {
-				return name;
-			}
-			
-			public String bulletIcon() {
-				return "bullet_square.bmp";
-			}
+			internalActions.add(new Action() {
+				
+				public String getName() {
+					return "Launch Google Maps on phone";
+				}
+				
+				public String bulletIcon() {
+					return "bullet_square.bmp";
+				}
 
-			public void performAction(Context context) {
-				name = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
-			} });
+				public void performAction(Context context) {					
+					Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage("com.google.android.apps.maps");
+					context.startActivity( LaunchIntent );
+				} 
+			});	
+			
+			
 	
+		}
 	}
-
+	
 	public void activate(int watchType) {
+		
+		init();
+		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 1, ACTION_NEXT, 1); // right middle - press
 			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // right middle - press
@@ -111,6 +139,8 @@ public class ActionsApp implements InternalApp {
 	}
 
 	public Bitmap update(final Context context, int watchType) {
+		init();
+		
 		TextPaint paint = new TextPaint();
 		paint.setColor(Color.BLACK);
 		paint.setTextSize(FontCache.instance(context).Get().size);
@@ -124,8 +154,7 @@ public class ActionsApp implements InternalApp {
 		
 		final ArrayList<NotificationType>  notificationHistory = Notification.history();
 		for(final NotificationType n : notificationHistory) {
-			actions.add(new Action() {
-			
+			actions.add(new Action() {			
 				NotificationType notification = n;
 				
 				public String getName() {
@@ -139,7 +168,8 @@ public class ActionsApp implements InternalApp {
 				public void performAction(Context context) {
 					Notification.replay(context, notification);
 					
-				} });
+				} 
+			});
 		}
 		
 		actions.addAll(internalActions);

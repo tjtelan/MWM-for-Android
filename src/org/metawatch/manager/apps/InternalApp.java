@@ -16,6 +16,7 @@ public interface InternalApp {
 	
 	public AppData getInfo();
 	
+	// An app should do any required construction on the first call of activate or update
 	public void activate(int watchType);
 	public void deactivate(int watchType);
 	

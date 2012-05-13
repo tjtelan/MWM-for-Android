@@ -40,6 +40,7 @@ import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.apps.ActionsApp;
+import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
 import org.metawatch.manager.apps.MediaPlayerApp;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
@@ -166,7 +167,7 @@ public class Idle {
 	}
 
 	static int currentPage = 0;
-	static boolean widgetsInitialised = false;
+	static boolean initialised = false;
 	
 	static Bitmap oledIdle = null;
 	
@@ -196,9 +197,10 @@ public class Idle {
 	
 	public static synchronized void updateIdlePages(Context context, boolean refresh)
 	{
-		if(!widgetsInitialised) {
+		if(!initialised) {
 			WidgetManager.initWidgets(context, null);
-			widgetsInitialised = true;
+			AppManager.initApps();
+			initialised = true;
 		}
 		
 		List<WidgetRow> rows = WidgetManager.getDesiredWidgetsFromPrefs(context);
@@ -245,11 +247,11 @@ public class Idle {
 		
 		// TODO: Implement a better method of configuring enabled apps
 		if(Preferences.idleMusicControls) {
-			screens.add(i.new AppPage(new MediaPlayerApp()));
+			screens.add(i.new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
 		}
 		
 		if(Preferences.actionsEnabled) {
-			screens.add(i.new AppPage(new ActionsApp()));
+			screens.add(i.new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
 		}
 		
 		idlePages = screens;

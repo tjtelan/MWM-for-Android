@@ -19,8 +19,10 @@ import android.util.Log;
 
 public class MediaPlayerApp implements InternalApp {
 
+	public final static String APP_ID = "org.metawatch.manager.apps.MediaPlayerApp";
+	
 	static AppData appData = new AppData() {{
-		id = "org.metawatch.manager.apps.MediaPlayerApp";
+		id = APP_ID;
 		name = "Media Player";
 		
 		supportsAnalog = true;
