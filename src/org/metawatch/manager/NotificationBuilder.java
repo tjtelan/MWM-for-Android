@@ -68,7 +68,7 @@ public class NotificationBuilder {
 		String name = Utils.getContactNameFromNumber(context, number);
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsSMSNumberBuzzes");
 		Bitmap icon = Utils.loadBitmapFromAssets(context, "message.bmp");
-		String description = "SMS from "+name;
+		String description = "SMS: "+name;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			if (Preferences.stickyNotifications & !number.equals("Google Chat")) {
 				Bitmap[] bitmaps = smartNotify(context, icon, name, text);
@@ -90,7 +90,7 @@ public class NotificationBuilder {
 		String name = Utils.getContactNameFromNumber(context, number);
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsSMSNumberBuzzes");
 		Bitmap icon = Utils.loadBitmapFromAssets(context, "message.bmp");
-		String description = "MMS from "+name;
+		String description = "MMS: "+name;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "MMS from", new String[] {name});		
 			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), description);
@@ -122,7 +122,7 @@ public class NotificationBuilder {
 	public static void createK9(Context context, String sender, String subject, String folder) {	
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsK9NumberBuzzes");	
 		Bitmap icon = Utils.loadBitmapFromAssets(context, "email.bmp");
-		String description = "K9 mail from "+sender;
+		String description = "K9: "+sender;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "K9 mail", new String[] {sender, subject, folder});
 			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), description);
@@ -136,7 +136,7 @@ public class NotificationBuilder {
 	public static void createGmail(Context context, String sender, String email, String subject, String snippet) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsGmailNumberBuzzes");	
 		Bitmap icon = Utils.loadBitmapFromAssets(context, "gmail.bmp");
-		String description = "Gmail from "+sender;
+		String description = "Gmail: "+sender;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Gmail", new String[] { sender, email, subject});
 			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), description);	
@@ -166,7 +166,7 @@ public class NotificationBuilder {
 	public static void createCalendar(Context context, String text) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsCalendarNumberBuzzes");
 		Bitmap icon = Utils.loadBitmapFromAssets(context, "calendar.bmp");
-		String description = "Calendar: "+text;
+		String description = "Cal: "+text;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Calendar", new String[] {text});	
 			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), description);	
@@ -226,7 +226,7 @@ public class NotificationBuilder {
 		if (icon==null) {
 			icon = Utils.loadBitmapFromAssets(context, "notify.bmp"); 
 		}
-		String description = "Other: "+appName;
+		String description = appName;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, appName, new String[] {notificationText});		
 			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), description);
