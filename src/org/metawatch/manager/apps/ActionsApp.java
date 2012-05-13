@@ -17,6 +17,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -76,6 +80,43 @@ public class ActionsApp implements InternalApp {
 			
 			internalActions.add(new Action() {
 				
+				Ringtone r = null;
+				int volume = -1;
+				
+				public String getName() {
+					if( r==null || r.isPlaying() == false ) {
+						return "Ping phone";
+					}
+					else {
+						return "Stop alarm";
+					}
+				}
+				
+				public String bulletIcon() {
+					return "bullet_circle.bmp";
+				}
+
+				public void performAction(Context context) {
+					if(r==null || r.isPlaying() == false ) {
+						Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+						volume = as.getStreamVolume(AudioManager.STREAM_RING);
+						as.setStreamVolume(AudioManager.STREAM_RING, as.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+						r = RingtoneManager.getRingtone(context.getApplicationContext(), notification);
+						r.play();
+					}
+					else {
+						r.stop();
+						r = null;
+						
+						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+						as.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+					}
+				} 
+			});	
+			
+			internalActions.add(new Action() {
+				
 				String name = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
 				
 				public String getName() {
@@ -105,9 +146,7 @@ public class ActionsApp implements InternalApp {
 					Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage("com.google.android.apps.maps");
 					context.startActivity( LaunchIntent );
 				} 
-			});	
-			
-			
+			});			
 	
 		}
 	}
