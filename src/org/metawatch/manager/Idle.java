@@ -308,7 +308,8 @@ public class Idle {
 		}
 		
 		Protocol.sendLcdBitmap(createIdle(context), mode);
-		Protocol.configureIdleBufferSize(showClock);
+		if(mode==MetaWatchService.WatchBuffers.IDLE)
+			Protocol.configureIdleBufferSize(showClock);
 		Protocol.updateLcdDisplay(mode);
 	}
 	
