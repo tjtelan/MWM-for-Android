@@ -9,6 +9,7 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.WatchType;
+import org.metawatch.manager.Monitors.WeatherData;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,11 +20,14 @@ import android.graphics.PixelXorXfermode;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.TextUtils.TruncateAt;
 
 public class ActionsApp implements InternalApp {
 
 	public interface Action {
 		public String getName();
+		public String bulletIcon();
 		public void performAction(Context context);
 	}
 	
@@ -56,6 +60,10 @@ public class ActionsApp implements InternalApp {
 			public String getName() {
 				return "Clicker: "+count;
 			}
+			
+			public String bulletIcon() {
+				return "bullet_circle.bmp";
+			}
 
 			public void performAction(Context context) {
 				count++;
@@ -67,6 +75,10 @@ public class ActionsApp implements InternalApp {
 			
 			public String getName() {
 				return name;
+			}
+			
+			public String bulletIcon() {
+				return "bullet_square.bmp";
 			}
 
 			public void performAction(Context context) {
@@ -103,6 +115,7 @@ public class ActionsApp implements InternalApp {
 		paint.setColor(Color.BLACK);
 		paint.setTextSize(FontCache.instance(context).Get().size);
 		paint.setTypeface(FontCache.instance(context).Get().face);
+		int textHeight = FontCache.instance(context).Get().realSize;
 		
 		Paint paintXor = new Paint();
 		paintXor.setXfermode(new PixelXorXfermode(Color.WHITE));
@@ -117,6 +130,10 @@ public class ActionsApp implements InternalApp {
 				
 				public String getName() {
 					return notification.description;
+				}
+				
+				public String bulletIcon() {
+					return "bullet_triangle.bmp";
 				}
 
 				public void performAction(Context context) {
@@ -138,19 +155,26 @@ public class ActionsApp implements InternalApp {
 			
 			for(Action a : actions) {
 				
-				final StaticLayout layout = new StaticLayout(a.getName(), paint, 85, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
-				final int height = layout.getHeight();
+				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);	
 				
-				canvas.save();		
-				canvas.translate(1, y);
-				layout.draw(canvas);
-				canvas.restore();
-
 				if(index==currentSelection) {
+					// Draw full multi-line text
+					final StaticLayout layout = new StaticLayout(a.getName(), paint, 79, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+					final int height = layout.getHeight();
+					
+					canvas.save();		
+					canvas.translate(7, y);
+					layout.draw(canvas);
+					canvas.restore();
+	
 					canvas.drawRect(0, y-1, 96, y+height, paintXor);
+								
+					y+= height;
 				}
-				
-				y+= height;
+				else { //draw elipsized text
+					canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
+					y+= textHeight+1;
+				}
 				index++;
 			}			
 			
