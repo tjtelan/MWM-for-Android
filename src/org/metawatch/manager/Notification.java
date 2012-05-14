@@ -114,6 +114,16 @@ public class Notification {
 						}
 
 						Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.NOTIFICATION);
+						
+						/* Wait until the watch shows the notification before starting the timeout. */
+						synchronized (Notification.modeChanged) {
+							// the timeout is here to avoid deadlocks, which we're trying to fix...
+							modeChanged.wait(30000);
+						}
+						
+						/* Ensure we're in NOTIFICATION mode (massive kludge, but it stops the watch
+						   rebounding straight out of a notification immediately */
+						Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.NOTIFICATION);
 
 						if (notification.vibratePattern.vibrate)
 							Protocol.vibrate(notification.vibratePattern.on,
@@ -208,12 +218,6 @@ public class Notification {
 						notificationHistory.add(0, notification);
 						while(notificationHistory.size()>NOTIFICATION_HISTORY_SIZE)
 							notificationHistory.remove(notificationHistory.size()-1);
-					}
-
-					/* Wait until the watch shows the notification before starting the timeout. */
-					synchronized (Notification.modeChanged) {
-						// the timeout is here to avoid deadlocks, which we're trying to fix...
-						modeChanged.wait(30000);
 					}
 
 					/* Do the timeout and button handling. */
