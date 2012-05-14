@@ -97,6 +97,7 @@ public class MediaControl {
 	}
 
 	public static void ToggleSpeakerphone(AudioManager audioManager) {
+		audioManager.setMode(AudioManager.MODE_IN_CALL);
 		audioManager.setSpeakerphoneOn(!audioManager.isSpeakerphoneOn());
 	}
 

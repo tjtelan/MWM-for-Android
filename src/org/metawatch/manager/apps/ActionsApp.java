@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.metawatch.manager.FontCache;
+import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
@@ -75,6 +76,21 @@ public class ActionsApp implements InternalApp {
 
 				public void performAction(Context context) {
 					count++;
+				} 
+			});
+			
+			internalActions.add(new Action() {
+				
+				public String getName() {
+					return "Toggle Speakerphone";
+				}
+				
+				public String bulletIcon() {
+					return "bullet_circle.bmp";
+				}
+
+				public void performAction(Context context) {
+					MediaControl.ToggleSpeakerphone((AudioManager)context.getSystemService(Context.AUDIO_SERVICE));
 				} 
 			});
 			
