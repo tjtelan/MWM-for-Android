@@ -35,10 +35,10 @@ public class ActionsApp implements InternalApp {
 	public abstract class Action {
 		public abstract String getName();
 		public abstract String bulletIcon();
-		public abstract void performAction(Context context);
+		public abstract int performAction(Context context);
 		
 		public boolean isResettable() { return false; }
-		public void performReset(Context context) {};
+		public int performReset(Context context) { return BUTTON_NOT_USED; };
 	}
 	
 	static AppData appData = new AppData() {{
@@ -78,16 +78,18 @@ public class ActionsApp implements InternalApp {
 					return "bullet_circle.bmp";
 				}
 
-				public void performAction(Context context) {
+				public int performAction(Context context) {
 					count++;
+					return BUTTON_USED;
 				}
 				
 				@Override
 				public boolean isResettable() { return true; }
 
 				@Override
-				public void performReset(Context context) {
+				public int performReset(Context context) {
 					count = 0;
+					return BUTTON_USED;
 				} 
 			});
 			
@@ -101,8 +103,9 @@ public class ActionsApp implements InternalApp {
 					return "bullet_circle.bmp";
 				}
 
-				public void performAction(Context context) {
-					MediaControl.ToggleSpeakerphone((AudioManager)context.getSystemService(Context.AUDIO_SERVICE));
+				public int performAction(Context context) {
+					MediaControl.ToggleSpeakerphone(context);
+					return BUTTON_USED;
 				}
 			});
 			
@@ -124,7 +127,7 @@ public class ActionsApp implements InternalApp {
 					return "bullet_circle.bmp";
 				}
 
-				public void performAction(Context context) {
+				public int performAction(Context context) {
 					if(r==null || r.isPlaying() == false ) {
 						Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
@@ -140,9 +143,8 @@ public class ActionsApp implements InternalApp {
 						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 						as.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
 					}
+					return BUTTON_USED;
 				}
-
-				public void performReset(Context context) {}
 			});	
 			
 			internalActions.add(new Action() {
@@ -158,16 +160,18 @@ public class ActionsApp implements InternalApp {
 					return "bullet_square.bmp";
 				}
 
-				public void performAction(Context context) {
+				public int performAction(Context context) {
 					name = ANSWER;
+					return BUTTON_USED;
 				}
 
 				@Override
 				public boolean isResettable() { return true; }
 
 				@Override
-				public void performReset(Context context) {
+				public int performReset(Context context) {
 					name = QUESTION;
+					return BUTTON_USED;
 				}
 			});	
 			
@@ -181,9 +185,10 @@ public class ActionsApp implements InternalApp {
 					return "bullet_square.bmp";
 				}
 
-				public void performAction(Context context) {					
+				public int performAction(Context context) {					
 					Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage("com.google.android.apps.maps");
 					context.startActivity( LaunchIntent );
+					return BUTTON_USED;
 				}
 			});			
 	
@@ -251,8 +256,10 @@ public class ActionsApp implements InternalApp {
 					return "bullet_triangle.bmp";
 				}
 
-				public void performAction(Context context) {
+				public int performAction(Context context) {
 					Notification.replay(context, notification);
+					// DONT_UPDATE since the idle screen overwrites the notification otherwise.
+					return BUTTON_USED_DONT_UPDATE;
 				}
 			});
 		}
@@ -314,29 +321,29 @@ public class ActionsApp implements InternalApp {
 		return null;
 	}
 
-	public boolean buttonPressed(Context context, int id) {
+	public int buttonPressed(Context context, int id) {
 
 		if(actions==null) {
-			return false;
+			return BUTTON_NOT_USED;
 		}
 		
 		switch (id) {
 		case ACTION_NEXT:
 			currentSelection = (currentSelection+1)%actions.size();
-			return true;
+			return BUTTON_USED;
 			
 		case ACTION_PERFORM:
-			actions.get(currentSelection).performAction(context);
-			return true;
+			return actions.get(currentSelection).performAction(context);
 			
 		case ACTION_RESET:
 			if (actions.get(currentSelection).isResettable())
-				actions.get(currentSelection).performReset(context);
-			return true;
+				return actions.get(currentSelection).performReset(context);
+			else
+				return BUTTON_NOT_USED;
 		}
 		
 		
-		return false;
+		return BUTTON_NOT_USED;
 	}
 
 }
