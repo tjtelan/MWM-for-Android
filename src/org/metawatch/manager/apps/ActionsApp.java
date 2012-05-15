@@ -303,7 +303,7 @@ public class ActionsApp implements InternalApp {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "switch_app.png"), 87, 0, null);	
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
 			if (actions.get(currentSelection).isResettable()) {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 78, 87, null);
+				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
 			} else {
 				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
 			}
