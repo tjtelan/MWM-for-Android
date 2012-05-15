@@ -32,10 +32,13 @@ public class ActionsApp implements InternalApp {
 	
 	public final static String APP_ID = "org.metawatch.manager.apps.ActionsApp";
 
-	public interface Action {
-		public String getName();
-		public String bulletIcon();
-		public void performAction(Context context);
+	public abstract class Action {
+		public abstract String getName();
+		public abstract String bulletIcon();
+		public abstract void performAction(Context context);
+		
+		public boolean isResettable() { return false; }
+		public void performReset(Context context) {};
 	}
 	
 	static AppData appData = new AppData() {{
@@ -49,6 +52,7 @@ public class ActionsApp implements InternalApp {
 	
 	public final static byte ACTION_NEXT = 30;
 	public final static byte ACTION_PERFORM = 31;
+	public final static byte ACTION_RESET = 32;
 	
 	public AppData getInfo() {
 		return appData;
@@ -76,6 +80,14 @@ public class ActionsApp implements InternalApp {
 
 				public void performAction(Context context) {
 					count++;
+				}
+				
+				@Override
+				public boolean isResettable() { return true; }
+
+				@Override
+				public void performReset(Context context) {
+					count = 0;
 				} 
 			});
 			
@@ -91,7 +103,7 @@ public class ActionsApp implements InternalApp {
 
 				public void performAction(Context context) {
 					MediaControl.ToggleSpeakerphone((AudioManager)context.getSystemService(Context.AUDIO_SERVICE));
-				} 
+				}
 			});
 			
 			internalActions.add(new Action() {
@@ -128,12 +140,15 @@ public class ActionsApp implements InternalApp {
 						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 						as.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
 					}
-				} 
+				}
+
+				public void performReset(Context context) {}
 			});	
 			
 			internalActions.add(new Action() {
-				
-				String name = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
+				private static final String QUESTION = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
+				private static final String ANSWER = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
+				String name = QUESTION;
 				
 				public String getName() {
 					return name;
@@ -144,8 +159,16 @@ public class ActionsApp implements InternalApp {
 				}
 
 				public void performAction(Context context) {
-					name = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
-				} 
+					name = ANSWER;
+				}
+
+				@Override
+				public boolean isResettable() { return true; }
+
+				@Override
+				public void performReset(Context context) {
+					name = QUESTION;
+				}
 			});	
 			
 			internalActions.add(new Action() {
@@ -161,7 +184,7 @@ public class ActionsApp implements InternalApp {
 				public void performAction(Context context) {					
 					Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage("com.google.android.apps.maps");
 					context.startActivity( LaunchIntent );
-				} 
+				}
 			});			
 	
 		}
@@ -173,11 +196,15 @@ public class ActionsApp implements InternalApp {
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 1, ACTION_NEXT, 1); // right middle - press
-			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // right middle - press
+			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // right bottom - press
+			Protocol.enableButton(2, 2, ACTION_RESET, 1); // right bottom - hold
+			Protocol.enableButton(2, 3, ACTION_RESET, 1); // right bottom - long hold
 		}
 		else if (watchType == WatchType.ANALOG) {
 			Protocol.enableButton(0, 1, ACTION_NEXT, 1); // top - press
-			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // bottom - press			
+			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // bottom - press
+			Protocol.enableButton(2, 2, ACTION_RESET, 1); // bottom - hold
+			Protocol.enableButton(2, 3, ACTION_RESET, 1); // bottom - long hold
 		}
 	}
 
@@ -185,10 +212,14 @@ public class ActionsApp implements InternalApp {
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.disableButton(1, 1, 1);
 			Protocol.disableButton(2, 1, 1);
+			Protocol.disableButton(2, 2, 1);
+			Protocol.disableButton(2, 3, 1);
 		}
 		else if (watchType == WatchType.ANALOG) {
-			Protocol.disableButton(0, 1, 1); 
-			Protocol.disableButton(2, 1, 1); 				
+			Protocol.disableButton(0, 1, 1);
+			Protocol.disableButton(2, 1, 1);
+			Protocol.disableButton(2, 2, 1);
+			Protocol.disableButton(2, 3, 1);
 		}
 		
 	}
@@ -222,8 +253,7 @@ public class ActionsApp implements InternalApp {
 
 				public void performAction(Context context) {
 					Notification.replay(context, notification);
-					
-				} 
+				}
 			});
 		}
 		
@@ -265,7 +295,11 @@ public class ActionsApp implements InternalApp {
 			
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "switch_app.png"), 87, 0, null);	
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
+			if (actions.get(currentSelection).isResettable()) {
+				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 78, 87, null);
+			} else {
+				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
+			}
 			
 			return bitmap;
 		}
@@ -293,6 +327,11 @@ public class ActionsApp implements InternalApp {
 			
 		case ACTION_PERFORM:
 			actions.get(currentSelection).performAction(context);
+			return true;
+			
+		case ACTION_RESET:
+			if (actions.get(currentSelection).isResettable())
+				actions.get(currentSelection).performReset(context);
 			return true;
 		}
 		
