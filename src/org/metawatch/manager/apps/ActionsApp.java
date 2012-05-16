@@ -34,6 +34,7 @@ public class ActionsApp implements InternalApp {
 
 	public abstract class Action {
 		public abstract String getName();
+		public abstract long getTimestamp();
 		public abstract String bulletIcon();
 		public abstract int performAction(Context context);
 		
@@ -69,10 +70,16 @@ public class ActionsApp implements InternalApp {
 			internalActions.add(new Action() {
 
 				int count = 0;
+				long timestamp = 0;
 				
 				public String getName() {
 					return "Clicker: "+count;
 				}
+				
+				@Override
+				public long getTimestamp() {
+					return timestamp;
+				} 
 				
 				public String bulletIcon() {
 					return "bullet_circle.bmp";
@@ -80,6 +87,7 @@ public class ActionsApp implements InternalApp {
 
 				public int performAction(Context context) {
 					count++;
+					timestamp = System.currentTimeMillis();
 					return BUTTON_USED;
 				}
 				
@@ -89,8 +97,10 @@ public class ActionsApp implements InternalApp {
 				@Override
 				public int performReset(Context context) {
 					count = 0;
+					timestamp = 0;
 					return BUTTON_USED;
-				} 
+				}
+
 			});
 			
 			internalActions.add(new Action() {
@@ -98,6 +108,11 @@ public class ActionsApp implements InternalApp {
 				public String getName() {
 					return "Toggle Speakerphone";
 				}
+				
+				@Override
+				public long getTimestamp() {
+					return 0;
+				} 
 				
 				public String bulletIcon() {
 					return "bullet_circle.bmp";
@@ -122,6 +137,11 @@ public class ActionsApp implements InternalApp {
 						return "Stop alarm";
 					}
 				}
+				
+				@Override
+				public long getTimestamp() {
+					return 0;
+				} 
 				
 				public String bulletIcon() {
 					return "bullet_circle.bmp";
@@ -156,6 +176,11 @@ public class ActionsApp implements InternalApp {
 					return name;
 				}
 				
+				@Override
+				public long getTimestamp() {
+					return 0;
+				} 
+				
 				public String bulletIcon() {
 					return "bullet_square.bmp";
 				}
@@ -180,6 +205,11 @@ public class ActionsApp implements InternalApp {
 				public String getName() {
 					return "Launch Google Maps on phone";
 				}
+				
+				@Override
+				public long getTimestamp() {
+					return 0;
+				} 
 				
 				public String bulletIcon() {
 					return "bullet_square.bmp";
@@ -252,6 +282,11 @@ public class ActionsApp implements InternalApp {
 					return notification.description;
 				}
 				
+				@Override
+				public long getTimestamp() {
+					return notification.timestamp;
+				} 
+				
 				public String bulletIcon() {
 					return "bullet_triangle.bmp";
 				}
@@ -284,14 +319,25 @@ public class ActionsApp implements InternalApp {
 					final StaticLayout layout = new StaticLayout(a.getName(), paint, 79, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
 					final int height = layout.getHeight();
 					
+					final int top = y;
+					
 					canvas.save();		
 					canvas.translate(7, y);
 					layout.draw(canvas);
 					canvas.restore();
-	
-					canvas.drawRect(0, y-1, 96, y+height, paintXor);
-								
+				
 					y+= height;
+					
+					final long timestamp = a.getTimestamp();
+					if(timestamp>0) {
+						canvas.drawLine(7, y, 86, y, paint);
+						y+= 2;
+						canvas.drawText((String) TextUtils.ellipsize(Utils.ticksToText(context, timestamp, true), paint, 79, TruncateAt.START), 7, y+textHeight, paint);
+						y+= textHeight+1;
+					}
+	
+					canvas.drawRect(0, top-1, 96, y, paintXor);
+								
 				}
 				else { //draw elipsized text
 					canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);

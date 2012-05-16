@@ -884,11 +884,22 @@ public class Utils {
 		bitmap.setPixels(pixelArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 	}
 
-    public static String ticksToText(Context context, long ticks) {   	
+	public static String ticksToText(Context context, long ticks) {
+		return ticksToText(context, ticks, false);
+	}
+    public static String ticksToText(Context context, long ticks, boolean trimDateIfToday) {   	
     	final Calendar cal = Calendar.getInstance();
     	cal.setTimeInMillis(ticks);
     	Date date = cal.getTime();
-    	return(DateFormat.getDateFormat(context).format(date)+" "+DateFormat.getTimeFormat(context).format(date));
+    	Date today = new Date();
+    	StringBuilder builder = new StringBuilder();
+    	if(date.getYear()!=today.getYear() || date.getMonth()!=today.getMonth() || date.getDay()!=today.getDay() || (!trimDateIfToday))
+    	{
+    		builder.append(DateFormat.getDateFormat(context).format(date));
+    		builder.append(" ");
+    	}
+    	builder.append(DateFormat.getTimeFormat(context).format(date));
+    	return builder.toString();
     }
 	
 }
