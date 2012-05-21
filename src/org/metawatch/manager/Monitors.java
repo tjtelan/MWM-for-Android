@@ -33,9 +33,6 @@
 package org.metawatch.manager;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -83,7 +80,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.PowerManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -107,7 +103,6 @@ public class Monitors {
 	private static ContentObserverAppointments contentObserverAppointments;
 	static ContentResolver contentResolverAppointments;
 
-  //public static int gmailCount = 0;
 	static Hashtable<String, Integer> gmailUnreadCounts = new Hashtable<String, Integer>();
 	
 	public static LocationManager locationManager;
@@ -120,7 +115,6 @@ public class Monitors {
 	public static boolean calendarChanged = false;
 
   public static class WeatherData {
-		public static boolean updating = false;
 		public static boolean received = false;
 		public static String icon;
 		public static String temp;
@@ -300,9 +294,6 @@ public class Monitors {
 	
 	private static synchronized void updateWeatherDataGoogle(Context context) {
 		try {
-
-			if (WeatherData.updating)
-				return;
 			
 			// Prevent weather updating more frequently than every 5 mins
 			if (WeatherData.timeStamp!=0 && WeatherData.received) {
@@ -313,13 +304,9 @@ public class Monitors {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"Skipping weather update - updated less than 5m ago");
 
-            		//IdleScreenWidgetRenderer.sendIdleScreenWidgetUpdate(context);
-
 					return;
 				}
 			}
-			
-			WeatherData.updating = true;
 			
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
 					"Monitors.updateWeatherDataGoogle(): start");
@@ -436,16 +423,12 @@ public class Monitors {
 		} finally {
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
 					"Monitors.updateWeatherData(): finish");
-			WeatherData.updating = false;
 		}
 		
 	}
 
 	private static synchronized void updateWeatherDataWunderground(Context context) {
 		try {
-
-			if (WeatherData.updating)
-				return;
 			
 			long currentTime = System.currentTimeMillis();
 			
@@ -460,8 +443,6 @@ public class Monitors {
 					return;
 				}
 			}
-			
-			WeatherData.updating = true;
 			
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
 					"Monitors.updateWeatherDataWunderground(): start");
@@ -573,9 +554,7 @@ public class Monitors {
 			if (Preferences.logging) Log.e(MetaWatch.TAG, "Exception while retreiving weather", e);
 		} finally {
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
-					"Monitors.updateWeatherData(): finish");
-			
-			WeatherData.updating = false;			
+					"Monitors.updateWeatherData(): finish");	
 		}
 	}
 	
@@ -774,7 +753,7 @@ public class Monitors {
 				fastUpdates = false;
 			}
 			
-			if (!WeatherData.received && !WeatherData.updating) {
+			if (!WeatherData.received /*&& !WeatherData.updating*/) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "First location - getting weather");
 				
 				Monitors.updateWeatherData(context);
@@ -829,22 +808,22 @@ public class Monitors {
 							"Error converting result " + e.toString());
 			}
 
-			// dump to sdcard for debugging
-			File sdCard = Environment.getExternalStorageDirectory();
-			File file = new File(sdCard, "weather.json");
-
-			try {
-				FileWriter writer = new FileWriter(file);
-				writer.append(result);
-				writer.flush();
-				writer.close();
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			// dump to sdcard for debugging
+//			File sdCard = Environment.getExternalStorageDirectory();
+//			File file = new File(sdCard, "weather.json");
+//
+//			try {
+//				FileWriter writer = new FileWriter(file);
+//				writer.append(result);
+//				writer.flush();
+//				writer.close();
+//			} catch (FileNotFoundException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
 			// try parse the string to a JSON object
 			try {
@@ -872,7 +851,6 @@ public class Monitors {
 					level = (rawlevel * 100) / scale;
 				}
 				if(BatteryData.level != level) {
-					//if (Preferences.logging) Log.d(MetaWatch.TAG, "Battery level changed: "+rawlevel+"/"+scale+" - "+level+"%");
 					BatteryData.level = level;
 					Idle.updateIdle(context, true);
 				}
