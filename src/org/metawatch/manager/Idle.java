@@ -257,10 +257,12 @@ public class Idle {
 		idlePages = screens;
 	}
 
-	static synchronized Bitmap createIdle(Context context) {
+	static Bitmap createIdle(Context context) {
 		return createIdle(context, false, currentPage);
 	}
-
+	
+	/* Only this (central) method need to be synchronized, the one above calls
+	 * this and will be blocked anyway. */
 	static synchronized Bitmap createIdle(Context context, boolean preview, int page) {
 		final int width = (MetaWatchService.watchType==WatchType.DIGITAL) ? 96 : 80;
 		final int height = (MetaWatchService.watchType==WatchType.DIGITAL) ? 96 : 32;
