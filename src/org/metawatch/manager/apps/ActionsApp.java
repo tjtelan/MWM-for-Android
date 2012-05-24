@@ -2,6 +2,7 @@ package org.metawatch.manager.apps;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.Idle;
@@ -49,7 +50,27 @@ public class ActionsApp extends InternalApp {
 		public long getTimestamp();
 	}
 	
+	// Only needed for the anonymous classes below.
 	public interface ResettableTimestampAction extends ResettableAction, TimestampAction {}
+	
+	public abstract class ContainerAction implements Action {
+		List<Action> subActions = new ArrayList<Action>();
+		
+		public String bulletIcon() {
+			return "bullet_plus.bmp"; //plus
+		}
+		
+		public int performAction(Context context) {
+			actionStack.push(subActions);
+			selectionStack.push(currentSelection);
+			
+			currentSelection = 0;
+			
+			return BUTTON_USED;
+		}
+	}
+	
+	// ------------------------------------------------------------------------
 	
 	static AppData appData = new AppData() {{
 		id = APP_ID;
@@ -63,18 +84,72 @@ public class ActionsApp extends InternalApp {
 	public final static byte ACTION_NEXT = 30;
 	public final static byte ACTION_PERFORM = 31;
 	public final static byte ACTION_RESET = 32;
+	public final static byte ACTION_BACK = 33;
 	
 	public AppData getInfo() {
 		return appData;
 	}
 	
 	List<Action> internalActions = null;
-	List<Action> actions;
+	Stack<List<Action>> actionStack = new Stack<List<Action>>(); //Contains the upper levels and current level lists (excluding "back" items).
+	List<Action> currentActions = null; //Contains the list as it's shown on the screen (including a "back" item for sub level lists).
+	Action backAction = null;
+	ContainerAction notificationAction = null;
+	
+	Stack<Integer> selectionStack = new Stack<Integer>(); //Only contains selection for upper level lists.
 	int currentSelection = 0;
 	
 	private void init() {
-		if (internalActions==null) {
+		if (backAction == null) {
+			backAction = new Action() {
+				public String getName() {
+					return "-- Back --";
+				}
+				
+				public String bulletIcon() {
+					return null;
+				}
+				
+				public int performAction(Context context) {
+					if (actionStack.size() > 1) {
+						currentActions = actionStack.pop();
+						currentSelection = selectionStack.pop();
+					}
+					return BUTTON_USED;
+				}
+			};
+		}
+		if (notificationAction == null) {
+			notificationAction = new ContainerAction() {
+				
+				public String getName() {
+					return "Recent Notifications";
+				}
+			};
+		}
+		
+		if (internalActions == null) {
 			internalActions = new ArrayList<Action>();
+			
+			internalActions.add(notificationAction);
+
+			if (!Preferences.idleMusicControls) {
+				internalActions.add(new Action() {
+					
+					public String getName() {
+						return "Open Music Controls";
+					}
+
+					public String bulletIcon() {
+						return "bullet_square.bmp";
+					}
+
+					public int performAction(Context context) {
+						AppManager.getApp(MediaPlayerApp.APP_ID).standaloneStart(context);
+						return BUTTON_USED;
+					}
+				});
+			}
 			
 			internalActions.add(new ResettableTimestampAction() {
 
@@ -104,7 +179,6 @@ public class ActionsApp extends InternalApp {
 					timestamp = 0;
 					return BUTTON_USED;
 				}
-
 			});
 			
 			internalActions.add(new Action() {
@@ -200,23 +274,51 @@ public class ActionsApp extends InternalApp {
 					context.startActivity( LaunchIntent );
 					return BUTTON_USED;
 				}
-			});			
-	
+			});
+			
+			/*
+			// For scroll testing.
+			for (int i = 0; i < 12; i++) {
+				final int f = i;
+				internalActions.add(new Action() {
+					public String getName() {
+						return String.valueOf(f);
+					}
+
+					public String bulletIcon() {
+						return "bullet_triangle.bmp";
+					}
+
+					public int performAction(Context context) {
+						return BUTTON_USED;
+					}
+				});
+			}
+			*/
+		}
+		
+		if (actionStack.empty()) {
+			actionStack.push(internalActions);
 		}
 	}
 	
 	public void activate(int watchType) {
-		
 		init();
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
+			Protocol.enableButton(1, 2, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // right middle - hold
+			Protocol.enableButton(1, 3, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // right middle - long hold
+			
 			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - press
 			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - hold
 			Protocol.enableButton(2, 3, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - long hold
 		}
 		else if (watchType == WatchType.ANALOG) {
 			Protocol.enableButton(0, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // top - press
+			Protocol.enableButton(0, 2, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // top - hold
+			Protocol.enableButton(0, 3, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // top - long hold
+			
 			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // bottom - press
 			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - hold
 			Protocol.enableButton(2, 3, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - long hold
@@ -250,80 +352,47 @@ public class ActionsApp extends InternalApp {
 		
 		Paint paintXor = new Paint();
 		paintXor.setXfermode(new PixelXorXfermode(Color.WHITE));
-
-		actions = new ArrayList<Action>();
 		
-		final ArrayList<NotificationType>  notificationHistory = Notification.history();
-		for(final NotificationType n : notificationHistory) {
-			actions.add(new TimestampAction() {			
-				NotificationType notification = n;
-				
-				public String getName() {
-					return notification.description;
-				}
-				
-				public long getTimestamp() {
-					return notification.timestamp;
-				} 
-				
-				public String bulletIcon() {
-					return "bullet_triangle.bmp";
-				}
-
-				public int performAction(Context context) {
-					Notification.replay(context, notification);
-					// DONT_UPDATE since the idle screen overwrites the notification otherwise.
-					return BUTTON_USED_DONT_UPDATE;
-				}
-			});
+		// This is not the nicest solution, but it keeps the notification list updated when shown.
+		if (actionStack.peek() == notificationAction.subActions) {
+			final ArrayList<NotificationType>  notificationHistory = Notification.history();
+			notificationAction.subActions.clear();
+			for(final NotificationType n : notificationHistory) {
+				notificationAction.subActions.add(new TimestampAction() {			
+					NotificationType notification = n;
+					
+					public String getName() {
+						return notification.description;
+					}
+					
+					public long getTimestamp() {
+						return notification.timestamp;
+					} 
+					
+					public String bulletIcon() {
+						return "bullet_triangle.bmp";
+					}
+	
+					public int performAction(Context context) {
+						Notification.replay(context, notification);
+						// DONT_UPDATE since the idle screen overwrites the notification otherwise.
+						return BUTTON_USED_DONT_UPDATE;
+					}
+				});
+			}
 		}
 		
-		/*
-		// For scroll testing.
-		for (int i = 0; i < 12; i++) {
-			final int f = i;
-			actions.add(new Action() {
-				public String getName() {
-					return String.valueOf(f);
-				}
-
-				public String bulletIcon() {
-					return "bullet_triangle.bmp";
-				}
-
-				public int performAction(Context context) {
-					return BUTTON_USED;
-				}
-			});
+		currentActions = new ArrayList<Action>();
+		if (actionStack.size() > 1) {
+			currentActions.add(backAction);
 		}
-		*/
-
-		if (!Preferences.idleMusicControls) {
-			actions.add(new Action() {
-				public String getName() {
-					return "Open Music Controls";
-				}
-
-				public String bulletIcon() {
-					return "bullet_square.bmp";
-				}
-
-				public int performAction(Context context) {
-					AppManager.getApp(MediaPlayerApp.APP_ID).standaloneStart(context);
-					return BUTTON_USED;
-				}
-				
-			});
-		}
+		currentActions.addAll(actionStack.peek());
 		
-		actions.addAll(internalActions);
-		
-		if (currentSelection >= actions.size()) {
+		if (currentSelection >= currentActions.size()) {
 			currentSelection = 0;
 		}
 		
 		if (watchType == WatchType.DIGITAL) {
-			
 			// Double the height to make room for multi line items that trigger scrolling.
 			Bitmap bitmap = Bitmap.createBitmap(96, 192, Bitmap.Config.RGB_565);
 			Canvas canvas = new Canvas(bitmap);
@@ -333,11 +402,13 @@ public class ActionsApp extends InternalApp {
 			boolean scrolled = false;
 			
 			for (int i = Math.max(0, currentSelection - 96/textHeight + 3);
-					(i < actions.size() && (i <= currentSelection || y <= 96));
+					(i < currentActions.size() && (i <= currentSelection || y <= 96));
 					i++) {
-				Action a = actions.get(i);
+				Action a = currentActions.get(i);
 				
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);	
+				if (a.bulletIcon() != null) {
+					canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);
+				}
 				
 				if(i==currentSelection) {
 					// Draw full multi-line text.
@@ -378,7 +449,7 @@ public class ActionsApp extends InternalApp {
 						
 						scrolled = true;
 
-						if (i == actions.size() - 1) {
+						if (i == currentActions.size() - 1) {
 							// Mark the end of the list.
 							Idle.drawLine(canvas, 96 - textHeight/2 - 1);
 						}
@@ -394,7 +465,7 @@ public class ActionsApp extends InternalApp {
 			
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "switch_app.png"), 87, 0, null);	
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
-			if (actions.get(currentSelection) instanceof ResettableAction) {
+			if (currentActions.get(currentSelection) instanceof ResettableAction) {
 				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
 			} else {
 				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
@@ -406,11 +477,13 @@ public class ActionsApp extends InternalApp {
 			}
 			
 			return bitmap;
-		}
-		else if (watchType == WatchType.ANALOG) {
+			
+		} else if (watchType == WatchType.ANALOG) {
 			Bitmap bitmap = Bitmap.createBitmap(80, 32, Bitmap.Config.RGB_565);
 			Canvas canvas = new Canvas(bitmap);
-			canvas.drawColor(Color.WHITE);	
+			canvas.drawColor(Color.WHITE);
+			
+			//FIXME ...
 			
 			return bitmap;
 		}
@@ -419,27 +492,30 @@ public class ActionsApp extends InternalApp {
 	}
 
 	public int buttonPressed(Context context, int id) {
-		if(actions==null) {
+		if(currentActions==null) {
 			return BUTTON_NOT_USED;
 		}
 		
-		if (currentSelection >= actions.size()) {
+		if (currentSelection >= currentActions.size()) {
 			currentSelection = 0;
 		}
 		
 		switch (id) {
 		case ACTION_NEXT:
-			currentSelection = (currentSelection+1)%actions.size();
+			currentSelection = (currentSelection+1)%currentActions.size();
 			return BUTTON_USED;
 			
 		case ACTION_PERFORM:
-			return actions.get(currentSelection).performAction(context);
+			return currentActions.get(currentSelection).performAction(context);
 			
 		case ACTION_RESET:
-			if (actions.get(currentSelection) instanceof ResettableAction)
-				return ((ResettableAction)actions.get(currentSelection)).performReset(context);
+			if (currentActions.get(currentSelection) instanceof ResettableAction)
+				return ((ResettableAction)currentActions.get(currentSelection)).performReset(context);
 			else
 				return BUTTON_NOT_USED;
+		
+		case ACTION_BACK:
+			return backAction.performAction(context);
 		}
 		
 		

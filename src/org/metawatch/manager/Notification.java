@@ -56,7 +56,7 @@ public class Notification {
 	private static BlockingQueue<NotificationType> notificationQueue = new LinkedBlockingQueue<NotificationType>();
 	private static volatile boolean notificationSenderRunning = false;
 	private static ArrayList<NotificationType> notificationHistory = new ArrayList<NotificationType>();
-	final static byte NOTIFICATION_HISTORY_SIZE = 5;
+	final static byte NOTIFICATION_HISTORY_SIZE = 15;
 
 	private static void addToNotificationQueue(NotificationType notification) {
 		if (MetaWatchService.connectionState == MetaWatchService.ConnectionState.CONNECTED) {
