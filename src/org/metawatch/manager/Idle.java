@@ -324,14 +324,14 @@ public class Idle {
 			sendLcdIdle(context, true);
 				
 			if (numPages()>1) {
-				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 0); // Right top immediate
-				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 1); // Right top immediate
+				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.IDLE); // Right top immediate
+				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.APPLICATION); // Right top immediate
 			}
 		
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 0); // Middle immediate
-			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 1); // Middle immediate
+			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.IDLE); // Middle immediate
+			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.APPLICATION); // Middle immediate
 		}
 
 		return true;
