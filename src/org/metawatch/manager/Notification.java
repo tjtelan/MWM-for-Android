@@ -207,10 +207,10 @@ public class Notification {
 					if (notification.timeout < 0) {
 						notifyButtonPress = NOTIFICATION_NONE;
 						if (notification.bitmaps!=null & notification.bitmaps.length>1) {
-							Protocol.enableButton(0, 0, NOTIFICATION_UP, MetaWatchService.WatchBuffers.NOTIFICATION); // Right top immediate
-							Protocol.enableButton(1, 0, NOTIFICATION_DOWN, MetaWatchService.WatchBuffers.NOTIFICATION); // Right middle immediate
+							Protocol.enableButton(0, 1, NOTIFICATION_UP, MetaWatchService.WatchBuffers.NOTIFICATION); // Right top press
+							Protocol.enableButton(1, 1, NOTIFICATION_DOWN, MetaWatchService.WatchBuffers.NOTIFICATION); // Right middle press
 						}
-						Protocol.enableButton(2, 0, NOTIFICATION_DISMISS, MetaWatchService.WatchBuffers.NOTIFICATION); // Right bottom immediate
+						Protocol.enableButton(2, 1, NOTIFICATION_DISMISS, MetaWatchService.WatchBuffers.NOTIFICATION); // Right bottom press
 					}
 
 					if(notification.isNew) {
