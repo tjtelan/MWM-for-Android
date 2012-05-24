@@ -42,7 +42,6 @@ import java.util.UUID;
 
 import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.apps.InternalApp;
-import org.metawatch.manager.apps.MediaPlayerApp;
 import org.metawatch.manager.widgets.WidgetManager;
 
 import android.app.ActivityManager;
@@ -814,34 +813,6 @@ public class MetaWatchService extends Service {
 					}
 					
 					Protocol.queryNvalTime();
-				}
-			}
-
-			else if (bytes[2] == eMessageType.GeneralPurposePhoneMsg.msg) {
-				if (Preferences.logging) Log.d(MetaWatch.TAG,
-						"MetaWatchService.readFromDevice(): general purpose message");
-				// Music Message
-				if (bytes[3] == 0x42) {
-					if (Preferences.logging) Log.d(MetaWatch.TAG,
-							"MetaWatchService.readFromDevice(): music message");
-
-					switch (bytes[4]) {
-					case MediaPlayerApp.NEXT:
-						MediaControl.next(this);
-						break;
-					case MediaPlayerApp.PREVIOUS:
-						MediaControl.previous(this);
-						break;
-					case MediaPlayerApp.TOGGLE:
-						MediaControl.togglePause(this);
-						break;
-					case MediaPlayerApp.VOLUME_UP:
-						MediaControl.volumeUp(this);
-						break;
-					case MediaPlayerApp.VOLUME_DOWN:
-						MediaControl.volumeDown(this);
-						break;
-					}
 				}
 			} else if (bytes[2] == eMessageType.ReadBatteryVoltageResponse.msg) {
 				boolean powerGood = bytes[4] > 0;
