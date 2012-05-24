@@ -782,7 +782,6 @@ public class MetaWatchService extends Service {
 							"MetaWatchService.readFromDevice(): device type response; analog watch");
 
 					if (watchState == WatchStates.OFF || watchState == WatchStates.IDLE) {
-						Idle.enableIdleKeys();
 						Idle.toIdle(this);
 						Idle.updateIdle(this, true);
 					}
@@ -803,7 +802,6 @@ public class MetaWatchService extends Service {
 					Protocol.configureMode();
 
 					if (watchState == WatchStates.OFF || watchState == WatchStates.IDLE) {
-						Idle.enableIdleKeys();
 						Idle.toIdle(this);
 						Idle.updateIdle(this, true);
 					}

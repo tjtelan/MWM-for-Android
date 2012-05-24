@@ -313,17 +313,6 @@ public class Idle {
 		Protocol.updateLcdDisplay(mode);
 	}
 	
-	public static void enableIdleKeys() {
-		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-			Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 0); // Right top immediate
-			Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, 1); // Right top immediate	
-		}
-		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 0); // Middle immediate
-			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, 1); // Middle immediate
-		}
-	}
-	
 	public static boolean toIdle(Context context) {
 		
 		MetaWatchService.WatchModes.IDLE = true;
