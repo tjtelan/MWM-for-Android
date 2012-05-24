@@ -59,9 +59,6 @@ public class Idle {
 	final static byte IDLE_NEXT_PAGE = 60;
 	final static byte IDLE_OLED_DISPLAY = 61;
 	
-	// instance for new-ing
-	private static Idle i = new Idle();
-	
 	private interface IdlePage {
 		public void activate(int watchType);
 		public void deactivate(int watchType);
@@ -70,7 +67,7 @@ public class Idle {
 		public int buttonPressed(Context context, int id);
 	}
 	
-	private class WidgetPage implements IdlePage {
+	private static class WidgetPage implements IdlePage {
 
 		private ArrayList<WidgetRow> rows;
 		private int pageIndex;
@@ -137,7 +134,7 @@ public class Idle {
 		}
 	}
 	
-	private class AppPage implements IdlePage {
+	private static class AppPage implements IdlePage {
 
 		private InternalApp app;
 		
@@ -146,10 +143,12 @@ public class Idle {
 		}
 		
 		public void activate(int watchType) {
+			app.appState = InternalApp.ACTIVE_IDLE;
 			app.activate(watchType);
 		}
 
 		public void deactivate(int watchType) {
+			app.appState = InternalApp.INACTIVE;
 			app.deactivate(watchType);
 		}
 		
@@ -236,25 +235,31 @@ public class Idle {
 		ArrayList<WidgetRow> screenRow = new ArrayList<WidgetRow>();
 		for(WidgetRow row : rows) { 
 			if(screenSize+row.getHeight() > maxScreenSize) {
-				screens.add(i.new WidgetPage(screenRow, screens.size()));
+				screens.add(new WidgetPage(screenRow, screens.size()));
 				screenRow = new ArrayList<WidgetRow>();
 				screenSize = (Preferences.clockOnEveryPage ? 32 : 0);
 			}
 			screenRow.add(row);
 			screenSize += row.getHeight();
 		}
-		screens.add(i.new WidgetPage(screenRow, screens.size()));
+		screens.add(new WidgetPage(screenRow, screens.size()));
 		
 		// TODO: Implement a better method of configuring enabled apps
 		if(Preferences.idleMusicControls) {
-			screens.add(i.new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
+			screens.add(new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
 		}
 		
 		if(Preferences.actionsEnabled) {
-			screens.add(i.new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
+			screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
 		}
 		
+		ArrayList<IdlePage> prevList = idlePages;
 		idlePages = screens;
+		
+		if (prevList == null) {
+			//First run of this function, activate buttons for initial screen.
+			toPage(currentPage);
+		}
 	}
 
 	static Bitmap createIdle(Context context) {
@@ -320,6 +325,9 @@ public class Idle {
 		MetaWatchService.WatchModes.IDLE = true;
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
 		
+		if (idlePages != null)
+			idlePages.get(currentPage).activate(MetaWatchService.watchType);
+		
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
 			sendLcdIdle(context, true);
 				
@@ -380,6 +388,10 @@ public class Idle {
 	
 	public static int appButtonPressed(Context context, int id) {
 		return idlePages.get(currentPage).buttonPressed(context, id);
+	}
+	
+	public static void deactivateButtons() {
+		idlePages.get(currentPage).deactivate(MetaWatchService.watchType);
 	}
 	
 }

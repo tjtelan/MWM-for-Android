@@ -102,10 +102,10 @@ public class MetaWatchService extends Service {
 		static final int DISCONNECTING = 3;
 	}
 
-	final class WatchBuffers {
-		static final int IDLE = 0;
-		static final int APPLICATION = 1;
-		static final int NOTIFICATION = 2;
+	public final class WatchBuffers {
+		public static final int IDLE = 0;
+		public static final int APPLICATION = 1;
+		public static final int NOTIFICATION = 2;
 	}
 
 	final class WatchStates {
@@ -954,7 +954,7 @@ public class MetaWatchService extends Service {
 		}
 			
 		case WatchStates.APPLICATION:
-			broadcastButton(button, watchState);
+			Application.buttonPressed(this, button);
 			break;
 			
 		case WatchStates.NOTIFICATION:
@@ -974,20 +974,6 @@ public class MetaWatchService extends Service {
 			break;
 		}
 
-	}
-
-	void broadcastButton(byte button, int state) {
-		Intent intent = new Intent("org.metawatch.manager.BUTTON_PRESS");
-		intent.putExtra("button", button);
-		switch (state) {
-		case WatchStates.IDLE:
-			intent.putExtra("mode", "idle");
-			break;
-		case WatchStates.APPLICATION:
-			intent.putExtra("mode", "application");
-			break;
-		}
-		sendBroadcast(intent);
 	}
 	
 	@Override

@@ -6,6 +6,8 @@ import java.util.List;
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MediaControl;
+import org.metawatch.manager.MetaWatchService;
+import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
@@ -29,7 +31,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 
-public class ActionsApp implements InternalApp {
+public class ActionsApp extends InternalApp {
 	
 	public final static String APP_ID = "org.metawatch.manager.apps.ActionsApp";
 
@@ -52,9 +54,9 @@ public class ActionsApp implements InternalApp {
 	static AppData appData = new AppData() {{
 		id = APP_ID;
 		name = "Actions";
-		
-		supportsAnalog = true;
+	
 		supportsDigital = true;
+		supportsAnalog = false;
 	}};
 	
 	
@@ -208,31 +210,31 @@ public class ActionsApp implements InternalApp {
 		init();
 		
 		if (watchType == WatchType.DIGITAL) {
-			Protocol.enableButton(1, 1, ACTION_NEXT, 1); // right middle - press
-			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // right bottom - press
-			Protocol.enableButton(2, 2, ACTION_RESET, 1); // right bottom - hold
-			Protocol.enableButton(2, 3, ACTION_RESET, 1); // right bottom - long hold
+			Protocol.enableButton(1, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
+			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - press
+			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - hold
+			Protocol.enableButton(2, 3, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - long hold
 		}
 		else if (watchType == WatchType.ANALOG) {
-			Protocol.enableButton(0, 1, ACTION_NEXT, 1); // top - press
-			Protocol.enableButton(2, 1, ACTION_PERFORM, 1); // bottom - press
-			Protocol.enableButton(2, 2, ACTION_RESET, 1); // bottom - hold
-			Protocol.enableButton(2, 3, ACTION_RESET, 1); // bottom - long hold
+			Protocol.enableButton(0, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // top - press
+			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // bottom - press
+			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - hold
+			Protocol.enableButton(2, 3, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - long hold
 		}
 	}
 
 	public void deactivate(int watchType) {
 		if (watchType == WatchType.DIGITAL) {
-			Protocol.disableButton(1, 1, 1);
-			Protocol.disableButton(2, 1, 1);
-			Protocol.disableButton(2, 2, 1);
-			Protocol.disableButton(2, 3, 1);
+			Protocol.disableButton(1, 1, MetaWatchService.WatchBuffers.APPLICATION);
+			Protocol.disableButton(2, 1, MetaWatchService.WatchBuffers.APPLICATION);
+			Protocol.disableButton(2, 2, MetaWatchService.WatchBuffers.APPLICATION);
+			Protocol.disableButton(2, 3, MetaWatchService.WatchBuffers.APPLICATION);
 		}
 		else if (watchType == WatchType.ANALOG) {
-			Protocol.disableButton(0, 1, 1);
-			Protocol.disableButton(2, 1, 1);
-			Protocol.disableButton(2, 2, 1);
-			Protocol.disableButton(2, 3, 1);
+			Protocol.disableButton(0, 1, MetaWatchService.WatchBuffers.APPLICATION);
+			Protocol.disableButton(2, 1, MetaWatchService.WatchBuffers.APPLICATION);
+			Protocol.disableButton(2, 2, MetaWatchService.WatchBuffers.APPLICATION);
+			Protocol.disableButton(2, 3, MetaWatchService.WatchBuffers.APPLICATION);
 		}
 		
 	}
@@ -296,6 +298,24 @@ public class ActionsApp implements InternalApp {
 		}
 		*/
 
+		if (!Preferences.idleMusicControls) {
+			actions.add(new Action() {
+				public String getName() {
+					return "Open Music Controls";
+				}
+
+				public String bulletIcon() {
+					return "bullet_square.bmp";
+				}
+
+				public int performAction(Context context) {
+					AppManager.getApp(MediaPlayerApp.APP_ID).standaloneStart(context);
+					return BUTTON_USED;
+				}
+				
+			});
+		}
+		
 		actions.addAll(internalActions);
 		
 		if (currentSelection >= actions.size()) {

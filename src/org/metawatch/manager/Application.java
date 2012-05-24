@@ -32,35 +32,60 @@
 
 package org.metawatch.manager;
 
+import org.metawatch.manager.apps.InternalApp;
+
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 
 public class Application {
+	//FIXME This class has next to NO support for analog watches...
 	
-	public static void startAppMode() {
-		MetaWatchService.WatchModes.APPLICATION = true;		
+	public final static byte EXIT_APP = 90;
+	
+	private static InternalApp currentApp = null;
+
+	public static void startAppMode(Context context) {
+		startAppMode(context, null);
+	}
+	
+	public static void startAppMode(Context context, InternalApp internalApp) {
+		if (currentApp != null) {
+			stopAppMode(context);
+		}
+
+		MetaWatchService.WatchModes.APPLICATION = true;
+		currentApp = internalApp;
 	}
 	
 	public static void stopAppMode(Context context) {
-		exitApp(context);
+		MetaWatchService.WatchModes.APPLICATION = false;
+		
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
+			Protocol.disableButton(0, 0, MetaWatchService.WatchBuffers.APPLICATION); // right top - immediate
+		} else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.APPLICATION); // right middle - immediate
+		}
+		if (currentApp != null) {
+			currentApp.deactivate(MetaWatchService.watchType);
+			currentApp.standaloneStop(context);
+		}
+		currentApp = null;
+		
+		if (MetaWatchService.WatchModes.IDLE == true) {
+			Idle.toIdle(context);
+		}
 	}
 	
 	public static void updateAppMode(Context context) {
-		MetaWatchService.WatchModes.APPLICATION = true;
+		Bitmap bitmap;
+		if (currentApp != null) {
+			bitmap = currentApp.update(context, MetaWatchService.watchType);
+		} else {
+			bitmap = Protocol.createTextBitmap(context, "Starting application mode ...");
+		}
 		
-		if (MetaWatchService.WatchModes.APPLICATION == true) {
-			
-			// enable app mode if there is no parent mode currently active
-			if (MetaWatchService.watchState < MetaWatchService.WatchStates.APPLICATION)
-				MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
-			
-			if (MetaWatchService.watchState == MetaWatchService.WatchStates.APPLICATION) {
-				//Bitmap bitmap = createLcdApp(context);
-				Bitmap bitmap = Protocol.createTextBitmap(context, "Starting application mode ...");
-				Protocol.sendLcdBitmap(bitmap, MetaWatchService.WatchBuffers.APPLICATION);
-				Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.APPLICATION);
-			}
-		}		
+		updateAppMode(context, bitmap);
 	}
 	
 	public static void updateAppMode(Context context, Bitmap bitmap) {
@@ -111,23 +136,37 @@ public class Application {
 		}		
 	}
 	
-	
-	
 	public static void toApp() {
 		MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
+		
+		Idle.deactivateButtons();
+
+		int watchType = MetaWatchService.watchType;
+		if (currentApp != null) {
+			currentApp.activate(watchType);
+		}
+		if (watchType == MetaWatchService.WatchType.DIGITAL) {
+			Protocol.enableButton(0, 0, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - immediate
+		} else if (watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.enableButton(1, 0, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - immediate
+		}
+		
 		// update screen with cached buffer
 		Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.APPLICATION);
 	}
 	
-	public static void exitApp(Context context) {
-		MetaWatchService.WatchModes.APPLICATION = false;
-		
-		if (MetaWatchService.WatchModes.IDLE == true) {
-			Idle.toIdle(context);
+	public static void buttonPressed(Context context, byte button) {
+		if (button == EXIT_APP) {
+			stopAppMode(context);
+			
+		} else if (currentApp != null) {
+			currentApp.buttonPressed(context, button);
+			
+		} else {
+			// Broadcast button to external app
+			Intent intent = new Intent("org.metawatch.manager.BUTTON_PRESS");
+			intent.putExtra("button", button);
+			context.sendBroadcast(intent);
 		}
 	}
-	
-	
-
-	
 }

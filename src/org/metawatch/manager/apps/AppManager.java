@@ -28,4 +28,11 @@ public class AppManager {
 		return apps.get(appId);
 	}
 	
+	public static int getAppState(String appId) {
+		if(!apps.containsKey(appId)) {
+			return InternalApp.INACTIVE;
+		}
+		
+		return apps.get(appId).appState;
+	}
 }
