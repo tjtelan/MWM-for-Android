@@ -84,7 +84,7 @@ public class ActionsApp extends InternalApp {
 	public final static byte ACTION_NEXT = 30;
 	public final static byte ACTION_PERFORM = 31;
 	public final static byte ACTION_RESET = 32;
-	public final static byte ACTION_BACK = 33;
+	public final static byte ACTION_TOP = 33;
 	
 	public AppData getInfo() {
 		return appData;
@@ -307,8 +307,8 @@ public class ActionsApp extends InternalApp {
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
-			Protocol.enableButton(1, 2, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // right middle - hold
-			Protocol.enableButton(1, 3, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // right middle - long hold
+			Protocol.enableButton(1, 2, ACTION_TOP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - hold
+			Protocol.enableButton(1, 3, ACTION_TOP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - long hold
 			
 			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - press
 			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - hold
@@ -316,8 +316,8 @@ public class ActionsApp extends InternalApp {
 		}
 		else if (watchType == WatchType.ANALOG) {
 			Protocol.enableButton(0, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // top - press
-			Protocol.enableButton(0, 2, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // top - hold
-			Protocol.enableButton(0, 3, ACTION_BACK, MetaWatchService.WatchBuffers.APPLICATION); // top - long hold
+			Protocol.enableButton(0, 2, ACTION_TOP, MetaWatchService.WatchBuffers.APPLICATION); // top - hold
+			Protocol.enableButton(0, 3, ACTION_TOP, MetaWatchService.WatchBuffers.APPLICATION); // top - long hold
 			
 			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // bottom - press
 			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - hold
@@ -505,6 +505,10 @@ public class ActionsApp extends InternalApp {
 			currentSelection = (currentSelection+1)%currentActions.size();
 			return BUTTON_USED;
 			
+		case ACTION_TOP:
+			currentSelection = 0;
+			return BUTTON_USED;
+			
 		case ACTION_PERFORM:
 			return currentActions.get(currentSelection).performAction(context);
 			
@@ -513,9 +517,6 @@ public class ActionsApp extends InternalApp {
 				return ((ResettableAction)currentActions.get(currentSelection)).performReset(context);
 			else
 				return BUTTON_NOT_USED;
-		
-		case ACTION_BACK:
-			return backAction.performAction(context);
 		}
 		
 		
