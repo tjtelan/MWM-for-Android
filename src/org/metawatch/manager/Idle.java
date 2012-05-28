@@ -145,15 +145,18 @@ public class Idle {
 		public void activate(int watchType) {
 			app.appState = InternalApp.ACTIVE_IDLE;
 			app.activate(watchType);
+			if (app.isToggleable())
+				Application.enableToggleButton(watchType);
 		}
 
 		public void deactivate(int watchType) {
-			app.appState = InternalApp.INACTIVE;
+			app.setInactive();
 			app.deactivate(watchType);
+			Application.disableToggleButton(watchType);
 		}
 		
 		public Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType) {
-			return app.update(context, watchType);
+			return app.update(context, preview, watchType);
 		}	
 		
 		public int screenMode() {
@@ -191,6 +194,53 @@ public class Idle {
 		return (idlePages==null || idlePages.size()==0) ? 1 : idlePages.size();
 	}
 	
+	public static int getAppPage(String appId) {
+		if (idlePages != null) {
+			for (int page = 0; page < idlePages.size(); page++) {
+				if (idlePages.get(page) instanceof AppPage &&
+						((AppPage)idlePages.get(page)).app.getId().equals(appId)) {
+					return page;
+				}
+			}
+		}
+		
+		//Not found.
+		return -1;
+	}
+	
+	public static InternalApp getCurrentApp() {
+		if (idlePages.get(currentPage) instanceof AppPage) {
+			return ((AppPage)idlePages.get(currentPage)).app;
+		}
+		
+		// Not an app page.
+		return null;
+	}
+	
+	public static synchronized int addAppPage(InternalApp app) {
+		int page = getAppPage(app.getId());
+		
+		if (page == -1) {
+			AppPage aPage = new AppPage(app);
+			idlePages.add(aPage);
+			page = idlePages.indexOf(aPage);
+		}
+		
+		return page;
+	}
+	
+	public static synchronized void removeAppPage(InternalApp app) {
+		int page = getAppPage(app.getId());
+
+		if (page != -1) {
+			if (page == currentPage) {
+				nextPage();
+			}
+			
+			idlePages.remove(page);
+		}
+	}
+	
 	private static ArrayList<IdlePage> idlePages = null;
 	private static Map<String,WidgetData> widgetData = null;
 	
@@ -201,6 +251,8 @@ public class Idle {
 			AppManager.initApps();
 			initialised = true;
 		}
+		
+		ArrayList<IdlePage> prevList = idlePages;
 		
 		List<WidgetRow> rows = WidgetManager.getDesiredWidgetsFromPrefs(context);
 		
@@ -244,16 +296,25 @@ public class Idle {
 		}
 		screens.add(new WidgetPage(screenRow, screens.size()));
 		
-		// TODO: Implement a better method of configuring enabled apps
-		if(Preferences.idleMusicControls) {
-			screens.add(new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
+		if (prevList == null) {
+			// Initialize app pages.
+			// TODO: Implement a better method of configuring enabled apps
+			if(Preferences.actionsEnabled) {
+				screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
+			}
+			if(Preferences.idleMusicControls) {
+				screens.add(new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
+			}
+			
+		} else {
+			// Copy app pages from previous list.
+			for (IdlePage page : prevList) {
+				if (page instanceof AppPage) {
+					screens.add(page);
+				}
+			}
 		}
 		
-		if(Preferences.actionsEnabled) {
-			screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
-		}
-		
-		ArrayList<IdlePage> prevList = idlePages;
 		idlePages = screens;
 		
 		if (prevList == null) {
@@ -332,14 +393,17 @@ public class Idle {
 			sendLcdIdle(context, true);
 				
 			if (numPages()>1) {
-				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.IDLE); // Right top immediate
-				Protocol.enableButton(0, 0, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.APPLICATION); // Right top immediate
+				Protocol.enableButton(0, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right top immediate
+				Protocol.enableButton(0, 1, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.IDLE); // Right top press
+				Protocol.enableButton(0, 1, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.APPLICATION); // Right top press
 			}
 		
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.IDLE); // Middle immediate
-			Protocol.enableButton(1, 0, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.APPLICATION); // Middle immediate
+			// Is it necessary to do the same for analog here as for Digital (i.e. disable built in immediate action)?
+			Protocol.enableButton(1, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Middle immediate
+			Protocol.enableButton(1, 1, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.IDLE); // Middle press
+			Protocol.enableButton(1, 1, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.APPLICATION); // Middle press
 		}
 
 		return true;

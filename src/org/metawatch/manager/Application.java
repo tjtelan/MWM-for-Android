@@ -32,16 +32,19 @@
 
 package org.metawatch.manager;
 
+import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.apps.InternalApp;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class Application {
 	//FIXME This class has next to NO support for analog watches...
 	
-	public final static byte EXIT_APP = 90;
+	public final static byte EXIT_APP = 100;
+	public final static byte TOGGLE_APP = 101;
 	
 	private static InternalApp currentApp = null;
 
@@ -61,14 +64,16 @@ public class Application {
 	public static void stopAppMode(Context context) {
 		MetaWatchService.WatchModes.APPLICATION = false;
 		
-		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-			Protocol.disableButton(0, 0, MetaWatchService.WatchBuffers.APPLICATION); // right top - immediate
-		} else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-			Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.APPLICATION); // right middle - immediate
+		int watchType = MetaWatchService.watchType;
+		disableToggleButton(watchType);
+		if (watchType == MetaWatchService.WatchType.DIGITAL) {
+			Protocol.disableButton(0, 1, MetaWatchService.WatchBuffers.APPLICATION); // right top - press
+		} else if (watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.disableButton(1, 1, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
 		}
 		if (currentApp != null) {
 			currentApp.deactivate(MetaWatchService.watchType);
-			currentApp.standaloneStop(context);
+			currentApp.setInactive();
 		}
 		currentApp = null;
 		
@@ -80,7 +85,7 @@ public class Application {
 	public static void updateAppMode(Context context) {
 		Bitmap bitmap;
 		if (currentApp != null) {
-			bitmap = currentApp.update(context, MetaWatchService.watchType);
+			bitmap = currentApp.update(context, false, MetaWatchService.watchType);
 		} else {
 			bitmap = Protocol.createTextBitmap(context, "Starting application mode ...");
 		}
@@ -136,6 +141,26 @@ public class Application {
 		}		
 	}
 	
+	public static void enableToggleButton(int watchType) {
+		if (watchType == MetaWatchService.WatchType.DIGITAL) {
+			Protocol.enableButton(0, 2, TOGGLE_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - hold
+			Protocol.enableButton(0, 3, TOGGLE_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - long hold
+		} else if (watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.enableButton(1, 2, TOGGLE_APP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - hold
+			Protocol.enableButton(1, 3, TOGGLE_APP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - long hold
+		}
+	}
+	
+	public static void disableToggleButton(int watchType) {
+		if (watchType == MetaWatchService.WatchType.DIGITAL) {
+			Protocol.disableButton(0, 2, MetaWatchService.WatchBuffers.APPLICATION); // right top - hold
+			Protocol.disableButton(0, 3, MetaWatchService.WatchBuffers.APPLICATION); // right top - long hold
+		} else if (watchType == MetaWatchService.WatchType.ANALOG) {
+			Protocol.disableButton(1, 2, MetaWatchService.WatchBuffers.APPLICATION); // right middle - hold
+			Protocol.disableButton(1, 3, MetaWatchService.WatchBuffers.APPLICATION); // right middle - long hold
+		}
+	}
+	
 	public static void toApp() {
 		MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
 		
@@ -146,18 +171,46 @@ public class Application {
 			currentApp.activate(watchType);
 		}
 		if (watchType == MetaWatchService.WatchType.DIGITAL) {
-			Protocol.enableButton(0, 0, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - immediate
+			Protocol.enableButton(0, 1, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - press
 		} else if (watchType == MetaWatchService.WatchType.ANALOG) {
-			Protocol.enableButton(1, 0, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - immediate
+			Protocol.enableButton(1, 1, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
 		}
+		if (currentApp != null && currentApp.isToggleable())
+			enableToggleButton(watchType);
 		
 		// update screen with cached buffer
 		Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.APPLICATION);
 	}
 	
+	public static void toggleApp(Context context, InternalApp app) {
+		if (app != null) {
+			if (app.appState == InternalApp.ACTIVE_IDLE) {
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to stand-alone.");
+				
+				Idle.removeAppPage(app);
+				app.open(context);
+				return;
+			
+			} else if (app.appState == InternalApp.ACTIVE_STANDALONE) {
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle.");
+				
+				int page = Idle.addAppPage(app);
+				currentApp = null; // Avoid having stopAppMode() deactivate the app.
+				Idle.toPage(page);
+				stopAppMode(context); // Goes to Idle if not in Notification.
+				return;
+			}
+		}
+		
+		throw new IllegalStateException("Can't toggle app mode for an inactive app");
+	}
+	
 	public static void buttonPressed(Context context, byte button) {
 		if (button == EXIT_APP) {
 			stopAppMode(context);
+			
+		} else if (button == TOGGLE_APP) {
+			toggleApp(context, currentApp);
 			
 		} else if (currentApp != null) {
 			currentApp.buttonPressed(context, button);

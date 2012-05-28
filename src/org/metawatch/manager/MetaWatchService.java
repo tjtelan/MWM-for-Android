@@ -943,7 +943,10 @@ public class MetaWatchService extends Service {
 				case Call.CALL_DISMISS:
 					MediaControl.DismissCall(this);
 					break;
-			
+					
+				case Application.TOGGLE_APP:
+					Application.toggleApp(context, Idle.getCurrentApp());
+					break;
 				}
 			}
 			else if (idleAppButton != InternalApp.BUTTON_USED_DONT_UPDATE)

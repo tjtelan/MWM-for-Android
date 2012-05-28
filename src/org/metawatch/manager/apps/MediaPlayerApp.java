@@ -82,7 +82,7 @@ public class MediaPlayerApp extends InternalApp {
 		}
 	}
 	
-	public Bitmap update(Context context, int watchType) {
+	public Bitmap update(Context context, boolean preview, int watchType) {
 		
 		TextPaint paintSmall = new TextPaint();
 		paintSmall.setColor(Color.BLACK);
@@ -160,6 +160,7 @@ public class MediaPlayerApp extends InternalApp {
 				layout.draw(canvas);
 				canvas.restore();	
 			}
+			canvas.drawBitmap(getAppSwitchIcon(context, preview), 87, 0, null);
 			
 			return bitmap;
 		}
