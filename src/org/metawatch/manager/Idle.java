@@ -63,25 +63,23 @@ public class Idle {
 		public void activate(int watchType);
 		public void deactivate(int watchType);
 		Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType);
-		public int screenMode();
+		public int screenMode(int watchType);
 		public int buttonPressed(Context context, int id);
 	}
 	
 	private static class WidgetPage implements IdlePage {
 
-		private ArrayList<WidgetRow> rows;
+		private List<WidgetRow> rows;
 		private int pageIndex;
 		
-		public WidgetPage( ArrayList<WidgetRow> r, int p ) {
+		public WidgetPage(List<WidgetRow> r, int p) {
 			rows = r;
 			pageIndex = p;
 		}
 		
-		public void activate(int watchType) {
-		}
+		public void activate(int watchType) {}
 
-		public void deactivate(int watchType) {	
-		}
+		public void deactivate(int watchType) {}
 		
 		public Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType) {
 			
@@ -125,7 +123,13 @@ public class Idle {
 			return bitmap;
 		}
 		
-		public int screenMode() {
+		public int screenMode(int watchType) {
+			if (Preferences.appBufferForClocklessPages) {
+				boolean showsClock = (pageIndex==0 || Preferences.clockOnEveryPage);
+				if (watchType == MetaWatchService.WatchType.DIGITAL && !showsClock)
+					return MetaWatchService.WatchBuffers.APPLICATION;
+			}
+			
 			return MetaWatchService.WatchBuffers.IDLE;
 		}
 
@@ -159,7 +163,7 @@ public class Idle {
 			return app.update(context, preview, watchType);
 		}	
 		
-		public int screenMode() {
+		public int screenMode(int watchType) {
 			return MetaWatchService.WatchBuffers.APPLICATION;
 		}
 
@@ -281,15 +285,21 @@ public class Idle {
 		ArrayList<IdlePage> screens = new ArrayList<IdlePage>();
 	
 		int screenSize = 0;
-		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
 			screenSize = 32; // Initial screen has top part used by the fw clock
+		}
 		
 		ArrayList<WidgetRow> screenRow = new ArrayList<WidgetRow>();
 		for(WidgetRow row : rows) { 
 			if(screenSize+row.getHeight() > maxScreenSize) {
 				screens.add(new WidgetPage(screenRow, screens.size()));
 				screenRow = new ArrayList<WidgetRow>();
-				screenSize = (Preferences.clockOnEveryPage ? 32 : 0);
+				if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL &&
+						Preferences.clockOnEveryPage) {
+					screenSize = 32;
+				} else { 
+					screenSize = 0;
+				}
 			}
 			screenRow.add(row);
 			screenSize += row.getHeight();
@@ -353,10 +363,10 @@ public class Idle {
 	  return canvas;
 	}
 	
-	private static int getScreenMode() {
+	private static int getScreenMode(int watchType) {
 		int mode = MetaWatchService.WatchBuffers.IDLE;
 		if(idlePages != null && idlePages.size()>currentPage) {
-			mode = idlePages.get(currentPage).screenMode();
+			mode = idlePages.get(currentPage).screenMode(watchType);
 		}
 		return mode;
 	}
@@ -367,7 +377,7 @@ public class Idle {
 			return;
 		}
 		
-		final int mode = getScreenMode();
+		final int mode = getScreenMode(MetaWatchService.WatchType.DIGITAL);
 		boolean showClock = false;
 		
 		if(mode == MetaWatchService.WatchBuffers.IDLE) {
@@ -418,7 +428,7 @@ public class Idle {
 	}
 	
 	private static void updateOledIdle(Context context, boolean refresh) {	
-		final int mode = getScreenMode();
+		final int mode = getScreenMode(MetaWatchService.WatchType.ANALOG);
 		
 		if(mode ==  MetaWatchService.WatchBuffers.IDLE)
 			updateIdlePages(context, refresh);
@@ -433,7 +443,7 @@ public class Idle {
 	 		updateOledIdle(context, true);
 		}
 	 		
-		final int mode = getScreenMode();
+		final int mode = getScreenMode(MetaWatchService.WatchType.ANALOG);
 		
 		// Split into top/bottom, and send
 		for(int i=0; i<2; ++i) {

@@ -178,6 +178,7 @@ public class MetaWatchService extends Service {
 		public static boolean displayWidgetRowSeparator = false;
 		public static boolean overlayWeatherText = false;
 		public static boolean clockOnEveryPage = false;
+		public static boolean appBufferForClocklessPages = true;
 		public static boolean showNotificationQueue = false;
 	}
 
@@ -262,6 +263,8 @@ public class MetaWatchService extends Service {
 				Preferences.overlayWeatherText);
 		Preferences.clockOnEveryPage = sharedPreferences.getBoolean("ClockOnEveryPage",
 				Preferences.clockOnEveryPage);
+		Preferences.appBufferForClocklessPages = sharedPreferences.getBoolean("AppBufferForClocklessPages",
+				Preferences.appBufferForClocklessPages);
 		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
 				Preferences.showNotificationQueue);
 		Preferences.actionsEnabled = sharedPreferences.getBoolean("Actions", Preferences.actionsEnabled);
