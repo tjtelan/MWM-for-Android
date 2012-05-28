@@ -461,11 +461,16 @@ public class Idle {
 	}
 	
 	public static int appButtonPressed(Context context, int id) {
-		return idlePages.get(currentPage).buttonPressed(context, id);
+		if(idlePages != null && idlePages.size()>currentPage) {
+			return idlePages.get(currentPage).buttonPressed(context, id);
+		}
+		return InternalApp.BUTTON_NOT_USED;
 	}
 	
 	public static void deactivateButtons() {
-		idlePages.get(currentPage).deactivate(MetaWatchService.watchType);
+		if(idlePages != null && idlePages.size()>currentPage) {
+			idlePages.get(currentPage).deactivate(MetaWatchService.watchType);
+		}
 	}
 	
 }
