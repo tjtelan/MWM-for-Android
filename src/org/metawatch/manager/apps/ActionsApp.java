@@ -53,6 +53,10 @@ public class ActionsApp extends InternalApp {
 		public String getName() {
 			return "Recent Notifications";
 		}
+		
+		public String getTitle() {
+			return "Notifications";
+		}
 
 		public long getTimestamp() {
 			if (subActions.size() > 0) {
@@ -69,8 +73,7 @@ public class ActionsApp extends InternalApp {
 	}
 	
 	List<Action> internalActions = null;
-	List<Action> rootActions = null;
-	Stack<List<Action>> actionStack = new Stack<List<Action>>(); //Contains the upper levels and current level lists (excluding "back" items).
+	Stack<ContainerAction> containerStack = new Stack<ContainerAction>(); //Contains the stack of ContainerActions opened (empty if at root).
 	List<Action> currentActions = null; //Contains the list as it's shown on the screen (including a "back" item for sub level lists).
 	Action backAction = null;
 	NotificationsAction notificationsAction = null;
@@ -153,8 +156,8 @@ public class ActionsApp extends InternalApp {
 				}
 				
 				public int performAction(Context context) {
-					if (actionStack.size() > 1) {
-						currentActions = actionStack.pop();
+					if (!containerStack.isEmpty()) {
+						containerStack.pop();
 						currentSelection = selectionStack.pop();
 					}
 					return BUTTON_USED;
@@ -193,14 +196,6 @@ public class ActionsApp extends InternalApp {
 				});
 			}
 			*/
-		}
-		
-		if (rootActions == null) {
-			rootActions = new ArrayList<Action>();
-		}
-		
-		if (actionStack.empty()) {
-			actionStack.push(rootActions);
 		}
 	}
 
@@ -251,31 +246,33 @@ public class ActionsApp extends InternalApp {
 		paint.setTextSize(FontCache.instance(context).Get().size);
 		paint.setTypeface(FontCache.instance(context).Get().face);
 		int textHeight = FontCache.instance(context).Get().realSize;
-		
+
 		Paint paintXor = new Paint();
 		paintXor.setXfermode(new PixelXorXfermode(Color.WHITE));
 		
-		// This is not the nicest solution, but it keeps the lists updated when shown.
-		if (actionStack.peek() == rootActions) {
-			rootActions.clear();
-
-			//TODO Add external actions using intents, similar to widgets.
-			rootActions.add(notificationsAction);
-			rootActions.addAll(getAppActions());
-			rootActions.addAll(internalActions);
-		}
-		if (actionStack.peek().contains(notificationsAction) ||
-				actionStack.peek() == notificationsAction.getSubActions()) {
+		Paint paintWhite = new Paint();
+		paintWhite.setColor(Color.WHITE);
+		
+		// This is not the nicest solution, but it keeps the display updated.
+		if (containerStack.isEmpty() ||
+				containerStack.peek() == notificationsAction.getSubActions()) {
 			List<Action> notifications = notificationsAction.getSubActions();
 			notifications.clear();
 			notifications.addAll(getNotificationActions());
 		}
-		
+
 		currentActions = new ArrayList<Action>();
-		if (actionStack.size() > 1) {
+		if (containerStack.isEmpty()) {
+			// At the root.
+			//TODO Add external actions using intents, similar to widgets.
+			currentActions.add(notificationsAction);
+			currentActions.addAll(getAppActions());
+			currentActions.addAll(internalActions);
+		} else {
+			// In a ContainerAction.
 			currentActions.add(backAction);
+			currentActions.addAll(containerStack.peek().getSubActions());
 		}
-		currentActions.addAll(actionStack.peek());
 		
 		if (currentSelection >= currentActions.size()) {
 			currentSelection = 0;
@@ -285,12 +282,15 @@ public class ActionsApp extends InternalApp {
 			// Double the height to make room for multi line items that trigger scrolling.
 			Bitmap bitmap = Bitmap.createBitmap(96, 192, Bitmap.Config.RGB_565);
 			Canvas canvas = new Canvas(bitmap);
-			canvas.drawColor(Color.WHITE);	
+			canvas.drawColor(Color.WHITE);
 			
-			int y=1;
+			int y = 1;
+			if (!containerStack.isEmpty()) {
+				y += textHeight + 4; //Make room for a title.
+			}
+
 			boolean scrolled = false;
-			
-			for (int i = Math.max(0, currentSelection - 96/textHeight + 3);
+			for (int i = Math.max(0, currentSelection - 96/textHeight + (containerStack.isEmpty() ? 3 : 4));
 					(i < currentActions.size() && (i <= currentSelection || y <= 96));
 					i++) {
 				Action a = currentActions.get(i);
@@ -299,7 +299,7 @@ public class ActionsApp extends InternalApp {
 					canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);
 				}
 				
-				if (i==currentSelection) {
+				if (i == currentSelection) {
 					// Draw full multi-line text.
 					StringBuilder name = new StringBuilder(a.getName());
 					if (a instanceof ContainerAction) {
@@ -344,11 +344,6 @@ public class ActionsApp extends InternalApp {
 						y -= scroll;
 						
 						scrolled = true;
-
-						if (i == currentActions.size() - 1) {
-							// Mark the end of the list.
-							Idle.drawLine(canvas, 96 - textHeight/2 - 1);
-						}
 					}
 								
 				} else {
@@ -356,8 +351,24 @@ public class ActionsApp extends InternalApp {
 					canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
 					y+= textHeight+1;
 				}
-			}			
+			}
+
+			if (currentSelection == currentActions.size() - 1) {
+				// Mark the end of the list.
+				Idle.drawLine(canvas, 96 - textHeight/2 - 1);
+			}
 			
+			if (!containerStack.isEmpty()) {
+				// Draw title.
+				if (scrolled) {
+					// Paint white over any scrolled items.
+					canvas.drawRect(0, 0, 95, textHeight+4, paintWhite);
+				}
+				canvas.drawText((String) TextUtils.ellipsize(containerStack.peek().getTitle(), paint, 84, TruncateAt.END), 2, textHeight+1, paint);
+				canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
+			}
+			
+			// Draw icons.
 			canvas.drawBitmap(getAppSwitchIcon(context, preview), 87, 0, null);
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
 			if (currentActions.get(currentSelection) instanceof ResettableAction) {
@@ -407,7 +418,7 @@ public class ActionsApp extends InternalApp {
 			
 		case ACTION_PERFORM:
 			if (currentAction instanceof ContainerAction) {
-				actionStack.push(((ContainerAction)currentAction).getSubActions());
+				containerStack.push((ContainerAction)currentAction);
 				selectionStack.push(currentSelection);
 				currentSelection = 0;
 				

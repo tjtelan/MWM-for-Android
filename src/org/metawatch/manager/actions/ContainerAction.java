@@ -16,6 +16,11 @@ public abstract class ContainerAction implements Action {
 		return subActions.size();
 	}
 	
+	// Overridable by subclasses, but default to the name.
+	public String getTitle() {
+		return getName();
+	}
+	
 	public String bulletIcon() {
 		return "bullet_plus.bmp"; //plus
 	}
