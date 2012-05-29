@@ -229,6 +229,14 @@ public class ActionsApp extends InternalApp {
 	}
 
 	public void deactivate(int watchType) {
+		if (!containerStack.isEmpty()) {
+			//Return to root.
+			containerStack.clear();
+			while(selectionStack.size() > 1)
+				selectionStack.pop();
+			currentSelection = selectionStack.pop();
+		}
+		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.disableButton(1, 1, MetaWatchService.WatchBuffers.APPLICATION);
 			Protocol.disableButton(2, 1, MetaWatchService.WatchBuffers.APPLICATION);
