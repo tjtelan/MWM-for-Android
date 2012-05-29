@@ -6,13 +6,13 @@ import java.util.Stack;
 
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.Idle;
-import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
 import org.metawatch.manager.actions.Action;
 import org.metawatch.manager.actions.ContainerAction;
+import org.metawatch.manager.actions.InternalActions;
 import org.metawatch.manager.actions.ResettableAction;
 import org.metawatch.manager.actions.TimestampAction;
 import org.metawatch.manager.Utils;
@@ -24,10 +24,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
-import android.media.AudioManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -37,11 +33,6 @@ import android.text.TextUtils.TruncateAt;
 public class ActionsApp extends InternalApp {
 	
 	public final static String APP_ID = "org.metawatch.manager.apps.ActionsApp";
-
-	// Needed for the anonymous classes below.
-	public interface ResettableTimestampAction extends ResettableAction, TimestampAction {}
-	
-	// ------------------------------------------------------------------------
 	
 	static AppData appData = new AppData() {{
 		id = APP_ID;
@@ -167,133 +158,14 @@ public class ActionsApp extends InternalApp {
 		
 		if (internalActions == null) {
 			internalActions = new ArrayList<Action>();
-			
-			internalActions.add(new ResettableTimestampAction() {
 
-				int count = 0;
-				long timestamp = 0;
-				
-				public String getName() {
-					return "Clicker: "+count;
-				}
-				
-				public long getTimestamp() {
-					return timestamp;
-				} 
-				
-				public String bulletIcon() {
-					return "bullet_circle.bmp";
-				}
-
-				public int performAction(Context context) {
-					count++;
-					timestamp = System.currentTimeMillis();
-					return BUTTON_USED;
-				}
-
-				public int performReset(Context context) {
-					count = 0;
-					timestamp = 0;
-					return BUTTON_USED;
-				}
-			});
-			
-			internalActions.add(new Action() {
-				
-				public String getName() {
-					return "Toggle Speakerphone";
-				}
-				
-				public String bulletIcon() {
-					return "bullet_circle.bmp";
-				}
-
-				public int performAction(Context context) {
-					MediaControl.ToggleSpeakerphone(context);
-					return BUTTON_USED;
-				}
-			});
-			
-			internalActions.add(new Action() {
-				
-				Ringtone r = null;
-				int volume = -1;
-				
-				public String getName() {
-					if( r==null || r.isPlaying() == false ) {
-						return "Ping phone";
-					}
-					else {
-						return "Stop alarm";
-					}
-				}
-				
-				public String bulletIcon() {
-					return "bullet_circle.bmp";
-				}
-
-				public int performAction(Context context) {
-					if(r==null || r.isPlaying() == false ) {
-						Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-						volume = as.getStreamVolume(AudioManager.STREAM_RING);
-						as.setStreamVolume(AudioManager.STREAM_RING, as.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
-						r = RingtoneManager.getRingtone(context.getApplicationContext(), notification);
-						r.play();
-					}
-					else {
-						r.stop();
-						r = null;
-						
-						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-						as.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
-					}
-					return BUTTON_USED;
-				}
-			});	
+			internalActions.add(new InternalActions.PingAction());
+			internalActions.add(new InternalActions.SpeakerphoneAction());
+			internalActions.add(new InternalActions.ClickerAction());
+			//internalActions.add(new InternalActions.MapsAction());
+			//internalActions.add(new InternalActions.WoodchuckAction());
 			
 			/*
-			internalActions.add(new ResettableAction() {
-				private static final String QUESTION = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
-				private static final String ANSWER = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
-				String name = QUESTION;
-				
-				public String getName() {
-					return name;
-				}
-				
-				public String bulletIcon() {
-					return "bullet_square.bmp";
-				}
-
-				public int performAction(Context context) {
-					name = ANSWER;
-					return BUTTON_USED;
-				}
-
-				public int performReset(Context context) {
-					name = QUESTION;
-					return BUTTON_USED;
-				}
-			});	
-			
-			internalActions.add(new Action() {
-				
-				public String getName() {
-					return "Launch Google Maps on phone";
-				}
-				
-				public String bulletIcon() {
-					return "bullet_square.bmp";
-				}
-
-				public int performAction(Context context) {					
-					Intent LaunchIntent = context.getPackageManager().getLaunchIntentForPackage("com.google.android.apps.maps");
-					context.startActivity( LaunchIntent );
-					return BUTTON_USED;
-				}
-			});
-			
 			// For scroll testing.
 			for (int i = 0; i < 12; i++) {
 				final int f = i;
