@@ -2,6 +2,7 @@ package org.metawatch.manager.apps;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Stack;
 
 import org.metawatch.manager.FontCache;
@@ -12,6 +13,7 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
 import org.metawatch.manager.actions.Action;
 import org.metawatch.manager.actions.ContainerAction;
+import org.metawatch.manager.actions.HidableAction;
 import org.metawatch.manager.actions.InternalActions;
 import org.metawatch.manager.actions.ResettableAction;
 import org.metawatch.manager.actions.TimestampAction;
@@ -197,6 +199,10 @@ public class ActionsApp extends InternalApp {
 			}
 			*/
 		}
+		
+		if (currentActions == null) {
+			currentActions = new ArrayList<Action>();
+		}
 	}
 
 	public void activate(int watchType) {
@@ -261,7 +267,7 @@ public class ActionsApp extends InternalApp {
 			notifications.addAll(getNotificationActions());
 		}
 
-		currentActions = new ArrayList<Action>();
+		currentActions.clear();
 		if (containerStack.isEmpty()) {
 			// At the root.
 			//TODO Add external actions using intents, similar to widgets.
@@ -272,6 +278,15 @@ public class ActionsApp extends InternalApp {
 			// In a ContainerAction.
 			currentActions.add(backAction);
 			currentActions.addAll(containerStack.peek().getSubActions());
+		}
+		
+		// Clean away empty actions.
+		ListIterator<Action> it = currentActions.listIterator();
+		while (it.hasNext()) {
+			Action a = it.next();
+			if (a instanceof HidableAction && ((HidableAction)a).isHidden()) {
+				it.remove();
+			}
 		}
 		
 		if (currentSelection >= currentActions.size()) {

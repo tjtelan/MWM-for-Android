@@ -5,7 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 
-public abstract class ContainerAction implements Action {
+public abstract class ContainerAction implements HidableAction {
 	protected List<Action> subActions = new ArrayList<Action>();
 
 	public List<Action> getSubActions() {
@@ -14,6 +14,10 @@ public abstract class ContainerAction implements Action {
 	
 	public int size() {
 		return subActions.size();
+	}
+	
+	public boolean isHidden() {
+		return subActions.isEmpty();
 	}
 	
 	// Overridable by subclasses, but default to the name.
