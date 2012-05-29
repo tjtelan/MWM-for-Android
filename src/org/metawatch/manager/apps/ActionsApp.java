@@ -11,6 +11,10 @@ import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
+import org.metawatch.manager.actions.Action;
+import org.metawatch.manager.actions.ContainerAction;
+import org.metawatch.manager.actions.ResettableAction;
+import org.metawatch.manager.actions.TimestampAction;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.WatchType;
 
@@ -34,39 +38,8 @@ public class ActionsApp extends InternalApp {
 	
 	public final static String APP_ID = "org.metawatch.manager.apps.ActionsApp";
 
-	public interface Action {
-		public String getName();
-		public String bulletIcon();
-		public int performAction(Context context);
-	}
-	
-	public interface ResettableAction extends Action {
-		public int performReset(Context context);
-	}
-	
-	public interface TimestampAction extends Action {
-		public long getTimestamp();
-	}
-	
-	// Only needed for the anonymous classes below.
+	// Needed for the anonymous classes below.
 	public interface ResettableTimestampAction extends ResettableAction, TimestampAction {}
-	
-	public abstract class ContainerAction implements Action {
-		List<Action> subActions = new ArrayList<Action>();
-		
-		public String bulletIcon() {
-			return "bullet_plus.bmp"; //plus
-		}
-		
-		public int performAction(Context context) {
-			actionStack.push(subActions);
-			selectionStack.push(currentSelection);
-			
-			currentSelection = 0;
-			
-			return BUTTON_USED;
-		}
-	}
 	
 	// ------------------------------------------------------------------------
 	
@@ -349,7 +322,7 @@ public class ActionsApp extends InternalApp {
 			actionStack.push(rootActions);
 		}
 	}
-	
+
 	public void activate(int watchType) {
 		init();
 		
@@ -410,9 +383,10 @@ public class ActionsApp extends InternalApp {
 			rootActions.addAll(getAppActions());
 			rootActions.addAll(internalActions);
 			
-		} else if (actionStack.peek() == notificationAction.subActions) {
-			notificationAction.subActions.clear();
-			notificationAction.subActions.addAll(getNotificationActions());
+		} else if (actionStack.peek() == notificationAction.getSubActions()) {
+			List<Action> subActions = notificationAction.getSubActions();
+			subActions.clear();
+			subActions.addAll(getNotificationActions());
 		}
 		
 		currentActions = new ArrayList<Action>();
@@ -533,6 +507,7 @@ public class ActionsApp extends InternalApp {
 			currentSelection = 0;
 		}
 		
+		Action currentAction = currentActions.get(currentSelection);
 		switch (id) {
 		case ACTION_NEXT:
 			currentSelection = (currentSelection+1)%currentActions.size();
@@ -543,11 +518,20 @@ public class ActionsApp extends InternalApp {
 			return BUTTON_USED;
 			
 		case ACTION_PERFORM:
-			return currentActions.get(currentSelection).performAction(context);
+			if (currentAction instanceof ContainerAction) {
+				actionStack.push(((ContainerAction)currentAction).getSubActions());
+				selectionStack.push(currentSelection);
+				currentSelection = 0;
+				
+				return BUTTON_USED;
+				
+			} else {
+				return currentAction.performAction(context);
+			}
 			
 		case ACTION_RESET:
-			if (currentActions.get(currentSelection) instanceof ResettableAction)
-				return ((ResettableAction)currentActions.get(currentSelection)).performReset(context);
+			if (currentAction instanceof ResettableAction)
+				return ((ResettableAction)currentAction).performReset(context);
 			else
 				return BUTTON_NOT_USED;
 		}
