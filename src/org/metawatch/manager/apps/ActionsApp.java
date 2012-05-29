@@ -44,11 +44,25 @@ public class ActionsApp extends InternalApp {
 		toggleable = false;
 	}};
 	
-	
 	public final static byte ACTION_NEXT = 30;
 	public final static byte ACTION_PERFORM = 31;
 	public final static byte ACTION_RESET = 32;
 	public final static byte ACTION_TOP = 33;
+	
+	public static class NotificationsAction extends ContainerAction implements TimestampAction {
+		public String getName() {
+			return "Recent Notifications";
+		}
+
+		public long getTimestamp() {
+			if (subActions.size() > 0) {
+				return ((TimestampAction)subActions.get(0)).getTimestamp();
+			} else {
+				return 0;
+			}
+		}
+		
+	}
 	
 	public AppData getInfo() {
 		return appData;
@@ -59,7 +73,7 @@ public class ActionsApp extends InternalApp {
 	Stack<List<Action>> actionStack = new Stack<List<Action>>(); //Contains the upper levels and current level lists (excluding "back" items).
 	List<Action> currentActions = null; //Contains the list as it's shown on the screen (including a "back" item for sub level lists).
 	Action backAction = null;
-	ContainerAction notificationAction = null;
+	NotificationsAction notificationsAction = null;
 	
 	Stack<Integer> selectionStack = new Stack<Integer>(); //Only contains selection for upper level lists.
 	int currentSelection = 0;
@@ -147,13 +161,8 @@ public class ActionsApp extends InternalApp {
 				}
 			};
 		}
-		if (notificationAction == null) {
-			notificationAction = new ContainerAction() {
-				
-				public String getName() {
-					return "Recent Notifications";
-				}
-			};
+		if (notificationsAction == null) {
+			notificationsAction = new NotificationsAction();
 		}
 		
 		if (internalActions == null) {
@@ -251,14 +260,15 @@ public class ActionsApp extends InternalApp {
 			rootActions.clear();
 
 			//TODO Add external actions using intents, similar to widgets.
-			rootActions.add(notificationAction);
+			rootActions.add(notificationsAction);
 			rootActions.addAll(getAppActions());
 			rootActions.addAll(internalActions);
-			
-		} else if (actionStack.peek() == notificationAction.getSubActions()) {
-			List<Action> subActions = notificationAction.getSubActions();
-			subActions.clear();
-			subActions.addAll(getNotificationActions());
+		}
+		if (actionStack.peek().contains(notificationsAction) ||
+				actionStack.peek() == notificationsAction.getSubActions()) {
+			List<Action> notifications = notificationsAction.getSubActions();
+			notifications.clear();
+			notifications.addAll(getNotificationActions());
 		}
 		
 		currentActions = new ArrayList<Action>();
@@ -289,9 +299,16 @@ public class ActionsApp extends InternalApp {
 					canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);
 				}
 				
-				if(i==currentSelection) {
+				if (i==currentSelection) {
 					// Draw full multi-line text.
-					final StaticLayout layout = new StaticLayout(a.getName(), paint, 79, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+					StringBuilder name = new StringBuilder(a.getName());
+					if (a instanceof ContainerAction) {
+						name.append(" (");
+						name.append(((ContainerAction)a).size());
+						name.append(")");
+					}
+					
+					final StaticLayout layout = new StaticLayout(name, paint, 79, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
 					final int height = layout.getHeight();
 					
 					final int top = y;
@@ -334,8 +351,7 @@ public class ActionsApp extends InternalApp {
 						}
 					}
 								
-				}
-				else {
+				} else {
 					//Draw elipsized text.
 					canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
 					y+= textHeight+1;
