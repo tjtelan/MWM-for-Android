@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
+import android.graphics.Region;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -254,19 +255,7 @@ public class ActionsApp extends InternalApp {
 
 	public Bitmap update(final Context context, boolean preview, int watchType) {
 		init();
-		
-		TextPaint paint = new TextPaint();
-		paint.setColor(Color.BLACK);
-		paint.setTextSize(FontCache.instance(context).Get().size);
-		paint.setTypeface(FontCache.instance(context).Get().face);
-		int textHeight = FontCache.instance(context).Get().realSize;
-
-		Paint paintXor = new Paint();
-		paintXor.setXfermode(new PixelXorXfermode(Color.WHITE));
-		
-		Paint paintWhite = new Paint();
-		paintWhite.setColor(Color.WHITE);
-		
+				
 		// This is not the nicest solution, but it keeps the display updated.
 		if (containerStack.isEmpty() ||
 				containerStack.peek() == notificationsAction) {
@@ -301,122 +290,172 @@ public class ActionsApp extends InternalApp {
 			currentSelection = 0;
 		}
 		
-		if (watchType == WatchType.DIGITAL) {
-			// Double the height to make room for multi line items that trigger scrolling.
-			Bitmap bitmap = Bitmap.createBitmap(96, 192, Bitmap.Config.RGB_565);
-			Canvas canvas = new Canvas(bitmap);
-			canvas.drawColor(Color.WHITE);
-			
-			final int maxY = 96 - textHeight;
-			int y = 1;
-			if (!containerStack.isEmpty()) {
-				y += textHeight + 4; //Make room for a title.
-			}
-
-			boolean scrolled = false;
-			for (int i = Math.max(0, currentSelection - 96/textHeight + (containerStack.isEmpty() ? 3 : 4));
-					(i < currentActions.size() && (i <= currentSelection || y <= 96));
-					i++) {
-				Action a = currentActions.get(i);
-				
-				if (a.bulletIcon() != null) {
-					canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);
-				}
-				
-				if (i == currentSelection) {
-					// Draw full multi-line text.
-					StringBuilder name = new StringBuilder(a.getName());
-					if (a instanceof ContainerAction) {
-						name.append(" (");
-						name.append(((ContainerAction)a).size());
-						name.append(")");
-					}
-					
-					final StaticLayout layout = new StaticLayout(name, paint, 79, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
-					final int height = layout.getHeight();
-					
-					final int top = y;
-					
-					canvas.save();		
-					canvas.translate(7, y);
-					layout.draw(canvas);
-					canvas.restore();
-				
-					y+= height;
-					
-					// Draw timestamp, if any.
-					if(a instanceof TimestampAction) {
-						final long timestamp = ((TimestampAction)a).getTimestamp();
-						final String timetext = (timestamp > 0 ?
-								Utils.ticksToText(context, timestamp, true) :
-								"---");
-						canvas.drawLine(7, y, 86, y, paint);
-						y+= 2;
-						canvas.drawText((String) TextUtils.ellipsize(timetext, paint, 79, TruncateAt.START), 7, y+textHeight, paint);
-						y+= textHeight+1;
-					}
-	
-					// Invert item to mark as selected.
-					canvas.drawRect(0, top-1, 96, y, paintXor);
-					
-					// Scroll screen if necessary.
-					if (y >= maxY) {
-						final int scroll = y - maxY;
-						bitmap = Bitmap.createBitmap(bitmap, 0, scroll, 96, 96);
-						canvas.setBitmap(bitmap);
-						y -= scroll;
-						
-						if (i == currentActions.size() - 1) {
-							// Mark the end of the list.
-							Idle.drawLine(canvas, 96 - textHeight/2 - 1);
-						}
-						scrolled = true;
-					}
-								
-				} else {
-					//Draw elipsized text.
-					canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
-					y+= textHeight+1;
-				}
-			}
-			
-			if (!containerStack.isEmpty()) {
-				// Draw title.
-				if (scrolled) {
-					// Paint white over any scrolled items.
-					canvas.drawRect(0, 0, 95, textHeight+4, paintWhite);
-				}
-				canvas.drawText((String) TextUtils.ellipsize(containerStack.peek().getTitle(), paint, 84, TruncateAt.END), 2, textHeight+1, paint);
-				canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
-			}
-			
-			// Draw icons.
-			drawDigitalAppSwitchIcon(context, canvas, preview);
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
-			if (currentActions.get(currentSelection) instanceof ResettableAction) {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
-			} else {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
-			}
-			
-			// If the screen hasn't scrolled, the bitmap is too large, shrink it.
-			if (!scrolled) {
-				bitmap = Bitmap.createBitmap(bitmap, 0, 0, 96, 96);
-			}
-			
-			return bitmap;
-			
+		if (watchType == WatchType.DIGITAL) {	
+			return drawDigital(context, preview);		
 		} else if (watchType == WatchType.ANALOG) {
-			Bitmap bitmap = Bitmap.createBitmap(80, 32, Bitmap.Config.RGB_565);
-			Canvas canvas = new Canvas(bitmap);
-			canvas.drawColor(Color.WHITE);
-			
-			//FIXME ...
-			
-			return bitmap;
+			return drawAnalog(context, preview);
 		}
 		
 		return null;
+	}
+
+	private Bitmap drawDigital(final Context context, boolean preview) {
+		TextPaint paint = new TextPaint();
+		paint.setColor(Color.BLACK);
+		paint.setTextSize(FontCache.instance(context).Get().size);
+		paint.setTypeface(FontCache.instance(context).Get().face);
+		int textHeight = FontCache.instance(context).Get().realSize;
+
+		Paint paintXor = new Paint();
+		paintXor.setXfermode(new PixelXorXfermode(Color.WHITE));
+		
+		Paint paintWhite = new Paint();
+		paintWhite.setColor(Color.WHITE);
+		
+		// Double the height to make room for multi line items that trigger scrolling.
+		Bitmap bitmap = Bitmap.createBitmap(96, 192, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		final int maxY = 96 - textHeight;
+		int y = 1;
+		if (!containerStack.isEmpty()) {
+			y += textHeight + 4; //Make room for a title.
+		}
+
+		boolean scrolled = false;
+		for (int i = Math.max(0, currentSelection - 96/textHeight + (containerStack.isEmpty() ? 3 : 4));
+				(i < currentActions.size() && (i <= currentSelection || y <= 96));
+				i++) {
+			Action a = currentActions.get(i);
+			
+			if (a.bulletIcon() != null) {
+				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);
+			}
+			
+			if (i == currentSelection) {
+				// Draw full multi-line text.
+				StringBuilder name = new StringBuilder(a.getName());
+				if (a instanceof ContainerAction) {
+					name.append(" (");
+					name.append(((ContainerAction)a).size());
+					name.append(")");
+				}
+				
+				final StaticLayout layout = new StaticLayout(name, paint, 79, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+				final int height = layout.getHeight();
+				
+				final int top = y;
+				
+				canvas.save();		
+				canvas.translate(7, y);
+				layout.draw(canvas);
+				canvas.restore();
+			
+				y+= height;
+				
+				// Draw timestamp, if any.
+				if(a instanceof TimestampAction) {
+					final long timestamp = ((TimestampAction)a).getTimestamp();
+					final String timetext = (timestamp > 0 ?
+							Utils.ticksToText(context, timestamp, true) :
+							"---");
+					canvas.drawLine(7, y, 86, y, paint);
+					y+= 2;
+					canvas.drawText((String) TextUtils.ellipsize(timetext, paint, 79, TruncateAt.START), 7, y+textHeight, paint);
+					y+= textHeight+1;
+				}
+
+				// Invert item to mark as selected.
+				canvas.drawRect(0, top-1, 96, y, paintXor);
+				
+				// Scroll screen if necessary.
+				if (y >= maxY) {
+					final int scroll = y - maxY;
+					bitmap = Bitmap.createBitmap(bitmap, 0, scroll, 96, 96);
+					canvas.setBitmap(bitmap);
+					y -= scroll;
+					
+					if (i == currentActions.size() - 1) {
+						// Mark the end of the list.
+						Idle.drawLine(canvas, 96 - textHeight/2 - 1);
+					}
+					scrolled = true;
+				}
+							
+			} else {
+				//Draw elipsized text.
+				canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
+				y+= textHeight+1;
+			}
+		}
+		
+		if (!containerStack.isEmpty()) {
+			// Draw title.
+			if (scrolled) {
+				// Paint white over any scrolled items.
+				canvas.drawRect(0, 0, 95, textHeight+4, paintWhite);
+			}
+			canvas.drawText((String) TextUtils.ellipsize(containerStack.peek().getTitle(), paint, 84, TruncateAt.END), 2, textHeight+1, paint);
+			canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
+		}
+		
+		// Draw icons.
+		drawDigitalAppSwitchIcon(context, canvas, preview);
+		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
+		if (currentActions.get(currentSelection) instanceof ResettableAction) {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
+		} else {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
+		}
+		
+		// If the screen hasn't scrolled, the bitmap is too large, shrink it.
+		if (!scrolled) {
+			bitmap = Bitmap.createBitmap(bitmap, 0, 0, 96, 96);
+		}
+		return bitmap;
+	}
+	
+	private Bitmap drawAnalog(final Context context, boolean preview) {
+		TextPaint paint = new TextPaint();
+		paint.setColor(Color.BLACK);
+		paint.setTextSize(FontCache.instance(context).Small.size);
+		paint.setTypeface(FontCache.instance(context).Small.face);
+
+		Paint paintXor = new Paint();
+		paintXor.setXfermode(new PixelXorXfermode(Color.WHITE));
+		
+		Paint paintWhite = new Paint();
+		paintWhite.setColor(Color.WHITE);
+		
+		Bitmap bitmap = Bitmap.createBitmap(80, 32, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		// Top screen
+		canvas.clipRect(0, 0, 80, 16, Region.Op.REPLACE);
+		
+		// Title
+		canvas.drawText((String) TextUtils.ellipsize("This is the title", paint, 71, TruncateAt.END), 2, 8, paint);
+		canvas.drawText((String) TextUtils.ellipsize("(1/10)", paint, 71, TruncateAt.END), 2, 15, paint);
+		//canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
+		
+		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 71, 8, null);
+		
+		// Bottom screen
+		canvas.clipRect(0, 16, 80, 32, Region.Op.REPLACE);
+		
+		canvas.drawText((String) TextUtils.ellipsize("This is the item", paint, 71, TruncateAt.END), 2, 24, paint);
+		canvas.drawText((String) TextUtils.ellipsize("DD/MM/YYYY", paint, 71, TruncateAt.END), 2, 31, paint);
+		
+		if (currentActions.get(currentSelection) instanceof ResettableAction) {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 63, 14, null);
+		} else {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 71, 14, null);
+		}
+		
+		
+		return bitmap;
 	}
 
 	public int buttonPressed(Context context, int id) {
