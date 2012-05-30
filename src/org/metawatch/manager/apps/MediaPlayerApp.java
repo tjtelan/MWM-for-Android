@@ -160,7 +160,7 @@ public class MediaPlayerApp extends InternalApp {
 				layout.draw(canvas);
 				canvas.restore();	
 			}
-			canvas.drawBitmap(getAppSwitchIcon(context, preview), 87, 0, null);
+			drawDigitalAppSwitchIcon(context, canvas, preview);
 			
 			return bitmap;
 		}

@@ -391,7 +391,7 @@ public class ActionsApp extends InternalApp {
 			}
 			
 			// Draw icons.
-			canvas.drawBitmap(getAppSwitchIcon(context, preview), 87, 0, null);
+			drawDigitalAppSwitchIcon(context, canvas, preview);
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
 			if (currentActions.get(currentSelection) instanceof ResettableAction) {
 				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
