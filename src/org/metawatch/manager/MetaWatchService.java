@@ -136,6 +136,11 @@ public class MetaWatchService extends Service {
 		public static volatile boolean NOTIFICATION = false;
 		public static volatile boolean CALL = false;
 	}
+	
+	public final class AppLaunchMode {
+		public static final int POPUP = 0;
+		public static final int APPPAGE = 1;
+	}
 
 	public static class Preferences {
 		public static boolean loaded = false;
@@ -180,6 +185,7 @@ public class MetaWatchService extends Service {
 		public static boolean clockOnEveryPage = false;
 		public static boolean appBufferForClocklessPages = true;
 		public static boolean showNotificationQueue = false;
+		public static int appLaunchMode = AppLaunchMode.POPUP;
 	}
 
 	public final class WatchType {
@@ -268,7 +274,7 @@ public class MetaWatchService extends Service {
 		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
 				Preferences.showNotificationQueue);
 		Preferences.actionsEnabled = sharedPreferences.getBoolean("Actions", Preferences.actionsEnabled);
-
+				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
 					"FontSize", Integer.toString(Preferences.fontSize)));
@@ -278,6 +284,9 @@ public class MetaWatchService extends Service {
 			Preferences.smsLoopInterval = Integer.valueOf(sharedPreferences
 					.getString("SmsLoopInterval",
 							Integer.toString(Preferences.smsLoopInterval)));
+			Preferences.appLaunchMode = Integer.valueOf(sharedPreferences.getString(
+					"AppLaunchMode", Integer.toString(Preferences.appLaunchMode)));
+			
 		} catch (NumberFormatException e) {
 		}
 

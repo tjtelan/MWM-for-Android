@@ -5,6 +5,7 @@ import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.Utils;
+import org.metawatch.manager.MetaWatchService.AppLaunchMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.content.Context;
@@ -77,14 +78,20 @@ public abstract class InternalApp {
 		
 		// Open stand-alone.
 		} else {
-			appState = ACTIVE_STANDALONE;
-			int watchType = MetaWatchService.watchType;
-			if (watchType == MetaWatchService.WatchType.DIGITAL) {
-				Application.startAppMode(context, this);
-				Application.updateAppMode(context, update(context, false, watchType));
-				Application.toApp();
-			} else if (watchType == MetaWatchService.WatchType.ANALOG) {
-				//FIXME
+			if (Preferences.appLaunchMode == AppLaunchMode.POPUP) {
+				appState = ACTIVE_STANDALONE;
+				int watchType = MetaWatchService.watchType;
+				if (watchType == MetaWatchService.WatchType.DIGITAL) {
+					Application.startAppMode(context, this);
+					Application.updateAppMode(context, update(context, false, watchType));
+					Application.toApp();
+				} else if (watchType == MetaWatchService.WatchType.ANALOG) {
+					//FIXME
+				}
+			} else if (Preferences.appLaunchMode == AppLaunchMode.APPPAGE) {
+				page = Idle.addAppPage(this);
+				Idle.toPage(page);
+				Idle.toIdle(context);
 			}
 		}
 	}

@@ -336,6 +336,17 @@
 	<PreferenceScreen
 	    android:title="Watch Apps"
 	    >
+	    
+	    <ListPreference 
+			android:entries="@array/settings_app_launch_mode_name" 
+			android:entryValues="@array/settings_app_launch_mode_value" 
+			android:dialogTitle="App Launch Mode" 
+			android:key="AppLaunchMode" 
+			android:title="App Launch Mode" 
+			android:negativeButtonText="Cancel" 
+ 			android:enabled="true" 
+ 			android:defaultValue="0"
+ 			/>
 
 		<CheckBoxPreference
 			android:title="Music Controls"
