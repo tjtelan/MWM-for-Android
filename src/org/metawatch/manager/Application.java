@@ -184,6 +184,8 @@ public class Application {
 	
 	public static void toggleApp(Context context, InternalApp app) {
 		if (app != null) {
+			if (!app.isToggleable())
+				return;
 			if (app.appState == InternalApp.ACTIVE_IDLE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to stand-alone.");
 				
