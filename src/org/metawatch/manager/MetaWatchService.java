@@ -963,7 +963,10 @@ public class MetaWatchService extends Service {
 			}
 			else if (idleAppButton != InternalApp.BUTTON_USED_DONT_UPDATE)
 			{
-				Idle.updateIdle(this, true);
+				if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+					Idle.updateIdle(this, false);
+				else
+					Idle.sendOledIdle(this);
 			}
 			break;
 		}

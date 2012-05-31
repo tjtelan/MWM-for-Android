@@ -42,7 +42,7 @@ public class ActionsApp extends InternalApp {
 		name = "Actions";
 	
 		supportsDigital = true;
-		//supportsAnalog = true;
+		supportsAnalog = true;
 		
 		toggleable = false;
 	}};
@@ -435,26 +435,47 @@ public class ActionsApp extends InternalApp {
 		// Top screen
 		canvas.clipRect(0, 0, 80, 16, Region.Op.REPLACE);
 		
-		// Title
-		canvas.drawText((String) TextUtils.ellipsize("This is the title", paint, 71, TruncateAt.END), 2, 8, paint);
-		canvas.drawText((String) TextUtils.ellipsize("(1/10)", paint, 71, TruncateAt.END), 2, 15, paint);
-		//canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
+		String title = "Actions";
+		StringBuilder position = new StringBuilder();
+		if (currentActions.size()>0) {
+			position.append("(");
+			position.append(currentSelection+1);
+			position.append("/");
+			position.append(currentActions.size()+1);
+			position.append(")");
+		}
+					
+		if (!containerStack.isEmpty()) {
+			title = containerStack.peek().getTitle();
+		}
 		
-		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 71, 8, null);
+		canvas.drawText((String) TextUtils.ellipsize(title, paint, 71, TruncateAt.END), 2, 8, paint);
+		canvas.drawText((String) TextUtils.ellipsize(position.toString(), paint, 71, TruncateAt.END), 2, 15, paint);
+		
+		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down_5.bmp"), 71, 11, null);
 		
 		// Bottom screen
 		canvas.clipRect(0, 16, 80, 32, Region.Op.REPLACE);
 		
-		canvas.drawText((String) TextUtils.ellipsize("This is the item", paint, 71, TruncateAt.END), 2, 24, paint);
-		canvas.drawText((String) TextUtils.ellipsize("DD/MM/YYYY", paint, 71, TruncateAt.END), 2, 31, paint);
-		
-		if (currentActions.get(currentSelection) instanceof ResettableAction) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 63, 14, null);
-		} else {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 71, 14, null);
+		Action a = currentActions.get(currentSelection);
+		String itemLine1 = a.getName();
+		String itemLine2 = "";
+		if(a instanceof TimestampAction) {
+			final long timestamp = ((TimestampAction)a).getTimestamp();
+			itemLine2 = (timestamp > 0 ?
+					Utils.ticksToText(context, timestamp, true) :
+					"---");
 		}
 		
+		canvas.drawText((String) TextUtils.ellipsize(itemLine1, paint, 71, TruncateAt.END), 2, 24, paint);
+		canvas.drawText((String) TextUtils.ellipsize(itemLine2, paint, 71, TruncateAt.END), 2, 31, paint);
 		
+		if (a instanceof ResettableAction) {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right_5.bmp"), 71, 16, null);
+		} else {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right_5.bmp"), 71, 16, null);
+		}
+				
 		return bitmap;
 	}
 
