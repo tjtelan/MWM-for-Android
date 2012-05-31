@@ -444,7 +444,7 @@ public class Idle {
 		}
 	 		
 		final int mode = getScreenMode(MetaWatchService.WatchType.ANALOG);
-		
+			
 		// Split into top/bottom, and send
 		for(int i=0; i<2; ++i) {
 			Bitmap bitmap = Bitmap.createBitmap(80, 16, Bitmap.Config.RGB_565);

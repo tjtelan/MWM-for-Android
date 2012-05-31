@@ -273,8 +273,14 @@ public class ActionsApp extends InternalApp {
 			currentActions.addAll(internalActions);
 		} else {
 			// In a ContainerAction.
-			currentActions.add(backAction);
+			if (watchType==WatchType.DIGITAL)
+				currentActions.add(backAction);
 			currentActions.addAll(containerStack.peek().getSubActions());
+			
+			// Put the back action at the end on Analog, so the first displayed
+			// element actually has content.
+			if (watchType==WatchType.ANALOG)
+				currentActions.add(backAction);
 		}
 		
 		// Clean away empty actions.
@@ -441,7 +447,7 @@ public class ActionsApp extends InternalApp {
 			position.append("(");
 			position.append(currentSelection+1);
 			position.append("/");
-			position.append(currentActions.size()+1);
+			position.append(currentActions.size());
 			position.append(")");
 		}
 					
@@ -449,10 +455,10 @@ public class ActionsApp extends InternalApp {
 			title = containerStack.peek().getTitle();
 		}
 		
-		canvas.drawText((String) TextUtils.ellipsize(title, paint, 71, TruncateAt.END), 2, 8, paint);
-		canvas.drawText((String) TextUtils.ellipsize(position.toString(), paint, 71, TruncateAt.END), 2, 15, paint);
+		canvas.drawText((String) TextUtils.ellipsize(title, paint, 74, TruncateAt.END), 0, 6, paint);
+		canvas.drawText((String) TextUtils.ellipsize(position.toString(), paint, 74, TruncateAt.END), 0, 13, paint);
 		
-		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down_5.bmp"), 71, 11, null);
+		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down_5.bmp"), 75, 11, null);
 		
 		// Bottom screen
 		canvas.clipRect(0, 16, 80, 32, Region.Op.REPLACE);
@@ -467,13 +473,13 @@ public class ActionsApp extends InternalApp {
 					"---");
 		}
 		
-		canvas.drawText((String) TextUtils.ellipsize(itemLine1, paint, 71, TruncateAt.END), 2, 24, paint);
-		canvas.drawText((String) TextUtils.ellipsize(itemLine2, paint, 71, TruncateAt.END), 2, 31, paint);
+		canvas.drawText((String) TextUtils.ellipsize(itemLine1, paint, 74, TruncateAt.END), 0, 22, paint);
+		canvas.drawText((String) TextUtils.ellipsize(itemLine2, paint, 74, TruncateAt.END), 0, 29, paint);
 		
 		if (a instanceof ResettableAction) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right_5.bmp"), 71, 16, null);
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right_5.bmp"), 75, 16, null);
 		} else {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right_5.bmp"), 71, 16, null);
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right_5.bmp"), 75, 16, null);
 		}
 				
 		return bitmap;
