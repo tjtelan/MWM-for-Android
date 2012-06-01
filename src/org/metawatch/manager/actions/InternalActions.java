@@ -17,7 +17,7 @@ public class InternalActions {
 		int volume = -1;
 		
 		public String getName() {
-			if( r==null || r.isPlaying() == false ) {
+			if( isSilent() ) {
 				return "Ping phone";
 			}
 			else {
@@ -26,11 +26,12 @@ public class InternalActions {
 		}
 		
 		public String bulletIcon() {
-			return "bullet_circle.bmp";
+			return isSilent() ? "bullet_circle.bmp"
+					          : "bullet_circle_open.bmp";
 		}
 	
 		public int performAction(Context context) {
-			if(r==null || r.isPlaying() == false ) {
+			if (isSilent()) {
 				Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 				AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 				volume = as.getStreamVolume(AudioManager.STREAM_RING);
@@ -47,15 +48,29 @@ public class InternalActions {
 			}
 			return InternalApp.BUTTON_USED;
 		}
+		
+		private boolean isSilent() {
+			return (r==null || r.isPlaying() == false);
+		}
 	}
 
 	public static class SpeakerphoneAction implements Action {
+		public SpeakerphoneAction(Context context) {
+			audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		}
+		
+		private AudioManager audioManager = null;
+		
 		public String getName() {
-			return "Toggle Speakerphone";
+			return audioManager !=null && audioManager.isSpeakerphoneOn() 
+					? "Disable speakerphone"
+			        : "Enable speakerphone";
 		}
 		
 		public String bulletIcon() {
-			return "bullet_circle.bmp";
+			return audioManager !=null && audioManager.isSpeakerphoneOn() 
+					? "bullet_circle_open.bmp"
+			        : "bullet_circle.bmp";
 		}
 
 		public int performAction(Context context) {

@@ -13,6 +13,7 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
 import org.metawatch.manager.actions.Action;
 import org.metawatch.manager.actions.ContainerAction;
+import org.metawatch.manager.actions.ExitableAction;
 import org.metawatch.manager.actions.HidableAction;
 import org.metawatch.manager.actions.InternalActions;
 import org.metawatch.manager.actions.ResettableAction;
@@ -49,7 +50,7 @@ public class ActionsApp extends InternalApp {
 	
 	public final static byte ACTION_NEXT = 30;
 	public final static byte ACTION_PERFORM = 31;
-	public final static byte ACTION_RESET = 32;
+	public final static byte ACTION_SECONDARY = 32;
 	public final static byte ACTION_TOP = 33;
 	
 	public static class NotificationsAction extends ContainerAction implements TimestampAction {
@@ -91,9 +92,9 @@ public class ActionsApp extends InternalApp {
 			if (a.id.equals(APP_ID))
 				continue; // Skip self.
 			
-			if (Idle.getAppPage(a.id) != -1) {
-				continue; // Skip apps running as idle pages.
-			}
+			//if (Idle.getAppPage(a.id) != -1) {
+			//	continue; // Skip apps running as idle pages.
+			//}
 			
 			int watchType = MetaWatchService.watchType;
 			if ((watchType == MetaWatchService.WatchType.ANALOG && !a.supportsAnalog) ||
@@ -101,17 +102,27 @@ public class ActionsApp extends InternalApp {
 				continue; // Skip unsupported apps.
 				
 			
-			list.add(new Action() {
+			list.add(new ExitableAction() {
 				public String getName() {
 					return a.name;
 				}
 
 				public String bulletIcon() {
-					return "bullet_square.bmp";
+					return isRunning(null) ? "bullet_square_open.bmp" 
+							 			   : "bullet_square.bmp";
 				}
 
 				public int performAction(Context context) {
 					AppManager.getApp(a.id).open(context);
+					return BUTTON_USED;
+				}
+				
+				public boolean isRunning(Context context) {
+					return Idle.getAppPage(a.id)!=-1;
+				}
+				
+				public int performExit(Context context) {
+					Idle.removeAppPage(context, AppManager.getApp(a.id));
 					return BUTTON_USED;
 				}
 			});
@@ -147,7 +158,7 @@ public class ActionsApp extends InternalApp {
 		return list;
 	}
 	
-	private void init() {
+	private void init(final Context context) {
 		if (backAction == null) {
 			backAction = new Action() {
 				public String getName() {
@@ -175,7 +186,7 @@ public class ActionsApp extends InternalApp {
 			internalActions = new ArrayList<Action>();
 
 			internalActions.add(new InternalActions.PingAction());
-			internalActions.add(new InternalActions.SpeakerphoneAction());
+			internalActions.add(new InternalActions.SpeakerphoneAction(context));
 			internalActions.add(new InternalActions.ClickerAction());
 			//internalActions.add(new InternalActions.MapsAction());
 			//internalActions.add(new InternalActions.WoodchuckAction());
@@ -206,8 +217,8 @@ public class ActionsApp extends InternalApp {
 		}
 	}
 
-	public void activate(int watchType) {
-		init();
+	public void activate(final Context context, int watchType) {
+		init(context);
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
@@ -215,8 +226,8 @@ public class ActionsApp extends InternalApp {
 			Protocol.enableButton(1, 3, ACTION_TOP, MetaWatchService.WatchBuffers.APPLICATION); // right middle - long hold
 			
 			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - press
-			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - hold
-			Protocol.enableButton(2, 3, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - long hold
+			Protocol.enableButton(2, 2, ACTION_SECONDARY, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - hold
+			Protocol.enableButton(2, 3, ACTION_SECONDARY, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - long hold
 		}
 		else if (watchType == WatchType.ANALOG) {
 			Protocol.enableButton(0, 1, ACTION_NEXT, MetaWatchService.WatchBuffers.APPLICATION); // top - press
@@ -224,12 +235,12 @@ public class ActionsApp extends InternalApp {
 			Protocol.enableButton(0, 3, ACTION_TOP, MetaWatchService.WatchBuffers.APPLICATION); // top - long hold
 			
 			Protocol.enableButton(2, 1, ACTION_PERFORM, MetaWatchService.WatchBuffers.APPLICATION); // bottom - press
-			Protocol.enableButton(2, 2, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - hold
-			Protocol.enableButton(2, 3, ACTION_RESET, MetaWatchService.WatchBuffers.APPLICATION); // bottom - long hold
+			Protocol.enableButton(2, 2, ACTION_SECONDARY, MetaWatchService.WatchBuffers.APPLICATION); // bottom - hold
+			Protocol.enableButton(2, 3, ACTION_SECONDARY, MetaWatchService.WatchBuffers.APPLICATION); // bottom - long hold
 		}
 	}
 
-	public void deactivate(int watchType) {
+	public void deactivate(final Context context, int watchType) {
 		if (!containerStack.isEmpty()) {
 			//Return to root.
 			containerStack.clear();
@@ -254,7 +265,7 @@ public class ActionsApp extends InternalApp {
 	}
 
 	public Bitmap update(final Context context, boolean preview, int watchType) {
-		init();
+		init(context);
 				
 		// This is not the nicest solution, but it keeps the display updated.
 		if (containerStack.isEmpty() ||
@@ -409,8 +420,11 @@ public class ActionsApp extends InternalApp {
 		// Draw icons.
 		drawDigitalAppSwitchIcon(context, canvas, preview);
 		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
-		if (currentActions.get(currentSelection) instanceof ResettableAction) {
+		Action a = currentActions.get(currentSelection);
+		if (a instanceof ResettableAction) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
+		} else if (a instanceof ExitableAction && ((ExitableAction)a).isRunning(context)) {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_exit_right.bmp"), 79, 87, null);
 		} else {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
 		}
@@ -478,6 +492,8 @@ public class ActionsApp extends InternalApp {
 		
 		if (a instanceof ResettableAction) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right_5.bmp"), 75, 16, null);
+		} else if (a instanceof ExitableAction && ((ExitableAction)a).isRunning(context)) {
+			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_exit_right_5.bmp"), 75, 16, null);
 		} else {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right_5.bmp"), 75, 16, null);
 		}
@@ -516,9 +532,11 @@ public class ActionsApp extends InternalApp {
 				return currentAction.performAction(context);
 			}
 			
-		case ACTION_RESET:
+		case ACTION_SECONDARY:
 			if (currentAction instanceof ResettableAction)
 				return ((ResettableAction)currentAction).performReset(context);
+			else if (currentAction instanceof ExitableAction)
+				return ((ExitableAction)currentAction).performExit(context);
 			else
 				return BUTTON_NOT_USED;
 		}

@@ -499,7 +499,7 @@ public class Notification {
 		if (MetaWatchService.WatchModes.CALL == true)
 			return;
 		else if (MetaWatchService.WatchModes.APPLICATION == true)
-			Application.toApp();
+			Application.toApp(context);
 		else if (MetaWatchService.WatchModes.IDLE == true)
 			Idle.toIdle(context);
 	}

@@ -237,6 +237,7 @@ public class WidgetSetup extends Activity {
         		    			
 	    		LayoutInflater factory = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	
+	    		final Context context = this;
 	    		View v = factory.inflate(viewId, null);
 	    		ImageView iv = (ImageView)v.findViewById(R.id.image);
 	    		iv.setImageBitmap(bmp);
@@ -247,7 +248,7 @@ public class WidgetSetup extends Activity {
 	    		    //@Override
 	    		    public void onClick(View v) {
 	    		    	Integer page = (Integer)v.getTag();
-	    		        Idle.toPage(page);
+	    		        Idle.toPage(context, page);
 	    		        Idle.updateIdle(v.getContext(), true);
 	    		        
 	    		        if(MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {

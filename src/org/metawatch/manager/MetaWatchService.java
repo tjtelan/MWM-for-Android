@@ -926,7 +926,7 @@ public class MetaWatchService extends Service {
 					
 				case Idle.IDLE_NEXT_PAGE:							
 					if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-						Idle.nextPage();
+						Idle.nextPage(this);
 						Idle.updateIdle(this, true);	
 					}
 	
@@ -937,7 +937,7 @@ public class MetaWatchService extends Service {
 					
 					if(time-lastOledCrownPress < 1000*5)
 					{
-						Idle.nextPage();
+						Idle.nextPage(this);
 						Idle.updateIdle(this, true);
 					}
 					

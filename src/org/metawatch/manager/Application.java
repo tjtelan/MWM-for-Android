@@ -72,7 +72,7 @@ public class Application {
 			Protocol.disableButton(1, 1, MetaWatchService.WatchBuffers.APPLICATION); // right middle - press
 		}
 		if (currentApp != null) {
-			currentApp.deactivate(MetaWatchService.watchType);
+			currentApp.deactivate(context, MetaWatchService.watchType);
 			currentApp.setInactive();
 		}
 		currentApp = null;
@@ -161,14 +161,14 @@ public class Application {
 		}
 	}
 	
-	public static void toApp() {
+	public static void toApp(final Context context) {
 		MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
 		
-		Idle.deactivateButtons();
+		Idle.deactivateButtons(context);
 
 		int watchType = MetaWatchService.watchType;
 		if (currentApp != null) {
-			currentApp.activate(watchType);
+			currentApp.activate(context, watchType);
 		}
 		if (watchType == MetaWatchService.WatchType.DIGITAL) {
 			Protocol.enableButton(0, 1, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - press
@@ -189,7 +189,7 @@ public class Application {
 			if (app.appState == InternalApp.ACTIVE_IDLE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to stand-alone.");
 				
-				Idle.removeAppPage(app);
+				Idle.removeAppPage(context, app);
 				app.open(context);
 				return;
 			
@@ -198,7 +198,7 @@ public class Application {
 				
 				Idle.addAppPage(app);
 				currentApp = null; // Avoid having stopAppMode() deactivate the app.
-				Idle.toPage(0);
+				Idle.toPage(context, 0);
 				stopAppMode(context); // Goes to Idle if not in Notification.
 				return;
 			}

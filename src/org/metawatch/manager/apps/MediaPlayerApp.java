@@ -40,7 +40,7 @@ public class MediaPlayerApp extends InternalApp {
 		return appData;
 	}
 
-	public void activate(int watchType) {
+	public void activate(final Context context, int watchType) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Entering media mode");
 		
 		if (watchType == WatchType.DIGITAL) {
@@ -60,7 +60,7 @@ public class MediaPlayerApp extends InternalApp {
 		}
 	}
 	
-	public void deactivate(int watchType) {
+	public void deactivate(final Context context, int watchType) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Leaving media mode");
 		
 		if (watchType == WatchType.DIGITAL) {
