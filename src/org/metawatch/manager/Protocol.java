@@ -55,8 +55,6 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 public class Protocol {
-
-	public static final byte REPLAY = 30;
 	
 	private static volatile BlockingQueue<byte[]> sendQueue = new LinkedBlockingQueue<byte[]>();
 
@@ -513,14 +511,6 @@ public class Protocol {
 		bytes[6] = (byte) type; // immediate
 
 		enqueue(bytes);
-	}
-
-	public static void enableReplayButton() {
-		enableButton(1, 0, REPLAY, MetaWatchService.WatchBuffers.IDLE);
-	}
-
-	public static void disableReplayButton() {
-		disableButton(1, 0, MetaWatchService.WatchBuffers.IDLE);
 	}
 
 	public static void readButtonConfiguration() {

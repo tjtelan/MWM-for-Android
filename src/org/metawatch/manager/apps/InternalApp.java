@@ -1,5 +1,7 @@
 package org.metawatch.manager.apps;
 
+import java.lang.reflect.Field;
+
 import org.metawatch.manager.Application;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatch;
@@ -9,8 +11,10 @@ import org.metawatch.manager.MetaWatchService.AppLaunchMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public abstract class InternalApp {
@@ -32,7 +36,10 @@ public abstract class InternalApp {
 		boolean supportsDigital = false;
 		boolean supportsAnalog = false;
 		
-		boolean toggleable = true; //can toggle itself as an idle page
+		String pageSettingKey = null;
+		String pageSettingAttribute = null;
+		
+		private boolean toggleable = true; //can toggle itself as an idle page
 	}
 	
 	public abstract AppData getInfo();
@@ -41,6 +48,26 @@ public abstract class InternalApp {
 	}
 	public boolean isToggleable() {
 		return getInfo().toggleable;
+	}
+
+	public void setPageSetting(Context context, boolean value) {
+		//TODO: Implement a better method of configuring enabled apps
+		AppData info = getInfo();
+		if (info.pageSettingKey != null) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putBoolean(getInfo().pageSettingKey, value);
+			editor.apply();
+		}
+		if (info.pageSettingAttribute != null) {
+			try {
+				Field f = Preferences.class.getDeclaredField(info.pageSettingAttribute);
+				f.setBoolean(null, value);
+			} catch (Exception e) {
+				if (Preferences.logging) Log.e(MetaWatch.TAG, "Error while changing preference attribute", e);
+			}
+		}
+		System.out.println(Preferences.idleActions);
 	}
 	
 	// An app should do any required construction on the first call of activate or update
@@ -63,10 +90,7 @@ public abstract class InternalApp {
 		}
 		else
 			throw new IllegalStateException("Unknown app state.");
-		
-		
-	
-}
+	}
 	
 	public abstract Bitmap update(Context context, boolean preview, int watchType);
 	

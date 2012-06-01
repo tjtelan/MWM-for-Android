@@ -164,11 +164,13 @@ public class Application {
 	public static void toApp(final Context context) {
 		MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
 		
+		// Idle app pages uses the same button mode, so disable those buttons.
 		Idle.deactivateButtons(context);
 
 		int watchType = MetaWatchService.watchType;
 		if (currentApp != null) {
 			currentApp.activate(context, watchType);
+			updateAppMode(context);
 		}
 		if (watchType == MetaWatchService.WatchType.DIGITAL) {
 			Protocol.enableButton(0, 1, EXIT_APP, MetaWatchService.WatchBuffers.APPLICATION); // right top - press
@@ -189,6 +191,7 @@ public class Application {
 			if (app.appState == InternalApp.ACTIVE_IDLE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to stand-alone.");
 				
+				app.setPageSetting(context, false);
 				Idle.removeAppPage(context, app);
 				app.open(context);
 				return;
@@ -196,6 +199,7 @@ public class Application {
 			} else if (app.appState == InternalApp.ACTIVE_STANDALONE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle.");
 				
+				app.setPageSetting(context, true);
 				Idle.addAppPage(app);
 				currentApp = null; // Avoid having stopAppMode() deactivate the app.
 				Idle.toPage(context, 0);
@@ -216,6 +220,7 @@ public class Application {
 			
 		} else if (currentApp != null) {
 			currentApp.buttonPressed(context, button);
+			updateAppMode(context);
 			
 		} else {
 			// Broadcast button to external app

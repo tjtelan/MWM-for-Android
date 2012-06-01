@@ -45,6 +45,8 @@ import android.util.Log;
 public class Notification {
 
 	private static NotificationType currentNotification = null;
+	
+	public static final byte REPLAY = 30;
 
 	final static byte NOTIFICATION_NONE = 0;
 	final static byte NOTIFICATION_UP = 30;

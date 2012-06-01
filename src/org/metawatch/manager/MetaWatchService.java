@@ -170,8 +170,8 @@ public class MetaWatchService extends Service {
 		public static int smsLoopInterval = 15;
 		public static boolean idleMusicControls = false;
 		public static int idleMusicControlMethod = MediaControl.MUSICSERVICECOMMAND;
-		public static boolean actionsEnabled = false;
-		public static boolean idleReplay = false;
+		public static boolean idleActions = false;
+		public static int quickButton = Idle.QB_DISABLED;
 		public static boolean notificationLarger = false;
 		public static boolean autoConnect = false;
 		public static boolean autoRestart = false;
@@ -246,8 +246,9 @@ public class MetaWatchService extends Service {
 		Preferences.idleMusicControlMethod = Integer.parseInt(
 				sharedPreferences.getString("IdleMusicControlMethod", 
 				Integer.toString(Preferences.idleMusicControlMethod)));
-		Preferences.idleReplay = sharedPreferences.getBoolean("IdleReplay",
-				Preferences.idleReplay);
+		Preferences.quickButton = Integer.parseInt(
+				sharedPreferences.getString("QuickButton", 
+				Integer.toString(Preferences.quickButton)));
 		Preferences.autoConnect = sharedPreferences.getBoolean(
 				"AutoConnect", Preferences.autoConnect);	
 		Preferences.autoRestart = sharedPreferences.getBoolean("AutoRestart", 
@@ -273,7 +274,8 @@ public class MetaWatchService extends Service {
 				Preferences.appBufferForClocklessPages);
 		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
 				Preferences.showNotificationQueue);
-		Preferences.actionsEnabled = sharedPreferences.getBoolean("Actions", Preferences.actionsEnabled);
+		Preferences.idleActions = sharedPreferences.getBoolean("IdleActions",
+				Preferences.idleActions);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
@@ -513,11 +515,6 @@ public class MetaWatchService extends Service {
 			Protocol.getDeviceType();
 
 			Notification.startNotificationSender(this);
-
-			if (Preferences.idleReplay)
-				Protocol.enableReplayButton();
-			else
-				Protocol.disableReplayButton();
 			
 			SharedPreferences sharedPreferences = PreferenceManager
 					.getDefaultSharedPreferences(context);
@@ -826,6 +823,9 @@ public class MetaWatchService extends Service {
 					
 					Protocol.queryNvalTime();
 				}
+				
+				Idle.activateButtons(this);
+				
 			} else if (bytes[2] == eMessageType.ReadBatteryVoltageResponse.msg) {
 				boolean powerGood = bytes[4] > 0;
 				boolean batteryCharging = bytes[5] > 0;
@@ -920,8 +920,8 @@ public class MetaWatchService extends Service {
 				
 				switch (button) {
 				
-				case Protocol.REPLAY:
-					Notification.replay(this);
+				case Idle.QUICK_BUTTON:
+					Idle.quickButtonAction(this);
 					break;
 					
 				case Idle.IDLE_NEXT_PAGE:							
@@ -929,7 +929,6 @@ public class MetaWatchService extends Service {
 						Idle.nextPage(this);
 						Idle.updateIdle(this, true);	
 					}
-	
 					break;
 					
 				case Idle.IDLE_OLED_DISPLAY:
@@ -975,19 +974,7 @@ public class MetaWatchService extends Service {
 			break;
 			
 		case WatchStates.NOTIFICATION:
-			switch (button) {
-			case Notification.NOTIFICATION_UP:
-				Notification.buttonPressed(button);
-				break;
-				
-			case Notification.NOTIFICATION_DOWN:
-				Notification.buttonPressed(button);
-				break;
-				
-			case Notification.NOTIFICATION_DISMISS:
-				Notification.buttonPressed(button);
-				break;
-			}
+			Notification.buttonPressed(button);
 			break;
 		}
 
