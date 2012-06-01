@@ -324,10 +324,7 @@ public class ActionsApp extends InternalApp {
 		canvas.drawColor(Color.WHITE);
 		
 		final int maxY = 96 - textHeight;
-		int y = 1;
-		if (!containerStack.isEmpty()) {
-			y += textHeight + 4; //Make room for a title.
-		}
+		int y = textHeight + 5; //Make room for a title.
 
 		boolean scrolled = false;
 		for (int i = Math.max(0, currentSelection - 96/textHeight + (containerStack.isEmpty() ? 3 : 4));
@@ -396,15 +393,14 @@ public class ActionsApp extends InternalApp {
 			}
 		}
 		
-		if (!containerStack.isEmpty()) {
-			// Draw title.
-			if (scrolled) {
-				// Paint white over any scrolled items.
-				canvas.drawRect(0, 0, 95, textHeight+4, paintWhite);
-			}
-			canvas.drawText((String) TextUtils.ellipsize(containerStack.peek().getTitle(), paint, 84, TruncateAt.END), 2, textHeight+1, paint);
-			canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
+		// Draw title.
+		if (scrolled) {
+			// Paint white over any scrolled items.
+			canvas.drawRect(0, 0, 95, textHeight+4, paintWhite);
 		}
+		String title = (containerStack.isEmpty() ? "Actions" : containerStack.peek().getTitle());
+		canvas.drawText((String) TextUtils.ellipsize(title, paint, 84, TruncateAt.END), 2, textHeight+1, paint);
+		canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
 		
 		// Draw icons.
 		drawDigitalAppSwitchIcon(context, canvas, preview);
