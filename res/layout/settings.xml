@@ -242,7 +242,7 @@
 			android:dialogTitle="Quick Button Action" 
 			android:key="QuickButton" 
 			android:title="Quick Button Action"
-			android:summary="Action for Left Middle Button on non-app idle pages"
+			android:summary="Action for Right Middle Button on non-app idle pages"
 			android:negativeButtonText="Cancel"
  			android:defaultValue="0"
  			/>

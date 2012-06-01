@@ -84,15 +84,19 @@ public class Idle {
 		
 		public void activate(final Context context, int watchType) {
 			if (Preferences.quickButton != QB_DISABLED) {
-				if (watchType == MetaWatchService.WatchType.DIGITAL)
-					Protocol.enableButton(1, 0, Idle.QUICK_BUTTON, screenMode(watchType));
+				if (watchType == MetaWatchService.WatchType.DIGITAL) {
+					Protocol.enableButton(1, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right middle immediate
+					Protocol.enableButton(1, 1, Idle.QUICK_BUTTON, screenMode(watchType)); // Right middle - press
+				}
 			}
 		}
 
 		public void deactivate(final Context context, int watchType) {
 			if (Preferences.quickButton != QB_DISABLED) {
-				if (watchType == MetaWatchService.WatchType.DIGITAL)
-					Protocol.disableButton(1, 0, screenMode(watchType));
+				if (watchType == MetaWatchService.WatchType.DIGITAL) {
+					Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.IDLE); // Enable built in action for Right middle immediate
+					Protocol.disableButton(1, 1, screenMode(watchType)); // Right middle - press
+				}
 			}
 		}
 		

@@ -67,7 +67,6 @@ public abstract class InternalApp {
 				if (Preferences.logging) Log.e(MetaWatch.TAG, "Error while changing preference attribute", e);
 			}
 		}
-		System.out.println(Preferences.idleActions);
 	}
 	
 	// An app should do any required construction on the first call of activate or update
@@ -117,8 +116,7 @@ public abstract class InternalApp {
 				int watchType = MetaWatchService.watchType;
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
 					Application.startAppMode(context, this);
-					Application.updateAppMode(context, update(context, false, watchType));
-					Application.toApp(context);
+					Application.toApp(context); // Will call update() to draw app screen.
 				} else if (watchType == MetaWatchService.WatchType.ANALOG) {
 					//FIXME
 				}
