@@ -356,7 +356,7 @@
 		<CheckBoxPreference
 			android:title="Music Controls"
 			android:key="IdleMusicControls"
-			android:summary="Music control screen available (via top-right button on Digital, or crown button on Analog)"
+			android:summary="Music controls as an app page"
 			android:defaultValue="false"
 			/>
 		<ListPreference 
@@ -371,8 +371,8 @@
  			/>	
 		<CheckBoxPreference
 		    android:title="Actions"
-		    android:key="Actions"
-		    android:summary="Enable the Actions screen, to view recent notifications, launch apps, and much more (via top-right button on Digital, or crown button on Analog)"
+		    android:key="IdleActions"
+		    android:summary="Actions screen as an app page (view recent notifications, launch apps, and much more)"
 		    android:defaultValue="false"
 		    />
 	    			    

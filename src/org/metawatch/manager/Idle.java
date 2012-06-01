@@ -324,7 +324,7 @@ public class Idle {
 		if (prevList == null) {
 			// Initialize app pages.
 			// TODO: Implement a better method of configuring enabled apps
-			if(Preferences.actionsEnabled) {
+			if(Preferences.idleActions) {
 				screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
 			}
 			if(Preferences.idleMusicControls) {

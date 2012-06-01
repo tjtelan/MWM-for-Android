@@ -44,6 +44,9 @@ public class ActionsApp extends InternalApp {
 	
 		supportsDigital = true;
 		supportsAnalog = true;
+		
+		pageSettingKey = "IdleActions";
+		pageSettingAttribute = "idleActions";
 	}};
 	
 	public final static byte ACTION_NEXT = 30;

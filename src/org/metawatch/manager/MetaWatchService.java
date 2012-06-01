@@ -170,7 +170,7 @@ public class MetaWatchService extends Service {
 		public static int smsLoopInterval = 15;
 		public static boolean idleMusicControls = false;
 		public static int idleMusicControlMethod = MediaControl.MUSICSERVICECOMMAND;
-		public static boolean actionsEnabled = false;
+		public static boolean idleActions = false;
 		public static int quickButton = Idle.QB_DISABLED;
 		public static boolean notificationLarger = false;
 		public static boolean autoConnect = false;
@@ -274,7 +274,8 @@ public class MetaWatchService extends Service {
 				Preferences.appBufferForClocklessPages);
 		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
 				Preferences.showNotificationQueue);
-		Preferences.actionsEnabled = sharedPreferences.getBoolean("Actions", Preferences.actionsEnabled);
+		Preferences.idleActions = sharedPreferences.getBoolean("IdleActions",
+				Preferences.idleActions);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(

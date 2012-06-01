@@ -28,6 +28,9 @@ public class MediaPlayerApp extends InternalApp {
 	
 		supportsDigital = true;
 		supportsAnalog = true;
+		
+		pageSettingKey = "IdleMusicControls";
+		pageSettingAttribute = "idleMusicControls";
 	}};
 	
 	public final static byte VOLUME_UP = 10;
