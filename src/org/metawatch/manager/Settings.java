@@ -44,85 +44,68 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceScreen;
 import android.util.Log;
 
 public class Settings extends PreferenceActivity {
-	
-	
-	
-	Context context;
-	
-	PreferenceScreen preferenceScreen;
-	Preference discovery;
-	Preference appBlacklist;
-	Preference resetWidgets;
-	Preference backup;
-	Preference restore;
-	
-	EditTextPreference editTextMac;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = this;
 		
 		addPreferencesFromResource(R.layout.settings);
 
-		preferenceScreen = getPreferenceScreen();
-		
-	}
-
-	@Override
-	protected void onStart() {
-
-		editTextMac = (EditTextPreference) preferenceScreen.findPreference("MAC");
+		EditTextPreference editTextMac = (EditTextPreference)findPreference("MAC");
 		editTextMac.setText(MetaWatchService.Preferences.watchMacAddress);
 		
-		discovery = preferenceScreen.findPreference("Discovery");
+		Preference discovery = findPreference("Discovery");
 		discovery.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			
 			public boolean onPreferenceClick(Preference arg0) {
 				
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "discovery click");
 				
-				startActivity(new Intent(context, DeviceSelection.class));
+				startActivity(new Intent(Settings.this, DeviceSelection.class));
 				
 				return false;
 			}
 		});
 		
 		
-		appBlacklist = preferenceScreen.findPreference("appBlacklist");
+		Preference appBlacklist = findPreference("appBlacklist");
 		appBlacklist.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
-				startActivity(new Intent(context, AppBlacklist.class));
+				startActivity(new Intent(Settings.this, AppBlacklist.class));
 				return false;
 			}
 		});
 
-		backup = preferenceScreen.findPreference("ResetWidgets");
-		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		Preference resetWidgets = findPreference("ResetWidgets");
+		resetWidgets.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
-				WidgetManager.resetWidgetsToDefaults(context);
+				WidgetManager.resetWidgetsToDefaults(Settings.this);
 				return false;
 			}
 		});
 		
-		backup = preferenceScreen.findPreference("Backup");
+		Preference backup = findPreference("Backup");
 		backup.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
-				Utils.backupUserPrefs(context);
+				Utils.backupUserPrefs(Settings.this);
 				return false;
 			}
 		});
 		
-		restore = preferenceScreen.findPreference("Restore");
+		Preference restore = findPreference("Restore");
 		restore.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
-				if( Utils.restoreUserPrefs(context) ) {		
+				if( Utils.restoreUserPrefs(Settings.this) ) {		
 					// Restart				
-					AlarmManager alm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE); alm.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, PendingIntent.getActivity(context, 0, new Intent(context, MetaWatch.class), 0));					
+					AlarmManager alm = (AlarmManager) Settings.this.getSystemService(Context.ALARM_SERVICE);
+					alm.set(AlarmManager.RTC,
+							System.currentTimeMillis() + 1000,
+							PendingIntent.getActivity(Settings.this,
+									0,
+									new Intent(Settings.this, MetaWatch.class),
+									0));					
 					android.os.Process.sendSignal(android.os.Process.myPid(), android.os.Process.SIGNAL_KILL);
 				}
 				return false;
