@@ -65,8 +65,8 @@ public class Idle {
 	public final static int QB_OPEN_ACTIONS = 2;
 	
 	private interface IdlePage {
-		public void activate(int watchType);
-		public void deactivate(int watchType);
+		public void activate(Context context, int watchType);
+		public void deactivate(Context context, int watchType);
 		Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType);
 		public int screenMode(int watchType);
 		public int buttonPressed(Context context, int id);
@@ -82,21 +82,21 @@ public class Idle {
 			pageIndex = p;
 		}
 		
-		public void activate(int watchType) {
+		public void activate(final Context context, int watchType) {
 			if (Preferences.quickButton != QB_DISABLED) {
 				if (watchType == MetaWatchService.WatchType.DIGITAL)
 					Protocol.enableButton(1, 0, Idle.QUICK_BUTTON, screenMode(watchType));
 			}
 		}
 
-		public void deactivate(int watchType) {
+		public void deactivate(final Context context, int watchType) {
 			if (Preferences.quickButton != QB_DISABLED) {
 				if (watchType == MetaWatchService.WatchType.DIGITAL)
 					Protocol.disableButton(1, 0, screenMode(watchType));
 			}
 		}
 		
-		public Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType) {
+		public Bitmap draw(final Context context, boolean preview, Bitmap bitmap, int watchType) {
 			
 			Canvas canvas = new Canvas(bitmap);
 			canvas.drawColor(Color.WHITE);	
@@ -161,20 +161,20 @@ public class Idle {
 			app = arg;
 		}
 		
-		public void activate(int watchType) {
+		public void activate(final Context context, int watchType) {
 			app.appState = InternalApp.ACTIVE_IDLE;
-			app.activate(watchType);
+			app.activate(context, watchType);
 			if (app.isToggleable())
 				Application.enableToggleButton(watchType);
 		}
 
-		public void deactivate(int watchType) {
+		public void deactivate(final Context context, int watchType) {
 			app.setInactive();
-			app.deactivate(watchType);
+			app.deactivate(context, watchType);
 			Application.disableToggleButton(watchType);
 		}
 		
-		public Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType) {
+		public Bitmap draw(final Context context, boolean preview, Bitmap bitmap, int watchType) {
 			return app.update(context, preview, watchType);
 		}	
 		
@@ -192,20 +192,20 @@ public class Idle {
 	
 	static Bitmap oledIdle = null;
 	
-	public static void nextPage() {
-		toPage(currentPage+1);
+	public static void nextPage(final Context context) {
+		toPage(context, currentPage+1);
 	}
 	
-	public static void toPage(int page) {
+	public static void toPage(final Context context, int page) {
 			
 		if(idlePages != null && idlePages.size()>currentPage) {
-			idlePages.get(currentPage).deactivate(MetaWatchService.watchType);
+			idlePages.get(currentPage).deactivate(context, MetaWatchService.watchType);
 		}
 				
 		currentPage = (page) % numPages();
 		
 		if(idlePages != null && idlePages.size()>currentPage) {
-			idlePages.get(currentPage).activate(MetaWatchService.watchType);
+			idlePages.get(currentPage).activate(context, MetaWatchService.watchType);
 		}
 	}
 	
@@ -248,12 +248,12 @@ public class Idle {
 		return page;
 	}
 	
-	public static synchronized void removeAppPage(InternalApp app) {
+	public static synchronized void removeAppPage(final Context context, InternalApp app) {
 		int page = getAppPage(app.getId());
 
 		if (page != -1) {
 			if (page == currentPage) {
-				nextPage();
+				nextPage(context);
 			}
 			
 			idlePages.remove(page);
@@ -341,6 +341,11 @@ public class Idle {
 		}
 		
 		idlePages = screens;
+		
+		if (prevList == null) {
+			//First run of this function, activate buttons for initial screen.
+			toPage(context, currentPage);
+		}
 	}
 
 	static Bitmap createIdle(Context context) {
@@ -407,7 +412,7 @@ public class Idle {
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
 		
 		if (idlePages != null)
-			idlePages.get(currentPage).activate(MetaWatchService.watchType);
+			idlePages.get(currentPage).activate(context, MetaWatchService.watchType);
 		
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
 			sendLcdIdle(context, true);
@@ -483,15 +488,15 @@ public class Idle {
 		}
 	}
 
-	public static void activateButtons() {
+	public static void activateButtons(final Context context) {
 		if(idlePages != null && idlePages.size()>currentPage) {
-			idlePages.get(currentPage).activate(MetaWatchService.watchType);
+			idlePages.get(currentPage).activate(context, MetaWatchService.watchType);
 		}
 	}
 
-	public static void deactivateButtons() {
+	public static void deactivateButtons(final Context context) {
 		if(idlePages != null && idlePages.size()>currentPage) {
-			idlePages.get(currentPage).deactivate(MetaWatchService.watchType);
+			idlePages.get(currentPage).deactivate(context, MetaWatchService.watchType);
 		}
 	}
 	

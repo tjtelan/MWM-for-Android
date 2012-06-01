@@ -71,8 +71,8 @@ public abstract class InternalApp {
 	}
 	
 	// An app should do any required construction on the first call of activate or update
-	public abstract void activate(int watchType);
-	public abstract void deactivate(int watchType);
+	public abstract void activate(Context context, int watchType);
+	public abstract void deactivate(Context context, int watchType);
 	
 	protected void drawDigitalAppSwitchIcon(Context context, Canvas canvas, boolean preview) {
 		if (appState == ACTIVE_IDLE || preview) { // if preview is true, it's for idle mode
@@ -107,7 +107,7 @@ public abstract class InternalApp {
 		
 		// Open the existing Idle app page.
 		if (page != -1) {
-			Idle.toPage(page);
+			Idle.toPage(context, page);
 			Idle.toIdle(context);
 		
 		// Open stand-alone.
@@ -117,13 +117,14 @@ public abstract class InternalApp {
 				int watchType = MetaWatchService.watchType;
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
 					Application.startAppMode(context, this);
+					Application.updateAppMode(context, update(context, false, watchType));
 					Application.toApp(context);
 				} else if (watchType == MetaWatchService.WatchType.ANALOG) {
 					//FIXME
 				}
 			} else if (Preferences.appLaunchMode == AppLaunchMode.APPPAGE) {
 				page = Idle.addAppPage(this);
-				Idle.toPage(page);
+				Idle.toPage(context, page);
 				Idle.toIdle(context);
 			}
 		}

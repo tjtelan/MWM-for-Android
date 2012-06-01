@@ -824,7 +824,7 @@ public class MetaWatchService extends Service {
 					Protocol.queryNvalTime();
 				}
 				
-				Idle.activateButtons();
+				Idle.activateButtons(this);
 				
 			} else if (bytes[2] == eMessageType.ReadBatteryVoltageResponse.msg) {
 				boolean powerGood = bytes[4] > 0;
@@ -926,7 +926,7 @@ public class MetaWatchService extends Service {
 					
 				case Idle.IDLE_NEXT_PAGE:							
 					if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-						Idle.nextPage();
+						Idle.nextPage(this);
 						Idle.updateIdle(this, true);	
 					}
 					break;
@@ -936,7 +936,7 @@ public class MetaWatchService extends Service {
 					
 					if(time-lastOledCrownPress < 1000*5)
 					{
-						Idle.nextPage();
+						Idle.nextPage(this);
 						Idle.updateIdle(this, true);
 					}
 					
