@@ -38,7 +38,6 @@ import java.util.Map;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
-import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
@@ -58,6 +57,12 @@ public class Idle {
 	
 	final static byte IDLE_NEXT_PAGE = 60;
 	final static byte IDLE_OLED_DISPLAY = 61;
+	final static byte QUICK_BUTTON = 62;
+
+	// Quick Button modes.
+	public final static int QB_DISABLED = 0;
+	public final static int QB_NOTIFICATION_REPLAY = 1;
+	public final static int QB_OPEN_ACTIONS = 2;
 	
 	private interface IdlePage {
 		public void activate(int watchType);
@@ -77,9 +82,19 @@ public class Idle {
 			pageIndex = p;
 		}
 		
-		public void activate(int watchType) {}
+		public void activate(int watchType) {
+			if (Preferences.quickButton != QB_DISABLED) {
+				if (watchType == MetaWatchService.WatchType.DIGITAL)
+					Protocol.enableButton(1, 0, Idle.QUICK_BUTTON, screenMode(watchType));
+			}
+		}
 
-		public void deactivate(int watchType) {}
+		public void deactivate(int watchType) {
+			if (Preferences.quickButton != QB_DISABLED) {
+				if (watchType == MetaWatchService.WatchType.DIGITAL)
+					Protocol.disableButton(1, 0, screenMode(watchType));
+			}
+		}
 		
 		public Bitmap draw(Context context, boolean preview, Bitmap bitmap, int watchType) {
 			
@@ -326,11 +341,6 @@ public class Idle {
 		}
 		
 		idlePages = screens;
-		
-		if (prevList == null) {
-			//First run of this function, activate buttons for initial screen.
-			toPage(currentPage);
-		}
 	}
 
 	static Bitmap createIdle(Context context) {
@@ -455,11 +465,6 @@ public class Idle {
 		Protocol.oledChangeMode(mode);					
 	}
 	
-	public static void oledTest(Context context, String msg) {
-		VibratePattern vibratePattern = new VibratePattern(false, 0, 0, 1);
-		Notification.addOledNotification(context, Protocol.createOled1line(context, null, "Testing"), Protocol.createOled1line(context, null, msg), null, 0, vibratePattern, "oled test");
-	}
-	
 	public static int appButtonPressed(Context context, int id) {
 		if(idlePages != null && idlePages.size()>currentPage) {
 			return idlePages.get(currentPage).buttonPressed(context, id);
@@ -467,6 +472,23 @@ public class Idle {
 		return InternalApp.BUTTON_NOT_USED;
 	}
 	
+	public static void quickButtonAction(Context context) {
+		switch(Preferences.quickButton) {
+		case QB_NOTIFICATION_REPLAY:
+			Notification.replay(context);
+			break;
+		case QB_OPEN_ACTIONS:
+			AppManager.getApp(ActionsApp.APP_ID).open(context);
+			break;
+		}
+	}
+
+	public static void activateButtons() {
+		if(idlePages != null && idlePages.size()>currentPage) {
+			idlePages.get(currentPage).activate(MetaWatchService.watchType);
+		}
+	}
+
 	public static void deactivateButtons() {
 		if(idlePages != null && idlePages.size()>currentPage) {
 			idlePages.get(currentPage).deactivate(MetaWatchService.watchType);

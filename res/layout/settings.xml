@@ -186,12 +186,6 @@
 			android:summary="List of applications to ignore notifications from"
 			/>
 
-		<CheckBoxPreference
-			android:title="Last Notification Replay (Beta)"
-			android:key="IdleReplay"
-			android:summary="Enable replay of last notification on Idle screen"
-			android:defaultValue="false"
-			/>
 		<ListPreference 
 			android:entries="@array/settings_font_size_name" 
 			android:entryValues="@array/settings_font_size_value" 
@@ -241,7 +235,18 @@
 	<PreferenceScreen
 		android:title="@string/settings_Digital"
 		>
-			
+ 		
+		<ListPreference 
+			android:entries="@array/settings_quick_button_name" 
+			android:entryValues="@array/settings_quick_button_value" 
+			android:dialogTitle="Quick Button Action" 
+			android:key="QuickButton" 
+			android:title="Quick Button Action"
+			android:summary="Action for Left Middle Button on non-app idle pages"
+			android:negativeButtonText="Cancel"
+ 			android:defaultValue="0"
+ 			/>
+		
 		<CheckBoxPreference
 			android:title="Sticky Notifications"
 			android:key="stickyNotifications"

@@ -120,6 +120,18 @@
    	<item>1</item> 
 	</string-array>
     
+    <string-array name="settings_quick_button_name"> 
+   	<item>Disabled</item>
+   	<item>Replay Latest Notification</item>
+   	<item>Open/Go to the Actions App</item>   
+	</string-array> 
+
+	<string-array name="settings_quick_button_value"> 
+	<item>0</item>
+   	<item>1</item>
+   	<item>2</item>
+	</string-array>
+    
     <string name="settings_Digital">Digital Watch</string>
     <string name="settings_Analog">Analog Watch</string>
     <string name="settings_Other">Other</string>

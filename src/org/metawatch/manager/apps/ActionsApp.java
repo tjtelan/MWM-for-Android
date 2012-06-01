@@ -8,6 +8,7 @@ import java.util.Stack;
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatchService;
+import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
@@ -43,8 +44,6 @@ public class ActionsApp extends InternalApp {
 	
 		supportsDigital = true;
 		supportsAnalog = true;
-		
-		toggleable = false;
 	}};
 	
 	public final static byte ACTION_NEXT = 30;
@@ -73,6 +72,17 @@ public class ActionsApp extends InternalApp {
 	
 	public AppData getInfo() {
 		return appData;
+	}
+	
+	public boolean isToggleable() {
+		// Always provide a way to reach the Actions app (since it's quite central).
+		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL &&
+				Preferences.quickButton == Idle.QB_OPEN_ACTIONS) {
+			// Only set toggleable if Quick Button can open it again.
+			return true;
+		}
+		
+		return false;
 	}
 	
 	List<Action> internalActions = null;
@@ -327,7 +337,7 @@ public class ActionsApp extends InternalApp {
 		int y = textHeight + 5; //Make room for a title.
 
 		boolean scrolled = false;
-		for (int i = Math.max(0, currentSelection - 96/textHeight + (containerStack.isEmpty() ? 3 : 4));
+		for (int i = Math.max(0, currentSelection - 96/textHeight + 4);
 				(i < currentActions.size() && (i <= currentSelection || y <= 96));
 				i++) {
 			Action a = currentActions.get(i);
@@ -400,7 +410,7 @@ public class ActionsApp extends InternalApp {
 		}
 		String title = (containerStack.isEmpty() ? "Actions" : containerStack.peek().getTitle());
 		canvas.drawText((String) TextUtils.ellipsize(title, paint, 84, TruncateAt.END), 2, textHeight+1, paint);
-		canvas.drawLine(1, textHeight+2, 86, textHeight+2, paint);
+		canvas.drawLine(1, textHeight+2, (isToggleable() ? 79 : 87), textHeight+2, paint);
 		
 		// Draw icons.
 		drawDigitalAppSwitchIcon(context, canvas, preview);
