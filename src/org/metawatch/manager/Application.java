@@ -197,11 +197,10 @@ public class Application {
 				return;
 			
 			} else if (app.appState == InternalApp.ACTIVE_STANDALONE) {
-				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle.");
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle page.");
 				
 				app.setPageSetting(context, true);
 				Idle.addAppPage(app);
-				currentApp = null; // Avoid having stopAppMode() deactivate the app.
 				Idle.toPage(context, 0);
 				stopAppMode(context); // Goes to Idle if not in Notification.
 				return;
