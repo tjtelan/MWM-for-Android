@@ -25,23 +25,15 @@ public class InternalActions {
 		}
 	}
 	
-	public static class PingAction extends Action {
+	public static class PingAction extends ToggleAction {
 		Ringtone r = null;
 		int volume = -1;
 		int ringerMode = 0;
 		
 		public String getName() {
-			if( isSilent() ) {
-				return "Ping phone";
-			}
-			else {
-				return "Stop alarm";
-			}
-		}
-		
-		public String bulletIcon() {
-			return isSilent() ? "bullet_circle.bmp"
-					          : "bullet_circle_open.bmp";
+			return isSilent()
+				? "Ping phone"
+				: "Stop alarm";
 		}
 	
 		public int performAction(Context context) {
@@ -65,6 +57,10 @@ public class InternalActions {
 				as.setRingerMode(ringerMode);
 			}
 			return InternalApp.BUTTON_USED;
+		}
+		
+		protected boolean isEnabled() {
+			return !isSilent();
 		}
 		
 		private boolean isSilent() {
