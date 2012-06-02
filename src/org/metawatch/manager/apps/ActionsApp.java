@@ -208,6 +208,7 @@ public class ActionsApp extends InternalApp {
 				internalActions.add(new InternalActions.WeatherRefreshAction());
 			internalActions.add(new InternalActions.SpeakerphoneAction(context));
 			internalActions.add(new InternalActions.ClickerAction());
+			internalActions.add(new InternalActions.ToggleWifiAction(context));
 			//internalActions.add(new InternalActions.MapsAction());
 			//internalActions.add(new InternalActions.WoodchuckAction());
 			

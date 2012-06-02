@@ -11,6 +11,7 @@ import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 
 public class InternalActions {
 	
@@ -135,6 +136,36 @@ public class InternalActions {
 		public long getTimestamp() {
 			return WeatherData.timeStamp;
 		}
+	}
+	
+	public static class ToggleWifiAction extends Action {
+		
+		WifiManager wifiMgr = null;
+		
+		public ToggleWifiAction(Context context) {
+			wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		}
+		
+		public String getName() {
+			return (wifiMgr != null && wifiMgr.isWifiEnabled() ) 
+					? "Disable Wifi"
+					: "Enable Wifi";
+		}
+		
+		public String bulletIcon() {
+			return wifiMgr !=null && wifiMgr.isWifiEnabled()
+					? "bullet_circle_open.bmp"
+			        : "bullet_circle.bmp";
+		}
+	
+		public int performAction(Context context) {
+			if (wifiMgr!=null) {
+				wifiMgr.setWifiEnabled( !wifiMgr.isWifiEnabled() );
+			}
+			
+			return InternalApp.BUTTON_USED;
+		}
+		
 	}
 
 	public static class WoodchuckAction extends Action {
