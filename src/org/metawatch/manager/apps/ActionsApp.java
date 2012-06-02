@@ -9,6 +9,7 @@ import org.metawatch.manager.FontCache;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
@@ -203,6 +204,8 @@ public class ActionsApp extends InternalApp {
 			internalActions = new ArrayList<Action>();
 
 			internalActions.add(new InternalActions.PingAction());
+			if (Preferences.weatherProvider!=WeatherProvider.DISABLED)
+				internalActions.add(new InternalActions.WeatherRefreshAction());
 			internalActions.add(new InternalActions.SpeakerphoneAction(context));
 			internalActions.add(new InternalActions.ClickerAction());
 			//internalActions.add(new InternalActions.MapsAction());

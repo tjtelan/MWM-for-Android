@@ -1,6 +1,8 @@
 package org.metawatch.manager.actions;
 
 import org.metawatch.manager.MediaControl;
+import org.metawatch.manager.Monitors;
+import org.metawatch.manager.Monitors.WeatherData;
 import org.metawatch.manager.apps.InternalApp;
 
 import android.content.Context;
@@ -109,6 +111,29 @@ public class InternalActions {
 		
 		public long getTimestamp() {
 			return timestamp;
+		}
+	}
+	
+	public static class WeatherRefreshAction extends Action {
+		
+		public String getName() {
+			return WeatherData.received 
+					? "Refresh Weather"
+					: "Refreshing...";
+		}
+		
+		public String bulletIcon() {
+			return "bullet_circle.bmp";
+		}
+	
+		public int performAction(Context context) {
+			Monitors.updateWeatherDataForced(context);
+			
+			return InternalApp.BUTTON_USED;
+		}
+		
+		public long getTimestamp() {
+			return WeatherData.timeStamp;
 		}
 	}
 

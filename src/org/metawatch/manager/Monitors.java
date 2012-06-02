@@ -543,10 +543,10 @@ public class Monitors {
 				WeatherData.celsius = Preferences.weatherCelsius;
 				
 				WeatherData.received = true;
+				WeatherData.timeStamp = System.currentTimeMillis();
 				
 				Idle.updateIdle(context, true);
 				MetaWatchService.notifyClients();
-				WeatherData.timeStamp = System.currentTimeMillis();		
 		    }
 
 			
@@ -653,6 +653,15 @@ public class Monitors {
 		};
 		thread.start();
 	}
+	
+	// Force the update, by clearing the timestamps
+	public static void updateWeatherDataForced(final Context context) {
+		WeatherData.received = false;
+		WeatherData.timeStamp = 0;
+		WeatherData.forecastTimeStamp = 0;
+		updateWeatherData(context);
+	}
+		
 	
 	static void startAlarmTicker(Context context) {		
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "startAlarmTicker()");

@@ -306,8 +306,7 @@ public class Test extends PreferenceActivity {
 		
 		preferenceScreen.findPreference("refresh_weather").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-		    	WeatherData.timeStamp = 0;
-				Monitors.updateWeatherData(context);
+				Monitors.updateWeatherDataForced(context);
 		    	return true;
 			}
 		});
