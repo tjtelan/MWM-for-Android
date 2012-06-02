@@ -20,6 +20,7 @@ import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.WatchType;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -211,9 +212,12 @@ public class ActionsApp extends InternalApp {
 			
 			List<Action> toggles = phoneSettingsAction.getSubActions();
 			toggles.clear();
-			toggles.add(new InternalActions.ToggleWifiAction(context));
-			toggles.add(new InternalActions.ToggleSilentAction(context));
-			toggles.add(new InternalActions.SpeakerphoneAction(context));
+			PackageManager pm = context.getPackageManager();
+			if (pm.hasSystemFeature(PackageManager.FEATURE_WIFI))
+				toggles.add(new InternalActions.ToggleWifiAction(context));
+			toggles.add(new InternalActions.ToggleSilentAction(context));		
+			if (pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY))
+				toggles.add(new InternalActions.SpeakerphoneAction(context));
 
 			internalActions.add(new InternalActions.PingAction());
 			if (Preferences.weatherProvider!=WeatherProvider.DISABLED)
