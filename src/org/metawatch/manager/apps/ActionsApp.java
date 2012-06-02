@@ -67,8 +67,17 @@ public class ActionsApp extends InternalApp {
 			} else {
 				return 0;
 			}
+		}		
+	}
+	
+	public static class PhoneSettingsAction extends ContainerAction {
+		public String getName() {
+			return "Phone Settings";
 		}
 		
+		public String getTitle() {
+			return "Phone Settings";
+		}	
 	}
 	
 	public AppData getInfo() {
@@ -91,6 +100,7 @@ public class ActionsApp extends InternalApp {
 	List<Action> currentActions = null; //Contains the list as it's shown on the screen (including a "back" item for sub level lists).
 	Action backAction = null;
 	NotificationsAction notificationsAction = null;
+	PhoneSettingsAction phoneSettingsAction = null;
 	
 	Stack<Integer> selectionStack = new Stack<Integer>(); //Only contains selection for upper level lists.
 	int currentSelection = 0;
@@ -101,10 +111,6 @@ public class ActionsApp extends InternalApp {
 		for (final AppData a : AppManager.getAppInfos()) {
 			if (a.id.equals(APP_ID))
 				continue; // Skip self.
-			
-			//if (Idle.getAppPage(a.id) != -1) {
-			//	continue; // Skip apps running as idle pages.
-			//}
 			
 			int watchType = MetaWatchService.watchType;
 			if ((watchType == MetaWatchService.WatchType.ANALOG && !a.supportsAnalog) ||
@@ -202,13 +208,20 @@ public class ActionsApp extends InternalApp {
 		
 		if (internalActions == null) {
 			internalActions = new ArrayList<Action>();
+			
+			if (phoneSettingsAction == null)
+				phoneSettingsAction = new PhoneSettingsAction();
+			internalActions.add(phoneSettingsAction);
+			
+			List<Action> toggles = phoneSettingsAction.getSubActions();
+			toggles.clear();
+			toggles.add(new InternalActions.ToggleWifiAction(context));
+			toggles.add(new InternalActions.SpeakerphoneAction(context));
 
 			internalActions.add(new InternalActions.PingAction());
 			if (Preferences.weatherProvider!=WeatherProvider.DISABLED)
 				internalActions.add(new InternalActions.WeatherRefreshAction());
-			internalActions.add(new InternalActions.SpeakerphoneAction(context));
 			internalActions.add(new InternalActions.ClickerAction());
-			internalActions.add(new InternalActions.ToggleWifiAction(context));
 			//internalActions.add(new InternalActions.MapsAction());
 			//internalActions.add(new InternalActions.WoodchuckAction());
 			
