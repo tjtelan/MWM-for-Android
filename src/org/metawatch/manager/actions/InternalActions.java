@@ -15,6 +15,16 @@ import android.net.wifi.WifiManager;
 
 public class InternalActions {
 	
+	public abstract static class ToggleAction extends Action {
+		protected abstract boolean isEnabled();
+		
+		public String bulletIcon() {
+			return isEnabled()
+					? "bullet_circle_open.bmp"
+			        : "bullet_circle.bmp";
+		}
+	}
+	
 	public static class PingAction extends Action {
 		Ringtone r = null;
 		int volume = -1;
@@ -62,7 +72,7 @@ public class InternalActions {
 		}
 	}
 
-	public static class SpeakerphoneAction extends Action {
+	public static class SpeakerphoneAction extends ToggleAction {
 		public SpeakerphoneAction(Context context) {
 			audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		}
@@ -70,15 +80,13 @@ public class InternalActions {
 		private AudioManager audioManager = null;
 		
 		public String getName() {
-			return audioManager !=null && audioManager.isSpeakerphoneOn() 
+			return isEnabled()
 					? "Disable speakerphone"
 			        : "Enable speakerphone";
 		}
 		
-		public String bulletIcon() {
-			return audioManager !=null && audioManager.isSpeakerphoneOn() 
-					? "bullet_circle_open.bmp"
-			        : "bullet_circle.bmp";
+		protected boolean isEnabled() {
+			return audioManager !=null && audioManager.isSpeakerphoneOn();
 		}
 
 		public int performAction(Context context) {
@@ -143,7 +151,7 @@ public class InternalActions {
 		}
 	}
 	
-	public static class ToggleWifiAction extends Action {
+	public static class ToggleWifiAction extends ToggleAction {
 		
 		WifiManager wifiMgr = null;
 		
@@ -152,15 +160,13 @@ public class InternalActions {
 		}
 		
 		public String getName() {
-			return (wifiMgr != null && wifiMgr.isWifiEnabled() ) 
+			return isEnabled() 
 					? "Disable Wifi"
 					: "Enable Wifi";
 		}
 		
-		public String bulletIcon() {
-			return wifiMgr !=null && wifiMgr.isWifiEnabled()
-					? "bullet_circle_open.bmp"
-			        : "bullet_circle.bmp";
+		protected boolean isEnabled() {
+			return wifiMgr !=null && wifiMgr.isWifiEnabled();
 		}
 	
 		public int performAction(Context context) {
@@ -171,6 +177,31 @@ public class InternalActions {
 			return InternalApp.BUTTON_USED;
 		}
 		
+	}
+	
+	public static class ToggleSilentAction extends ToggleAction {
+		public ToggleSilentAction(Context context) {
+			audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		}
+		
+		private AudioManager audioManager = null;
+		
+		public String getName() {
+			return isEnabled()
+					? "Disable silent mode"
+			        : "Enable silent mode";
+		}
+		
+		protected boolean isEnabled() {
+			return audioManager !=null && (audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT);
+		}
+
+		public int performAction(Context context) {
+			audioManager.setRingerMode( audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT
+					? AudioManager.RINGER_MODE_NORMAL 
+					: AudioManager.RINGER_MODE_SILENT );
+			return InternalApp.BUTTON_USED;
+		}
 	}
 
 	public static class WoodchuckAction extends Action {
