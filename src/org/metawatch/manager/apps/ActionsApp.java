@@ -74,10 +74,6 @@ public class ActionsApp extends InternalApp {
 		public String getName() {
 			return "Phone Settings";
 		}
-		
-		public String getTitle() {
-			return "Phone Settings";
-		}	
 	}
 	
 	public AppData getInfo() {
