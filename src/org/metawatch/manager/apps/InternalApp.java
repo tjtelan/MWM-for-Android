@@ -38,8 +38,6 @@ public abstract class InternalApp {
 		
 		String pageSettingKey = null;
 		String pageSettingAttribute = null;
-		
-		private boolean toggleable = true; //can toggle itself as an idle page
 	}
 	
 	public abstract AppData getInfo();
@@ -47,7 +45,7 @@ public abstract class InternalApp {
 		return getInfo().id;
 	}
 	public boolean isToggleable() {
-		return getInfo().toggleable;
+		return true;
 	}
 
 	public void setPageSetting(Context context, boolean value) {
