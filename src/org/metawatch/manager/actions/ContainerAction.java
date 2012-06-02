@@ -5,7 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 
-public abstract class ContainerAction implements HidableAction {
+public abstract class ContainerAction extends Action {
 	protected List<Action> subActions = new ArrayList<Action>();
 
 	public List<Action> getSubActions() {

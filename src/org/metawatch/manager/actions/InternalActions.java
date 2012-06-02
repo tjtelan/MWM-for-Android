@@ -12,7 +12,7 @@ import android.net.Uri;
 
 public class InternalActions {
 	
-	public static class PingAction implements Action {
+	public static class PingAction extends Action {
 		Ringtone r = null;
 		int volume = -1;
 		
@@ -54,7 +54,7 @@ public class InternalActions {
 		}
 	}
 
-	public static class SpeakerphoneAction implements Action {
+	public static class SpeakerphoneAction extends Action {
 		public SpeakerphoneAction(Context context) {
 			audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		}
@@ -79,17 +79,13 @@ public class InternalActions {
 		}
 	}
 	
-	public static class ClickerAction implements ResettableAction, TimestampAction {
+	public static class ClickerAction extends Action {
 		int count = 0;
 		long timestamp = 0;
 		
 		public String getName() {
 			return "Clicker: "+count;
 		}
-		
-		public long getTimestamp() {
-			return timestamp;
-		} 
 		
 		public String bulletIcon() {
 			return "bullet_circle.bmp";
@@ -101,15 +97,22 @@ public class InternalActions {
 			
 			return InternalApp.BUTTON_USED;
 		}
-	
-		public int performReset(Context context) {
+		
+		public int getSecondaryType() {
+			return Action.SECONDARY_RESET;
+		}
+		public int performSecondary(Context context) {
 			count = 0;
 			timestamp = 0;
 			return InternalApp.BUTTON_USED;
 		}
+		
+		public long getTimestamp() {
+			return timestamp;
+		}
 	}
 
-	public static class WoodchuckAction implements ResettableAction {
+	public static class WoodchuckAction extends Action {
 		private static final String QUESTION = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
 		private static final String ANSWER = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
 		String name = QUESTION;
@@ -126,14 +129,17 @@ public class InternalActions {
 			name = ANSWER;
 			return InternalApp.BUTTON_USED;
 		}
-
-		public int performReset(Context context) {
+		
+		public int getSecondaryType() {
+			return Action.SECONDARY_RESET;
+		}
+		public int performSecondary(Context context) {
 			name = QUESTION;
 			return InternalApp.BUTTON_USED;
 		}
 	}
 	
-	public static class MapsAction implements Action {
+	public static class MapsAction extends Action {
 		public String getName() {
 			return "Launch Google Maps on phone";
 		}

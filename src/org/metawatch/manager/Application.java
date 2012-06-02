@@ -191,7 +191,6 @@ public class Application {
 			if (app.appState == InternalApp.ACTIVE_IDLE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to stand-alone.");
 				
-				app.setPageSetting(context, false);
 				Idle.removeAppPage(context, app);
 				app.open(context, true);
 				return;
@@ -199,8 +198,7 @@ public class Application {
 			} else if (app.appState == InternalApp.ACTIVE_STANDALONE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle page.");
 				
-				app.setPageSetting(context, true);
-				Idle.addAppPage(app);
+				Idle.addAppPage(context, app);
 				Idle.toPage(context, 0);
 				stopAppMode(context); // Goes to Idle if not in Notification.
 				return;

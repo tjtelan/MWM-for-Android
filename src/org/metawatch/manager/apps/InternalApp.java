@@ -119,7 +119,7 @@ public abstract class InternalApp {
 					//FIXME
 				}
 			} else if (Preferences.appLaunchMode == AppLaunchMode.APPPAGE) {
-				page = Idle.addAppPage(this);
+				page = Idle.addAppPage(context, this);
 				Idle.toPage(context, page);
 				Idle.toIdle(context);
 			}

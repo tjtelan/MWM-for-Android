@@ -240,13 +240,15 @@ public class Idle {
 		return null;
 	}
 	
-	public static synchronized int addAppPage(InternalApp app) {
+	public static synchronized int addAppPage(final Context context, InternalApp app) {
 		int page = getAppPage(app.getId());
 		
 		if (page == -1) {
 			AppPage aPage = new AppPage(app);
 			idlePages.add(aPage);
 			page = idlePages.indexOf(aPage);
+			
+			app.setPageSetting(context, true);
 		}
 		
 		return page;
@@ -261,6 +263,8 @@ public class Idle {
 			}
 			
 			idlePages.remove(page);
+			
+			app.setPageSetting(context, false);
 		}
 	}
 	

@@ -14,11 +14,7 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Notification.NotificationType;
 import org.metawatch.manager.actions.Action;
 import org.metawatch.manager.actions.ContainerAction;
-import org.metawatch.manager.actions.ExitableAction;
-import org.metawatch.manager.actions.HidableAction;
 import org.metawatch.manager.actions.InternalActions;
-import org.metawatch.manager.actions.ResettableAction;
-import org.metawatch.manager.actions.TimestampAction;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.WatchType;
 
@@ -55,7 +51,7 @@ public class ActionsApp extends InternalApp {
 	public final static byte ACTION_SECONDARY = 32;
 	public final static byte ACTION_TOP = 33;
 	
-	public static class NotificationsAction extends ContainerAction implements TimestampAction {
+	public static class NotificationsAction extends ContainerAction {
 		public String getName() {
 			return "Recent Notifications";
 		}
@@ -66,7 +62,7 @@ public class ActionsApp extends InternalApp {
 
 		public long getTimestamp() {
 			if (subActions.size() > 0) {
-				return ((TimestampAction)subActions.get(0)).getTimestamp();
+				return subActions.get(0).getTimestamp();
 			} else {
 				return 0;
 			}
@@ -115,7 +111,7 @@ public class ActionsApp extends InternalApp {
 				continue; // Skip unsupported apps.
 				
 			
-			list.add(new ExitableAction() {
+			list.add(new Action() {
 				public String getName() {
 					return a.name;
 				}
@@ -134,9 +130,17 @@ public class ActionsApp extends InternalApp {
 					return Idle.getAppPage(a.id)!=-1;
 				}
 				
-				public int performExit(Context context) {
-					Idle.removeAppPage(context, AppManager.getApp(a.id));
-					return BUTTON_USED;
+				public int getSecondaryType() {
+					return isRunning(null) ? Action.SECONDARY_EXIT
+										   : Action.SECONDARY_NONE;
+				}
+				public int performSecondary(Context context) {
+					if (isRunning(null)) {
+						Idle.removeAppPage(context, AppManager.getApp(a.id));
+						return BUTTON_USED;
+					}
+					
+					return BUTTON_NOT_USED;
 				}
 			});
 		}
@@ -147,7 +151,7 @@ public class ActionsApp extends InternalApp {
 	private List<Action> getNotificationActions() {
 		List<Action> list = new ArrayList<Action>();
 		for(final NotificationType n : Notification.history()) {
-			list.add(new TimestampAction() {
+			list.add(new Action() {
 				public String getName() {
 					return n.description;
 				}
@@ -311,7 +315,7 @@ public class ActionsApp extends InternalApp {
 		ListIterator<Action> it = currentActions.listIterator();
 		while (it.hasNext()) {
 			Action a = it.next();
-			if (a instanceof HidableAction && ((HidableAction)a).isHidden()) {
+			if (a.isHidden()) {
 				it.remove();
 			}
 		}
@@ -382,8 +386,8 @@ public class ActionsApp extends InternalApp {
 				y+= height;
 				
 				// Draw timestamp, if any.
-				if(a instanceof TimestampAction) {
-					final long timestamp = ((TimestampAction)a).getTimestamp();
+				final long timestamp = a.getTimestamp();
+				if (timestamp != -1) {
 					final String timetext = (timestamp > 0 ?
 							Utils.ticksToText(context, timestamp, true) :
 							"---");
@@ -429,10 +433,12 @@ public class ActionsApp extends InternalApp {
 		// Draw icons.
 		drawDigitalAppSwitchIcon(context, canvas, preview);
 		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
-		Action a = currentActions.get(currentSelection);
-		if (a instanceof ResettableAction) {
+		
+		final int currentType = currentActions.get(currentSelection).getSecondaryType();
+		//TODO split the secodary icons to separate files and draw them in addition to the right icon.
+		if (currentType == Action.SECONDARY_RESET) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
-		} else if (a instanceof ExitableAction && ((ExitableAction)a).isRunning(context)) {
+		} else if (currentType == Action.SECONDARY_EXIT) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_exit_right.bmp"), 79, 87, null);
 		} else {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
@@ -489,8 +495,8 @@ public class ActionsApp extends InternalApp {
 		Action a = currentActions.get(currentSelection);
 		String itemLine1 = a.getName();
 		String itemLine2 = "";
-		if(a instanceof TimestampAction) {
-			final long timestamp = ((TimestampAction)a).getTimestamp();
+		final long timestamp = a.getTimestamp();
+		if (timestamp != -1) {
 			itemLine2 = (timestamp > 0 ?
 					Utils.ticksToText(context, timestamp, true) :
 					"---");
@@ -499,9 +505,11 @@ public class ActionsApp extends InternalApp {
 		canvas.drawText((String) TextUtils.ellipsize(itemLine1, paint, 74, TruncateAt.END), 0, 22, paint);
 		canvas.drawText((String) TextUtils.ellipsize(itemLine2, paint, 74, TruncateAt.END), 0, 29, paint);
 		
-		if (a instanceof ResettableAction) {
+		final int type = a.getSecondaryType();
+		//TODO split the secodary icons to separate files and draw them in addition to the right icon.
+		if (type == Action.SECONDARY_RESET) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right_5.bmp"), 75, 16, null);
-		} else if (a instanceof ExitableAction && ((ExitableAction)a).isRunning(context)) {
+		} else if (type == Action.SECONDARY_EXIT) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_exit_right_5.bmp"), 75, 16, null);
 		} else {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right_5.bmp"), 75, 16, null);
@@ -542,12 +550,7 @@ public class ActionsApp extends InternalApp {
 			}
 			
 		case ACTION_SECONDARY:
-			if (currentAction instanceof ResettableAction)
-				return ((ResettableAction)currentAction).performReset(context);
-			else if (currentAction instanceof ExitableAction)
-				return ((ExitableAction)currentAction).performExit(context);
-			else
-				return BUTTON_NOT_USED;
+			return currentAction.performSecondary(context);
 		}
 		
 		
