@@ -18,6 +18,7 @@ public class InternalActions {
 	public static class PingAction extends Action {
 		Ringtone r = null;
 		int volume = -1;
+		int ringerMode = 0;
 		
 		public String getName() {
 			if( isSilent() ) {
@@ -38,7 +39,10 @@ public class InternalActions {
 				Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 				AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 				volume = as.getStreamVolume(AudioManager.STREAM_RING);
+				ringerMode = as.getRingerMode();
+				
 				as.setStreamVolume(AudioManager.STREAM_RING, as.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+				as.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				r = RingtoneManager.getRingtone(context.getApplicationContext(), notification);
 				r.play();
 			}
@@ -48,6 +52,7 @@ public class InternalActions {
 				
 				AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 				as.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
+				as.setRingerMode(ringerMode);
 			}
 			return InternalApp.BUTTON_USED;
 		}
