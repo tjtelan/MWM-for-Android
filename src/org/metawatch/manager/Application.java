@@ -193,7 +193,7 @@ public class Application {
 				
 				app.setPageSetting(context, false);
 				Idle.removeAppPage(context, app);
-				app.open(context);
+				app.open(context, true);
 				return;
 			
 			} else if (app.appState == InternalApp.ACTIVE_STANDALONE) {
@@ -218,8 +218,9 @@ public class Application {
 			toggleApp(context, currentApp);
 			
 		} else if (currentApp != null) {
-			currentApp.buttonPressed(context, button);
-			updateAppMode(context);
+			if (currentApp.buttonPressed(context, button) != InternalApp.BUTTON_USED_DONT_UPDATE) {
+				updateAppMode(context);
+			}
 			
 		} else {
 			// Broadcast button to external app

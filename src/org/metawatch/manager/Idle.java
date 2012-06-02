@@ -487,7 +487,7 @@ public class Idle {
 			Notification.replay(context);
 			break;
 		case QB_OPEN_ACTIONS:
-			AppManager.getApp(ActionsApp.APP_ID).open(context);
+			AppManager.getApp(ActionsApp.APP_ID).open(context, false);
 			break;
 		}
 	}

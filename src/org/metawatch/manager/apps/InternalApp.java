@@ -96,7 +96,7 @@ public abstract class InternalApp {
 	// Returns one of BUTTON_NOT_USED, BUTTON_USED or BUTTON_USED_DONT_UPDATE
 	public abstract int buttonPressed(Context context, int id);
 	
-	public void open(Context context) {
+	public void open(Context context, boolean forcePopup) {
 		if(appState != INACTIVE) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring standaloneStart as app is not inactive.");
 			return;
@@ -111,7 +111,7 @@ public abstract class InternalApp {
 		
 		// Open stand-alone.
 		} else {
-			if (Preferences.appLaunchMode == AppLaunchMode.POPUP) {
+			if (forcePopup || Preferences.appLaunchMode == AppLaunchMode.POPUP) {
 				appState = ACTIVE_STANDALONE;
 				int watchType = MetaWatchService.watchType;
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {

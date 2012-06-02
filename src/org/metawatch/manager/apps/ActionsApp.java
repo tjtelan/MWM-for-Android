@@ -126,8 +126,8 @@ public class ActionsApp extends InternalApp {
 				}
 
 				public int performAction(Context context) {
-					AppManager.getApp(a.id).open(context);
-					return BUTTON_USED;
+					AppManager.getApp(a.id).open(context, false);
+					return BUTTON_USED_DONT_UPDATE;
 				}
 				
 				public boolean isRunning(Context context) {
