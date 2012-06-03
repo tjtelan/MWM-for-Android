@@ -98,10 +98,10 @@ public class MetaWatch extends TabActivity {
 			InputStream inputStream = getAssets().open("bugsense.txt");
 			String key = Utils.ReadInputStream(inputStream);
 			key=key.trim();
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "Using bugsense key '"+key+"'");
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "BugSense enabled");
 			BugSenseHandler.setup(this, key);
 		} catch (IOException e) {
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "No bugsense keyfile found");
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "No BugSense keyfile found");
 		}
         
         startupTime = System.currentTimeMillis();
