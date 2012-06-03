@@ -81,7 +81,7 @@ public class Idle {
 		public void activate(final Context context, int watchType) {
 			if (Preferences.quickButton != QuickButton.DISABLED) {
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
-					Protocol.enableButton(1, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right middle immediate
+					Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right middle immediate
 					Protocol.enableButton(1, 1, Idle.QUICK_BUTTON, screenMode(watchType)); // Right middle - press
 				}
 			}
@@ -90,7 +90,6 @@ public class Idle {
 		public void deactivate(final Context context, int watchType) {
 			if (Preferences.quickButton != QuickButton.DISABLED) {
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
-					Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.IDLE); // Enable built in action for Right middle immediate
 					Protocol.disableButton(1, 1, screenMode(watchType)); // Right middle - press
 				}
 			}
@@ -422,15 +421,14 @@ public class Idle {
 			sendLcdIdle(context, true);
 				
 			if (numPages()>1) {
-				Protocol.enableButton(0, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right top immediate
+				Protocol.disableButton(0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right top immediate
 				Protocol.enableButton(0, 1, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.IDLE); // Right top press
 				Protocol.enableButton(0, 1, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.APPLICATION); // Right top press
 			}
 		
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-			// Is it necessary to do the same for analog here as for Digital (i.e. disable built in immediate action)?
-			Protocol.enableButton(1, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Middle immediate
+			Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Middle immediate
 			Protocol.enableButton(1, 1, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.IDLE); // Middle press
 			Protocol.enableButton(1, 1, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.APPLICATION); // Middle press
 		}
