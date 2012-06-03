@@ -25,7 +25,7 @@ public abstract class InternalApp {
 	
 	public final static int INACTIVE = 0;
 	public final static int ACTIVE_IDLE = 1; // Active as an idle screen
-	public final static int ACTIVE_STANDALONE = 2; // Active as a standalone app
+	public final static int ACTIVE_POPUP = 2; // Active as a standalone app
 	
 	public int appState = INACTIVE;
 	
@@ -78,7 +78,7 @@ public abstract class InternalApp {
 				Bitmap bmp = Utils.loadBitmapFromAssets(context, "app_to_standalone.bmp");
 				canvas.drawBitmap(bmp, 79, 0, null);				
 			}
-		} else if (appState == ACTIVE_STANDALONE) {
+		} else if (appState == ACTIVE_POPUP) {
 			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "exit_app.bmp"), 87, 0, null);
 			if (isToggleable()) {
 				Bitmap bmp = Utils.loadBitmapFromAssets(context, "app_to_idle.bmp");
@@ -96,7 +96,7 @@ public abstract class InternalApp {
 	
 	public void open(Context context, boolean forcePopup) {
 		if(appState != INACTIVE) {
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring standaloneStart as app is not inactive.");
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "InternalApp.open(): Ignored, app is not active.");
 			return;
 		}
 		
@@ -107,10 +107,10 @@ public abstract class InternalApp {
 			Idle.toPage(context, page);
 			Idle.toIdle(context);
 		
-		// Open stand-alone.
+		// Open new app.
 		} else {
 			if (forcePopup || Preferences.appLaunchMode == AppLaunchMode.POPUP) {
-				appState = ACTIVE_STANDALONE;
+				appState = ACTIVE_POPUP;
 				int watchType = MetaWatchService.watchType;
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
 					Application.startAppMode(context, this);
@@ -118,7 +118,8 @@ public abstract class InternalApp {
 				} else if (watchType == MetaWatchService.WatchType.ANALOG) {
 					//FIXME
 				}
-			} else if (Preferences.appLaunchMode == AppLaunchMode.APPPAGE) {
+				
+			} else if (Preferences.appLaunchMode == AppLaunchMode.APP_PAGE) {
 				page = Idle.addAppPage(context, this);
 				Idle.toPage(context, page);
 				Idle.toIdle(context);

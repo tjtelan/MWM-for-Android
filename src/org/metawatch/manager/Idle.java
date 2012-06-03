@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.MetaWatchService.QuickButton;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
@@ -58,11 +59,6 @@ public class Idle {
 	final static byte IDLE_NEXT_PAGE = 60;
 	final static byte IDLE_OLED_DISPLAY = 61;
 	final static byte QUICK_BUTTON = 62;
-
-	// Quick Button modes.
-	public final static int QB_DISABLED = 0;
-	public final static int QB_NOTIFICATION_REPLAY = 1;
-	public final static int QB_OPEN_ACTIONS = 2;
 	
 	private interface IdlePage {
 		public void activate(Context context, int watchType);
@@ -83,7 +79,7 @@ public class Idle {
 		}
 		
 		public void activate(final Context context, int watchType) {
-			if (Preferences.quickButton != QB_DISABLED) {
+			if (Preferences.quickButton != QuickButton.DISABLED) {
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
 					Protocol.enableButton(1, 0, 0, MetaWatchService.WatchBuffers.IDLE); // Disable built in action for Right middle immediate
 					Protocol.enableButton(1, 1, Idle.QUICK_BUTTON, screenMode(watchType)); // Right middle - press
@@ -92,7 +88,7 @@ public class Idle {
 		}
 
 		public void deactivate(final Context context, int watchType) {
-			if (Preferences.quickButton != QB_DISABLED) {
+			if (Preferences.quickButton != QuickButton.DISABLED) {
 				if (watchType == MetaWatchService.WatchType.DIGITAL) {
 					Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.IDLE); // Enable built in action for Right middle immediate
 					Protocol.disableButton(1, 1, screenMode(watchType)); // Right middle - press
@@ -487,10 +483,10 @@ public class Idle {
 	
 	public static void quickButtonAction(Context context) {
 		switch(Preferences.quickButton) {
-		case QB_NOTIFICATION_REPLAY:
+		case QuickButton.NOTIFICATION_REPLAY:
 			Notification.replay(context);
 			break;
-		case QB_OPEN_ACTIONS:
+		case QuickButton.OPEN_ACTIONS:
 			AppManager.getApp(ActionsApp.APP_ID).open(context, false);
 			break;
 		}

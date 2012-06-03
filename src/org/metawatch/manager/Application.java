@@ -189,13 +189,13 @@ public class Application {
 			if (!app.isToggleable())
 				return;
 			if (app.appState == InternalApp.ACTIVE_IDLE) {
-				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to stand-alone.");
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to popup.");
 				
 				Idle.removeAppPage(context, app);
 				app.open(context, true);
 				return;
 			
-			} else if (app.appState == InternalApp.ACTIVE_STANDALONE) {
+			} else if (app.appState == InternalApp.ACTIVE_POPUP) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle page.");
 				
 				Idle.addAppPage(context, app);

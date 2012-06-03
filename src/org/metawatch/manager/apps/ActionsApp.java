@@ -9,6 +9,7 @@ import org.metawatch.manager.FontCache;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.MetaWatchService.QuickButton;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
@@ -84,7 +85,7 @@ public class ActionsApp extends InternalApp {
 	public boolean isToggleable() {
 		// Always provide a way to reach the Actions app (since it's quite central).
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL &&
-				Preferences.quickButton == Idle.QB_OPEN_ACTIONS) {
+				Preferences.quickButton == QuickButton.OPEN_ACTIONS) {
 			// Only set toggleable if Quick Button can open it again.
 			return true;
 		}
@@ -119,10 +120,14 @@ public class ActionsApp extends InternalApp {
 				public String getName() {
 					return a.name;
 				}
+				
+				private boolean isRunning() {
+					return Idle.getAppPage(a.id)!=-1;
+				}
 
 				public String bulletIcon() {
-					return isRunning(null) ? "bullet_square_open.bmp" 
-							 			   : "bullet_square.bmp";
+					return isRunning() ? "bullet_square_open.bmp" 
+							 		   : "bullet_square.bmp";
 				}
 
 				public int performAction(Context context) {
@@ -130,16 +135,12 @@ public class ActionsApp extends InternalApp {
 					return BUTTON_USED_DONT_UPDATE;
 				}
 				
-				public boolean isRunning(Context context) {
-					return Idle.getAppPage(a.id)!=-1;
-				}
-				
 				public int getSecondaryType() {
-					return isRunning(null) ? Action.SECONDARY_EXIT
-										   : Action.SECONDARY_NONE;
+					return isRunning() ? Action.SECONDARY_EXIT
+									   : Action.SECONDARY_NONE;
 				}
 				public int performSecondary(Context context) {
-					if (isRunning(null)) {
+					if (isRunning()) {
 						Idle.removeAppPage(context, AppManager.getApp(a.id));
 						return BUTTON_USED;
 					}

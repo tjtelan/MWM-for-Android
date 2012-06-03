@@ -32,8 +32,4 @@ public abstract class Action {
 	public long getTimestamp() {
 		return -1;
 	}
-	
-	public boolean isRunning(Context context) {
-		return false;
-	}
 }
