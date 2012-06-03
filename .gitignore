@@ -1,8 +1,8 @@
 ###################
 # Compiled source #
 ###################
-bin/*
-gen/*
+bin
+gen
 assets/bugsense.txt
 
 ##############
