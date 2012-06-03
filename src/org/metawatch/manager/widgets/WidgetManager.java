@@ -115,7 +115,7 @@ public class WidgetManager {
 	
 	public static void getFromIntent(Context context, Intent intent) {
 		
-		Log.d(MetaWatch.TAG, "WidgetManager.getFromIntent()");
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "WidgetManager.getFromIntent()");
 		
 		synchronized (lock) {
 						
@@ -148,7 +148,7 @@ public class WidgetManager {
 				dataCache = new HashMap<String,WidgetData>();
 			
 			dataCache.put(widget.id, widget);
-			Log.d(MetaWatch.TAG, "Received widget "+widget.id+ " successfully");
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Received widget "+widget.id+ " successfully");
 			
 			Idle.updateIdle(context, false); // false as we don't want to trigger another UPDATE broadcast
 			
