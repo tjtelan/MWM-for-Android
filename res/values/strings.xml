@@ -121,7 +121,7 @@
 	</string-array>
     
     <string-array name="settings_quick_button_name"> 
-   	<item>Disabled</item>
+   	<item>Disabled (Toggle Seconds)</item>
    	<item>Replay Latest Notification</item>
    	<item>Open/Go to the Actions App</item>   
 	</string-array> 

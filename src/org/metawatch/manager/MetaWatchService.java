@@ -95,20 +95,20 @@ public class MetaWatchService extends Service {
 	public static TestSmsLoop testSmsLoop;
 	private boolean lastConnectionState = false;
 
-	final class ConnectionState {
+	final static class ConnectionState {
 		static final int DISCONNECTED = 0;
 		static final int CONNECTING = 1;
 		static final int CONNECTED = 2;
 		static final int DISCONNECTING = 3;
 	}
 
-	public final class WatchBuffers {
+	public final static class WatchBuffers {
 		public static final int IDLE = 0;
 		public static final int APPLICATION = 1;
 		public static final int NOTIFICATION = 2;
 	}
 
-	final class WatchStates {
+	final static class WatchStates {
 		static final int OFF = 0;
 		static final int IDLE = 1;
 		static final int APPLICATION = 2;
@@ -116,7 +116,7 @@ public class MetaWatchService extends Service {
 		static final int CALL = 3;
 	}
 	
-	final class Msg {
+	final static class Msg {
 		static final int REGISTER_CLIENT = 0;
 		static final int UNREGISTER_CLIENT = 1;
 		static final int UPDATE_STATUS = 2;
@@ -124,22 +124,28 @@ public class MetaWatchService extends Service {
 		static final int DISCONNECT = 4;
 	}
 	
-	public final class WeatherProvider {
+	public final static class WeatherProvider {
 		public static final int DISABLED = 0;
 		public static final int GOOGLE = 1;
 		public static final int WUNDERGROUND = 2;
 	}
 
-	static class WatchModes {
+	final static class WatchModes {
 		public static volatile boolean IDLE = false;
 		public static volatile boolean APPLICATION = false;
 		public static volatile boolean NOTIFICATION = false;
 		public static volatile boolean CALL = false;
 	}
 	
-	public final class AppLaunchMode {
+	public final static class QuickButton {
+		public final static int DISABLED = 0;
+		public final static int NOTIFICATION_REPLAY = 1;
+		public final static int OPEN_ACTIONS = 2;
+	}
+	
+	public final static class AppLaunchMode {
 		public static final int POPUP = 0;
-		public static final int APPPAGE = 1;
+		public static final int APP_PAGE = 1;
 	}
 
 	public static class Preferences {
@@ -171,7 +177,7 @@ public class MetaWatchService extends Service {
 		public static boolean idleMusicControls = false;
 		public static int idleMusicControlMethod = MediaControl.MUSICSERVICECOMMAND;
 		public static boolean idleActions = false;
-		public static int quickButton = Idle.QB_DISABLED;
+		public static int quickButton = QuickButton.DISABLED;
 		public static boolean notificationLarger = false;
 		public static boolean autoConnect = false;
 		public static boolean autoRestart = false;

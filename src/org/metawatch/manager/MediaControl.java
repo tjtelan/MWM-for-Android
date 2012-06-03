@@ -148,7 +148,7 @@ public class MediaControl {
 		int mediaPlayerState = AppManager.getAppState(MediaPlayerApp.APP_ID);
 		if (mediaPlayerState == InternalApp.ACTIVE_IDLE)
 			Idle.updateIdle(context, true);
-		else if (mediaPlayerState == InternalApp.ACTIVE_STANDALONE)
+		else if (mediaPlayerState == InternalApp.ACTIVE_POPUP)
 			Application.updateAppMode(context);
 		
 		if (!MetaWatchService.Preferences.notifyMusic)
