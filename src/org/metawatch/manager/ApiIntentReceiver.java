@@ -65,7 +65,7 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 		}
 		
 		if (action.equals("org.metawatch.manager.WIDGET_UPDATE")) {
-			Log.d(MetaWatch.TAG, "WIDGET_UPDATE received");
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "WIDGET_UPDATE received");
 			WidgetManager.getFromIntent(context, intent);
 			return;
 		}
