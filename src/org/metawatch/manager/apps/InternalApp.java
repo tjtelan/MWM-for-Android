@@ -33,8 +33,8 @@ public abstract class InternalApp {
 		public String id;
 		public String name;
 		
-		boolean supportsDigital = false;
-		boolean supportsAnalog = false;
+		public boolean supportsDigital = false;
+		public boolean supportsAnalog = false;
 		
 		String pageSettingKey = null;
 		String pageSettingAttribute = null;

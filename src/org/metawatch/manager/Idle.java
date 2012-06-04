@@ -39,6 +39,7 @@ import java.util.Map;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.QuickButton;
 import org.metawatch.manager.MetaWatchService.WatchType;
+import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
@@ -270,6 +271,7 @@ public class Idle {
 		if(!initialised) {
 			WidgetManager.initWidgets(context, null);
 			AppManager.initApps();
+			ActionManager.initActions(context);
 			initialised = true;
 		}
 		

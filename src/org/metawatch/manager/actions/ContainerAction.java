@@ -15,6 +15,19 @@ public abstract class ContainerAction extends Action {
 		return subActions;
 	}
 	
+	public void addSubAction(Action action) {
+		if(action.getParent()!=null) {
+			action.getParent().removeSubAction(action);
+		}
+		subActions.add(action);
+		action.setParent(this);
+	}
+	
+	public void removeSubAction(Action action) {
+		subActions.remove(action);
+		action.setParent(null);
+	}
+	
 	public int size() {
 		return subActions.size();
 	}

@@ -38,4 +38,13 @@ public abstract class Action {
 	public long getTimestamp() {
 		return -1;
 	}
+	
+	public ContainerAction parent = null;
+	public ContainerAction getParent() {
+		return parent;
+	}
+	
+	public void setParent(ContainerAction action) {
+		parent = action;
+	}
 }

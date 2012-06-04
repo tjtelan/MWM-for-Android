@@ -11,16 +11,13 @@ import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.QuickButton;
 import org.metawatch.manager.MetaWatchService.WatchType;
-import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.actions.Action;
+import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.actions.ContainerAction;
-import org.metawatch.manager.actions.InternalActions;
-import org.metawatch.manager.actions.NotificationsAction;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -52,19 +49,7 @@ public class ActionsApp extends InternalApp {
 	public final static byte ACTION_PERFORM = 31;
 	public final static byte ACTION_SECONDARY = 32;
 	public final static byte ACTION_TOP = 33;
-		
-	public static class PhoneSettingsAction extends ContainerAction {
-		
-		public String id = "phoneSettings";
-		public String getId() {
-			return id;
-		}
-		
-		public String getName() {
-			return "Phone Settings";
-		}
-	}
-	
+			
 	public AppData getInfo() {
 		return appData;
 	}
@@ -80,70 +65,12 @@ public class ActionsApp extends InternalApp {
 		return false;
 	}
 	
-	List<Action> internalActions = null;
 	Stack<ContainerAction> containerStack = new Stack<ContainerAction>(); //Contains the stack of ContainerActions opened (empty if at root).
 	List<Action> currentActions = null; //Contains the list as it's shown on the screen (including a "back" item for sub level lists).
 	Action backAction = null;
-	NotificationsAction notificationsAction = null;
-	PhoneSettingsAction phoneSettingsAction = null;
-	
+
 	Stack<Integer> selectionStack = new Stack<Integer>(); //Only contains selection for upper level lists.
 	int currentSelection = 0;
-	
-	private List<Action> getAppActions() {
-		List<Action> list = new ArrayList<Action>();
-		
-		for (final AppData a : AppManager.getAppInfos()) {
-			if (a.id.equals(APP_ID))
-				continue; // Skip self.
-			
-			int watchType = MetaWatchService.watchType;
-			if ((watchType == MetaWatchService.WatchType.ANALOG && !a.supportsAnalog) ||
-					(watchType == MetaWatchService.WatchType.DIGITAL && !a.supportsDigital))
-				continue; // Skip unsupported apps.
-				
-			
-			list.add(new Action() {
-				
-				public String getId() {
-					return "launch"+a.id;
-				}
-				
-				public String getName() {
-					return a.name;
-				}
-				
-				private boolean isRunning() {
-					return Idle.getAppPage(a.id)!=-1;
-				}
-
-				public String bulletIcon() {
-					return isRunning() ? "bullet_square_open.bmp" 
-							 		   : "bullet_square.bmp";
-				}
-
-				public int performAction(Context context) {
-					AppManager.getApp(a.id).open(context, false);
-					return BUTTON_USED_DONT_UPDATE;
-				}
-				
-				public int getSecondaryType() {
-					return isRunning() ? Action.SECONDARY_EXIT
-									   : Action.SECONDARY_NONE;
-				}
-				public int performSecondary(Context context) {
-					if (isRunning()) {
-						Idle.removeAppPage(context, AppManager.getApp(a.id));
-						return BUTTON_USED;
-					}
-					
-					return BUTTON_NOT_USED;
-				}
-			});
-		}
-		
-		return list;
-	}
 	
 	private void init(final Context context) {
 		if (backAction == null) {
@@ -165,53 +92,6 @@ public class ActionsApp extends InternalApp {
 					return BUTTON_USED;
 				}
 			};
-		}
-		if (notificationsAction == null) {
-			notificationsAction = new NotificationsAction();
-		}
-		
-		if (internalActions == null) {
-			internalActions = new ArrayList<Action>();
-			
-			if (phoneSettingsAction == null)
-				phoneSettingsAction = new PhoneSettingsAction();
-			internalActions.add(phoneSettingsAction);
-			
-			List<Action> toggles = phoneSettingsAction.getSubActions();
-			toggles.clear();
-			PackageManager pm = context.getPackageManager();
-			if (pm.hasSystemFeature(PackageManager.FEATURE_WIFI))
-				toggles.add(new InternalActions.ToggleWifiAction(context));
-			toggles.add(new InternalActions.ToggleSilentAction(context));		
-			if (pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY))
-				toggles.add(new InternalActions.SpeakerphoneAction(context));
-
-			internalActions.add(new InternalActions.PingAction());
-			if (Preferences.weatherProvider!=WeatherProvider.DISABLED)
-				internalActions.add(new InternalActions.WeatherRefreshAction());
-			internalActions.add(new InternalActions.ClickerAction());
-			//internalActions.add(new InternalActions.MapsAction());
-			//internalActions.add(new InternalActions.WoodchuckAction());
-			
-			/*
-			// For scroll testing.
-			for (int i = 0; i < 12; i++) {
-				final int f = i;
-				internalActions.add(new Action() {
-					public String getName() {
-						return String.valueOf(f);
-					}
-
-					public String bulletIcon() {
-						return "bullet_triangle.bmp";
-					}
-
-					public int performAction(Context context) {
-						return BUTTON_USED;
-					}
-				});
-			}
-			*/
 		}
 		
 		if (currentActions == null) {
@@ -268,25 +148,19 @@ public class ActionsApp extends InternalApp {
 
 	public Bitmap update(final Context context, boolean preview, int watchType) {
 		init(context);
-				
-		// This is not the nicest solution, but it keeps the display updated.
-		if (containerStack.isEmpty() ||
-				containerStack.peek() == notificationsAction) {
-			notificationsAction.refreshSubActions();
-		}
 
 		currentActions.clear();
 		if (containerStack.isEmpty()) {
 			// At the root.
-			//TODO Add external actions using intents, similar to widgets.
-			currentActions.add(notificationsAction);
-			currentActions.addAll(getAppActions());
-			currentActions.addAll(internalActions);
+			currentActions = ActionManager.getRootActions();
 		} else {
 			// In a ContainerAction.
 			if (watchType==WatchType.DIGITAL)
 				currentActions.add(backAction);
-			currentActions.addAll(containerStack.peek().getSubActions());
+			
+			ContainerAction container = containerStack.peek();
+			container.refreshSubActions();
+			currentActions.addAll(container.getSubActions());
 			
 			// Put the back action at the end on Analog, so the first displayed
 			// element actually has content.
@@ -522,9 +396,7 @@ public class ActionsApp extends InternalApp {
 			
 		case ACTION_PERFORM:
 			if (currentAction instanceof ContainerAction) {
-				containerStack.push((ContainerAction)currentAction);
-				selectionStack.push(currentSelection);
-				currentSelection = 0;
+				displayContainer((ContainerAction)currentAction);
 				
 				return BUTTON_USED;
 				
@@ -538,6 +410,12 @@ public class ActionsApp extends InternalApp {
 		
 		
 		return BUTTON_NOT_USED;
+	}
+
+	public void displayContainer(ContainerAction container) {
+		containerStack.push(container);
+		selectionStack.push(currentSelection);
+		currentSelection = 0;
 	}
 
 }
