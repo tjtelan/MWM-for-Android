@@ -1,16 +1,17 @@
 package org.metawatch.manager.apps;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.MetaWatchService;
-import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Protocol;
+import org.metawatch.manager.Utils;
 import org.metawatch.manager.actions.Action;
-import org.metawatch.manager.actions.ActionManager;
-import org.metawatch.manager.actions.ContainerAction;
 
 import android.content.Context;
 import android.content.Intent;
@@ -247,41 +248,10 @@ public class MediaPlayerApp extends InternalApp {
 		return null;
 	}
 	
-	private void displayMediaMenu(Context context) {
+	protected List<Action> getMenuActions() {
+		List<Action> actions = new ArrayList<Action>();
 		
-		ContainerAction actions = new ContainerAction() {
-
-			Action backAction = new Action() {
-				@Override
-				public String getName() {
-					return "-- Back --";
-				}
-
-				@Override
-				public String bulletIcon() {
-					return null;
-				}
-
-				@Override
-				public int performAction(Context context) {
-					AppManager.getApp(APP_ID).open(context, false);
-					return BUTTON_USED_DONT_UPDATE;
-				}
-			};
-			
-			@Override
-			public String getName() {
-				return "Menu";
-			}
-			
-			@Override
-			public Action getBackAction() {
-				return backAction;
-			}
-			
-		};
-		
-		actions.addSubAction(new Action() {
+		actions.add(new Action() {
 
 			@Override
 			public String getName() {
@@ -303,8 +273,7 @@ public class MediaPlayerApp extends InternalApp {
 			
 		});
 		
-		ActionManager.displayAction(context, actions);
-		
+		return actions;
 	}
 
 	public int buttonPressed(Context context, int id) {
@@ -326,7 +295,7 @@ public class MediaPlayerApp extends InternalApp {
 			MediaControl.togglePause(context);
 			return BUTTON_USED;
 		case MediaPlayerApp.MENU:
-			displayMediaMenu(context);
+			showMenu(context);
 			return BUTTON_USED;
 		}
 		

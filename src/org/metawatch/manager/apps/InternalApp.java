@@ -1,14 +1,18 @@
 package org.metawatch.manager.apps;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.metawatch.manager.Application;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.MetaWatchService;
-import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.AppLaunchMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.Utils;
+import org.metawatch.manager.actions.Action;
+import org.metawatch.manager.actions.ActionManager;
+import org.metawatch.manager.actions.ContainerAction;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -129,5 +133,54 @@ public abstract class InternalApp {
 	
 	public void setInactive() {
 		appState = INACTIVE;
+	}
+	
+	protected List<Action> getMenuActions() {
+		return null;
+	}
+	
+	protected void showMenu(final Context context) {
+		
+		final String appId = getId();
+		
+		List<Action> actions = getMenuActions();
+		if (actions != null) {
+			ContainerAction container = new ContainerAction() {
+
+				Action backAction = new Action() {
+					@Override
+					public String getName() {
+						return "-- Back --";
+					}
+
+					@Override
+					public String bulletIcon() {
+						return null;
+					}
+
+					@Override
+					public int performAction(Context context) {
+						AppManager.getApp(appId).open(context, false);
+						return BUTTON_USED_DONT_UPDATE;
+					}
+				};
+				
+				@Override
+				public String getName() {
+					return "Menu";
+				}
+				
+				@Override
+				public Action getBackAction() {
+					return backAction;
+				}
+				
+			};
+			
+			List<Action> subActions = container.getSubActions();
+			subActions.addAll(actions);
+			
+			ActionManager.displayAction(context, container);
+		}
 	}
 }
