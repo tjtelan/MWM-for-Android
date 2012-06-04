@@ -90,11 +90,11 @@ public class MediaControl {
 	}
 
 	public static void AnswerCall(Context context) {
-		sendMediaButtonEvent(context, KeyEvent.KEYCODE_HEADSETHOOK, "android.permission.CALL_PRIVILEGED");
-	}
-
-	public static void DismissCall(Context context) {
 		sendMediaButtonEvent(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
+	}
+	
+	public static void DismissCall(Context context) {
+		sendMediaButtonEvent(context, KeyEvent.KEYCODE_HEADSETHOOK, "android.permission.CALL_PRIVILEGED");
 	}
 
 	public static void ToggleSpeakerphone(Context context) {

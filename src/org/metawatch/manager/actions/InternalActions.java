@@ -295,4 +295,16 @@ public class InternalActions {
 			return "Phone Settings";
 		}
 	}
+	
+	public static class PhoneCallAction extends ContainerAction {
+		
+		public static String id = "inCall";
+		public String getId() {
+			return id;
+		}
+		
+		public String getName() {
+			return "Phonecall";
+		}
+	}
 }

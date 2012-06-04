@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.metawatch.manager.Idle;
+import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
+import org.metawatch.manager.Monitors;
+import org.metawatch.manager.actions.InternalActions.PhoneCallAction;
 import org.metawatch.manager.actions.InternalActions.PhoneSettingsAction;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
@@ -24,6 +27,7 @@ public class ActionManager {
 	
 	static NotificationsAction notificationsAction = null;
 	static PhoneSettingsAction phoneSettingsAction = null;
+	static PhoneCallAction phoneCallAction = null;
 	
 	public static void initActions(final Context context) {
 		if(actions.size()==0) {
@@ -40,6 +44,51 @@ public class ActionManager {
 			addAction(new InternalActions.ToggleSilentAction(context), phoneSettingsAction);		
 			if (pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY))
 				addAction(new InternalActions.SpeakerphoneAction(context), phoneSettingsAction);
+			
+			phoneCallAction = new PhoneCallAction();
+			addAction(phoneCallAction);
+			addAction(new InternalActions.SpeakerphoneAction(context), phoneCallAction);
+			addAction(new Action(){
+
+				@Override
+				public String getName() {
+					return "Test";
+				}
+
+				@Override
+				public String bulletIcon() {
+					return "bullet_circle.bmp";
+				}
+
+				@Override
+				public int performAction(Context context) {
+					
+					
+					
+					return InternalApp.BUTTON_USED;
+				}
+				
+			}, phoneCallAction);
+			
+			addAction(new Action(){
+
+				@Override
+				public String getName() {
+					return "Hang up";
+				}
+
+				@Override
+				public String bulletIcon() {
+					return "bullet_circle.bmp";
+				}
+
+				@Override
+				public int performAction(Context context) {
+					MediaControl.DismissCall(context);
+					return InternalApp.BUTTON_USED;
+				}
+				
+			}, phoneCallAction);
 			
 			addAction(new InternalActions.PingAction());
 			addAction(new InternalActions.WeatherRefreshAction());
@@ -137,6 +186,9 @@ public class ActionManager {
 	public static List<Action> getRootActions() {
 		List<Action> result = new ArrayList<Action>();
 		
+		if (Monitors.CallData.inCall)
+			result.add(phoneCallAction);
+			
 		notificationsAction.refreshSubActions();
 		result.add(notificationsAction);
 		result.addAll(getAppActions());
@@ -178,6 +230,10 @@ public class ActionManager {
 		ActionsApp app = (ActionsApp)AppManager.getApp(ActionsApp.APP_ID);
 		app.displayContainer(container);
 		app.open(context, true);
+	}
+	
+	public static void displayCallActions(final Context context) {
+		displayAction(context, phoneCallAction);
 	}
 	
 }

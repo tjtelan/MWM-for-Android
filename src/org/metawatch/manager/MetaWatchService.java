@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.metawatch.manager.Notification.VibratePattern;
+import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.InternalApp;
 import org.metawatch.manager.widgets.WidgetManager;
 
@@ -952,13 +953,16 @@ public class MetaWatchService extends Service {
 							
 					
 				case Call.CALL_SPEAKER:
-					MediaControl.ToggleSpeakerphone(this);
+					//MediaControl.ToggleSpeakerphone(this);
+					ActionManager.displayCallActions(this);
 					break;			
 				case Call.CALL_ANSWER:
-					MediaControl.AnswerCall(this);
+					//MediaControl.AnswerCall(this);
+					ActionManager.displayCallActions(this);
 					break;
 				case Call.CALL_DISMISS:
-					MediaControl.DismissCall(this);
+					//MediaControl.DismissCall(this);
+					ActionManager.displayCallActions(this);
 					break;
 					
 				case Application.TOGGLE_APP:

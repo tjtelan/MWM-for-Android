@@ -32,9 +32,12 @@
 
 package org.metawatch.manager;
 
+import org.metawatch.manager.MetaWatchService.Preferences;
+
 import android.content.Context;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 
 class CallStateListener extends PhoneStateListener {
@@ -50,6 +53,8 @@ class CallStateListener extends PhoneStateListener {
 	public void onCallStateChanged(int state, String incomingNumber) {
 		super.onCallStateChanged(state, incomingNumber);
 		
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "onCallStateChanged "+state+" "+incomingNumber);
+		
 		if (!MetaWatchService.Preferences.notifyCall)
 			return;
 		
@@ -58,11 +63,13 @@ class CallStateListener extends PhoneStateListener {
 
 		switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING: 
-				//String name = Utils.getContactNameFromNumber(context, incomingNumber);	
-				//SendCommand.sendIncomingCallStart(incomingNumber, name, photo);
+				Monitors.CallData.inCall = true;
+				Monitors.CallData.phoneNumber = incomingNumber;
 				Call.startCall(context, incomingNumber);
 				break;
 			case TelephonyManager.CALL_STATE_IDLE: 
+				Monitors.CallData.inCall = false;
+				Monitors.CallData.phoneNumber = null;
 				Call.endCall(context);
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK: 

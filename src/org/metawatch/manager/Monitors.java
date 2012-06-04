@@ -156,6 +156,11 @@ public class Monitors {
 		public static int level = -1;
 	}
 	
+	public static class CallData {
+		public static boolean inCall = false;
+		public static String phoneNumber = null;
+	}
+	
 	private static Monitors m = new Monitors(); // Static instance for new
 	
 	public static void updateGmailUnreadCount(String account, int count) {

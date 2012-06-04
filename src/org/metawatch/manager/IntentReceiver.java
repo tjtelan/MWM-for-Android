@@ -189,6 +189,14 @@ public class IntentReceiver extends BroadcastReceiver {
 				NotificationBuilder.createMMS(context, fromStr);
 			}
 		}
+		else if (action.equals("android.intent.action.NEW_OUTGOING_CALL")) {
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Detected outgoing call");
+			Monitors.CallData.inCall = true;
+			if(intent.hasExtra("android.intent.extra.PHONE_NUMBER"))
+				Monitors.CallData.phoneNumber = intent.getStringExtra("android.intent.extra.PHONE_NUMBER");
+			Idle.updateIdle(context, true);
+			
+		}
 		else if (action.equals("com.fsck.k9.intent.action.EMAIL_RECEIVED")) {
 			
 			if (MetaWatchService.Preferences.notifyK9) {				
