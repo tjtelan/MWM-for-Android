@@ -10,15 +10,14 @@ import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.QuickButton;
+import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
-import org.metawatch.manager.Notification;
 import org.metawatch.manager.Protocol;
-import org.metawatch.manager.Notification.NotificationType;
+import org.metawatch.manager.Utils;
 import org.metawatch.manager.actions.Action;
 import org.metawatch.manager.actions.ContainerAction;
 import org.metawatch.manager.actions.InternalActions;
-import org.metawatch.manager.Utils;
-import org.metawatch.manager.MetaWatchService.WatchType;
+import org.metawatch.manager.actions.NotificationsAction;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -53,31 +52,7 @@ public class ActionsApp extends InternalApp {
 	public final static byte ACTION_PERFORM = 31;
 	public final static byte ACTION_SECONDARY = 32;
 	public final static byte ACTION_TOP = 33;
-	
-	public static class NotificationsAction extends ContainerAction {
 		
-		public String id = "notifications";
-		public String getId() {
-			return id;
-		}
-		
-		public String getName() {
-			return "Recent Notifications";
-		}
-		
-		public String getTitle() {
-			return "Notifications";
-		}
-
-		public long getTimestamp() {
-			if (subActions.size() > 0) {
-				return subActions.get(0).getTimestamp();
-			} else {
-				return 0;
-			}
-		}		
-	}
-	
 	public static class PhoneSettingsAction extends ContainerAction {
 		
 		public String id = "phoneSettings";
@@ -163,34 +138,6 @@ public class ActionsApp extends InternalApp {
 					}
 					
 					return BUTTON_NOT_USED;
-				}
-			});
-		}
-		
-		return list;
-	}
-
-	private List<Action> getNotificationActions() {
-		List<Action> list = new ArrayList<Action>();
-		for(final NotificationType n : Notification.history()) {
-			list.add(new Action() {
-				
-				public String getName() {
-					return n.description;
-				}
-				
-				public long getTimestamp() {
-					return n.timestamp;
-				} 
-				
-				public String bulletIcon() {
-					return "bullet_triangle.bmp";
-				}
-	
-				public int performAction(Context context) {
-					Notification.replay(context, n);
-					// DONT_UPDATE since the idle screen overwrites the notification otherwise.
-					return BUTTON_USED_DONT_UPDATE;
 				}
 			});
 		}
@@ -325,9 +272,7 @@ public class ActionsApp extends InternalApp {
 		// This is not the nicest solution, but it keeps the display updated.
 		if (containerStack.isEmpty() ||
 				containerStack.peek() == notificationsAction) {
-			List<Action> notifications = notificationsAction.getSubActions();
-			notifications.clear();
-			notifications.addAll(getNotificationActions());
+			notificationsAction.refreshSubActions();
 		}
 
 		currentActions.clear();
