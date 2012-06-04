@@ -174,4 +174,10 @@ public class ActionManager {
 		return result;
 	}
 	
+	public static void displayAction(final Context context, ContainerAction container) {
+		ActionsApp app = (ActionsApp)AppManager.getApp(ActionsApp.APP_ID);
+		app.displayContainer(container);
+		app.open(context, true);
+	}
+	
 }

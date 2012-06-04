@@ -154,18 +154,23 @@ public class ActionsApp extends InternalApp {
 			// At the root.
 			currentActions = ActionManager.getRootActions();
 		} else {
-			// In a ContainerAction.
-			if (watchType==WatchType.DIGITAL)
-				currentActions.add(backAction);
-			
 			ContainerAction container = containerStack.peek();
 			container.refreshSubActions();
+			
+			Action back = container.getBackAction() == null
+					? backAction
+					: container.getBackAction();
+			
+			// In a ContainerAction.
+			if (watchType==WatchType.DIGITAL)
+				currentActions.add(back);
+			
 			currentActions.addAll(container.getSubActions());
 			
 			// Put the back action at the end on Analog, so the first displayed
 			// element actually has content.
 			if (watchType==WatchType.ANALOG)
-				currentActions.add(backAction);
+				currentActions.add(back);
 		}
 		
 		// Clean away empty actions.

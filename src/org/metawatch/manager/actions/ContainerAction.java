@@ -49,4 +49,9 @@ public abstract class ContainerAction extends Action {
 	public int performAction(Context context) {
 		return 0;
 	}
+	
+	// Override to provide a custom back action
+	public Action getBackAction() {
+		return null;
+	}
 }

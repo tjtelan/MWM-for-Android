@@ -8,11 +8,16 @@ import org.metawatch.manager.Utils;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Protocol;
+import org.metawatch.manager.actions.Action;
+import org.metawatch.manager.actions.ActionManager;
+import org.metawatch.manager.actions.ContainerAction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.provider.MediaStore;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -38,6 +43,7 @@ public class MediaPlayerApp extends InternalApp {
 	public final static byte NEXT = 15;
 	public final static byte PREVIOUS = 16;
 	public final static byte TOGGLE = 20;
+	public final static byte MENU = 21;
 	
 	public AppData getInfo() {
 		return appData;
@@ -48,6 +54,8 @@ public class MediaPlayerApp extends InternalApp {
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.enableButton(1, 0, TOGGLE, MetaWatchService.WatchBuffers.APPLICATION); // right middle - immediate
+			
+			Protocol.enableButton(2, 1, MENU, MetaWatchService.WatchBuffers.APPLICATION); // right bottom - press
 	
 			Protocol.enableButton(5, 1, VOLUME_DOWN, MetaWatchService.WatchBuffers.APPLICATION); // left middle - press
 			Protocol.enableButton(5, 2, PREVIOUS, MetaWatchService.WatchBuffers.APPLICATION); // left middle - hold
@@ -59,6 +67,7 @@ public class MediaPlayerApp extends InternalApp {
 		}
 		else if (watchType == WatchType.ANALOG) {
 			Protocol.enableButton(0, 1, TOGGLE, MetaWatchService.WatchBuffers.APPLICATION); // top - press
+			Protocol.enableButton(0, 2, MENU, MetaWatchService.WatchBuffers.APPLICATION); // top hold
 			Protocol.enableButton(2, 1, NEXT, MetaWatchService.WatchBuffers.APPLICATION); // bottom - press			
 		}
 	}
@@ -68,6 +77,8 @@ public class MediaPlayerApp extends InternalApp {
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.disableButton(1, 0, MetaWatchService.WatchBuffers.APPLICATION);
+			
+			Protocol.disableButton(2, 1, MetaWatchService.WatchBuffers.APPLICATION);
 			
 			Protocol.disableButton(5, 0, MetaWatchService.WatchBuffers.APPLICATION);
 			//Protocol.disableButton(5, 1, MetaWatchService.WatchBuffers.APPLICATION);
@@ -81,6 +92,7 @@ public class MediaPlayerApp extends InternalApp {
 		}
 		else if (watchType == WatchType.ANALOG) {
 			Protocol.disableButton(0, 1, MetaWatchService.WatchBuffers.APPLICATION); 
+			Protocol.disableButton(0, 2, MetaWatchService.WatchBuffers.APPLICATION);
 			Protocol.disableButton(2, 1, MetaWatchService.WatchBuffers.APPLICATION); 				
 		}
 	}
@@ -234,6 +246,66 @@ public class MediaPlayerApp extends InternalApp {
 		
 		return null;
 	}
+	
+	private void displayMediaMenu(Context context) {
+		
+		ContainerAction actions = new ContainerAction() {
+
+			Action backAction = new Action() {
+				@Override
+				public String getName() {
+					return "-- Back --";
+				}
+
+				@Override
+				public String bulletIcon() {
+					return null;
+				}
+
+				@Override
+				public int performAction(Context context) {
+					AppManager.getApp(APP_ID).open(context, false);
+					return BUTTON_USED_DONT_UPDATE;
+				}
+			};
+			
+			@Override
+			public String getName() {
+				return "Menu";
+			}
+			
+			@Override
+			public Action getBackAction() {
+				return backAction;
+			}
+			
+		};
+		
+		actions.addSubAction(new Action() {
+
+			@Override
+			public String getName() {
+				return "Launch default music player";
+			}
+
+			@Override
+			public String bulletIcon() {
+				return "bullet_square.bmp";
+			}
+
+			@Override
+			public int performAction(Context context) {
+				Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent);
+				return BUTTON_USED;
+			}
+			
+		});
+		
+		ActionManager.displayAction(context, actions);
+		
+	}
 
 	public int buttonPressed(Context context, int id) {
 		switch (id) {
@@ -252,6 +324,9 @@ public class MediaPlayerApp extends InternalApp {
 			return BUTTON_USED;
 		case MediaPlayerApp.TOGGLE:
 			MediaControl.togglePause(context);
+			return BUTTON_USED;
+		case MediaPlayerApp.MENU:
+			displayMediaMenu(context);
 			return BUTTON_USED;
 		}
 		
