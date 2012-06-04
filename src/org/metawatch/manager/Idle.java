@@ -96,7 +96,6 @@ public class Idle {
 		}
 		
 		public Bitmap draw(final Context context, boolean preview, Bitmap bitmap, int watchType) {
-			
 			Canvas canvas = new Canvas(bitmap);
 			canvas.drawColor(Color.WHITE);	
 			
@@ -281,7 +280,7 @@ public class Idle {
 		ArrayList<CharSequence> widgetsDesired = new ArrayList<CharSequence>();
 		for(WidgetRow row : rows) {
 			widgetsDesired.addAll(row.getIds());
-		}			
+		}
 		
 		if (refresh)
 			widgetData = WidgetManager.refreshWidgets(context, widgetsDesired);
@@ -398,13 +397,16 @@ public class Idle {
 		final int mode = getScreenMode(MetaWatchService.WatchType.DIGITAL);
 		boolean showClock = false;
 		
-		if(mode == MetaWatchService.WatchBuffers.IDLE) {
+		if (mode == MetaWatchService.WatchBuffers.IDLE ||
+				idlePages.get(currentPage) instanceof WidgetPage) {
+			// Update widgets.
+			// Don't do it while on an AppPage in order to not overwrite any running app.
 			updateIdlePages(context, refresh);
 			showClock = (currentPage==0 || Preferences.clockOnEveryPage);
 		}
 		
 		Protocol.sendLcdBitmap(createIdle(context), mode);
-		if(mode==MetaWatchService.WatchBuffers.IDLE)
+		if (mode == MetaWatchService.WatchBuffers.IDLE)
 			Protocol.configureIdleBufferSize(showClock);
 		Protocol.updateLcdDisplay(mode);
 	}
