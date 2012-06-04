@@ -55,6 +55,12 @@ public class ActionsApp extends InternalApp {
 	public final static byte ACTION_TOP = 33;
 	
 	public static class NotificationsAction extends ContainerAction {
+		
+		public String id = "notifications";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return "Recent Notifications";
 		}
@@ -73,6 +79,12 @@ public class ActionsApp extends InternalApp {
 	}
 	
 	public static class PhoneSettingsAction extends ContainerAction {
+		
+		public String id = "phoneSettings";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return "Phone Settings";
 		}
@@ -117,6 +129,11 @@ public class ActionsApp extends InternalApp {
 				
 			
 			list.add(new Action() {
+				
+				public String getId() {
+					return "launch"+a.id;
+				}
+				
 				public String getName() {
 					return a.name;
 				}
@@ -157,6 +174,7 @@ public class ActionsApp extends InternalApp {
 		List<Action> list = new ArrayList<Action>();
 		for(final NotificationType n : Notification.history()) {
 			list.add(new Action() {
+				
 				public String getName() {
 					return n.description;
 				}
@@ -183,6 +201,7 @@ public class ActionsApp extends InternalApp {
 	private void init(final Context context) {
 		if (backAction == null) {
 			backAction = new Action() {
+				
 				public String getName() {
 					return "-- Back --";
 				}

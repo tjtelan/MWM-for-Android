@@ -30,6 +30,11 @@ public class InternalActions {
 		int volume = -1;
 		int ringerMode = 0;
 		
+		public String id = "ping";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return isSilent()
 				? "Ping phone"
@@ -73,6 +78,11 @@ public class InternalActions {
 			audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		}
 		
+		public String id = "speakerphone";
+		public String getId() {
+			return id;
+		}
+		
 		private AudioManager audioManager = null;
 		
 		public String getName() {
@@ -94,6 +104,11 @@ public class InternalActions {
 	public static class ClickerAction extends Action {
 		int count = 0;
 		long timestamp = 0;
+		
+		public String id = "clicker";
+		public String getId() {
+			return id;
+		}
 		
 		public String getName() {
 			return "Clicker: "+count;
@@ -126,6 +141,11 @@ public class InternalActions {
 	
 	public static class WeatherRefreshAction extends Action {
 		
+		public String id = "weatherRefresh";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return WeatherData.received 
 					? "Refresh Weather"
@@ -155,6 +175,11 @@ public class InternalActions {
 			wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		}
 		
+		public String id = "toggleWifi";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return isEnabled() 
 					? "Disable Wifi"
@@ -182,6 +207,11 @@ public class InternalActions {
 		
 		private AudioManager audioManager = null;
 		
+		public String id = "toggleSilent";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return isEnabled()
 					? "Disable silent mode"
@@ -204,6 +234,11 @@ public class InternalActions {
 		private static final String QUESTION = "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
 		private static final String ANSWER = "A woodchuck could chuck no amount of wood, since a woodchuck can't chuck wood.";
 		String name = QUESTION;
+		
+		public String id = "testWoodchuck";
+		public String getId() {
+			return id;
+		}
 		
 		public String getName() {
 			return name;
@@ -228,6 +263,12 @@ public class InternalActions {
 	}
 	
 	public static class MapsAction extends Action {
+		
+		public String id = "testMaps";
+		public String getId() {
+			return id;
+		}
+		
 		public String getName() {
 			return "Launch Google Maps on phone";
 		}

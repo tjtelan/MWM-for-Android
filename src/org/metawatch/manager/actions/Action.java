@@ -13,6 +13,12 @@ public abstract class Action {
 	public abstract String bulletIcon();
 	public abstract int performAction(Context context);
 	
+	public String getId() {
+		// Implement this and provide a unique ID to allow the action
+		// to be launchable by code
+		return null;
+	}
+	
 	public boolean isHidden() {
 		return false;
 	}
