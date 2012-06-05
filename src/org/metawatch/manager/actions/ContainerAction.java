@@ -33,7 +33,7 @@ public abstract class ContainerAction extends Action {
 	}
 	
 	public boolean isHidden() {
-		return visibleSubActions() > 0;
+		return visibleSubActions() == 0;
 	}
 	
 	public int visibleSubActions() {
