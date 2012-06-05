@@ -572,5 +572,9 @@ public class Notification {
 	public static ArrayList<NotificationType> history() {
 		return notificationHistory;
 	}
+	
+	public static void clearHistory() {
+		notificationHistory.clear();
+	}
 
 }

@@ -55,4 +55,12 @@ public class NotificationsAction extends ContainerAction {
 			});
 		}
 	}
+	
+	public int getSecondaryType() {
+		return SECONDARY_EXIT;
+	}
+	public int performSecondary(Context context) {
+		Notification.clearHistory();
+		return InternalApp.BUTTON_USED;
+	}
 }
