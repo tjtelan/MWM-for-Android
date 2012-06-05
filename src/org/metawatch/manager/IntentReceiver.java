@@ -191,9 +191,9 @@ public class IntentReceiver extends BroadcastReceiver {
 		}
 		else if (action.equals("android.intent.action.NEW_OUTGOING_CALL")) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Detected outgoing call");
-			Monitors.CallData.inCall = true;
+			Call.inCall = true;
 			if(intent.hasExtra("android.intent.extra.PHONE_NUMBER"))
-				Monitors.CallData.phoneNumber = intent.getStringExtra("android.intent.extra.PHONE_NUMBER");
+				Call.phoneNumber = intent.getStringExtra("android.intent.extra.PHONE_NUMBER");
 			Idle.updateIdle(context, true);
 			
 		}

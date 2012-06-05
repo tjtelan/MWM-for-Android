@@ -193,6 +193,7 @@ public class MetaWatchService extends Service {
 		public static boolean appBufferForClocklessPages = true;
 		public static boolean showNotificationQueue = false;
 		public static int appLaunchMode = AppLaunchMode.POPUP;
+		public static boolean autoSpeakerphone = false;
 	}
 
 	public final class WatchType {
@@ -283,6 +284,8 @@ public class MetaWatchService extends Service {
 				Preferences.showNotificationQueue);
 		Preferences.idleActions = sharedPreferences.getBoolean("IdleActions",
 				Preferences.idleActions);
+		Preferences.autoSpeakerphone = sharedPreferences.getBoolean("autoSpeakerphone",
+				Preferences.autoSpeakerphone);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
@@ -950,21 +953,7 @@ public class MetaWatchService extends Service {
 					lastOledCrownPress = time;
 					Idle.sendOledIdle(this);
 					break;
-							
-					
-				case Call.CALL_SPEAKER:
-					//MediaControl.ToggleSpeakerphone(this);
-					ActionManager.displayCallActions(this);
-					break;			
-				case Call.CALL_ANSWER:
-					//MediaControl.AnswerCall(this);
-					ActionManager.displayCallActions(this);
-					break;
-				case Call.CALL_DISMISS:
-					//MediaControl.DismissCall(this);
-					ActionManager.displayCallActions(this);
-					break;
-					
+												
 				case Application.TOGGLE_APP:
 					Application.toggleApp(context, Idle.getCurrentApp());
 					break;
@@ -984,7 +973,21 @@ public class MetaWatchService extends Service {
 			break;
 			
 		case WatchStates.NOTIFICATION:
-			Notification.buttonPressed(button);
+			
+			switch (button) {
+			case Call.CALL_ANSWER:
+				MediaControl.answerCall(this);
+				break;			
+			case Call.CALL_DISMISS:
+				MediaControl.dismissCall(this);
+				break;
+			case Call.CALL_MENU:
+				ActionManager.displayCallActions(this);
+				break;
+			default:
+				Notification.buttonPressed(button);
+				break;
+			}
 			break;
 		}
 

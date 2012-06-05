@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.metawatch.manager.Call;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
-import org.metawatch.manager.Monitors;
 import org.metawatch.manager.actions.InternalActions.PhoneCallAction;
 import org.metawatch.manager.actions.InternalActions.PhoneSettingsAction;
 import org.metawatch.manager.apps.ActionsApp;
@@ -47,12 +47,15 @@ public class ActionManager {
 			
 			phoneCallAction = new PhoneCallAction();
 			addAction(phoneCallAction);
-			addAction(new InternalActions.SpeakerphoneAction(context), phoneCallAction);
+			
+			// TODO: Move these into InternalActions once the functionality is finalised
 			addAction(new Action(){
 
 				@Override
 				public String getName() {
-					return "Test";
+					return Preferences.autoSpeakerphone 
+							? "Answer (speakerphone)"
+							: "Answer";
 				}
 
 				@Override
@@ -62,10 +65,35 @@ public class ActionManager {
 
 				@Override
 				public int performAction(Context context) {
-					
-					
-					
+					MediaControl.answerCall(context);
 					return InternalApp.BUTTON_USED;
+				}
+				
+				public boolean isHidden() {
+					return !Call.isRinging;
+				}
+				
+			}, phoneCallAction);
+			addAction(new Action(){
+
+				@Override
+				public String getName() {
+					return "Reject";
+				}
+
+				@Override
+				public String bulletIcon() {
+					return "bullet_circle.bmp";
+				}
+
+				@Override
+				public int performAction(Context context) {
+					MediaControl.dismissCall(context);
+					return InternalApp.BUTTON_USED;
+				}
+				
+				public boolean isHidden() {
+					return !Call.isRinging;
 				}
 				
 			}, phoneCallAction);
@@ -84,11 +112,16 @@ public class ActionManager {
 
 				@Override
 				public int performAction(Context context) {
-					MediaControl.DismissCall(context);
+					MediaControl.dismissCall(context);
 					return InternalApp.BUTTON_USED;
 				}
 				
+				public boolean isHidden() {
+					return Call.isRinging;
+				}
+				
 			}, phoneCallAction);
+			addAction(new InternalActions.SpeakerphoneAction(context), phoneCallAction);
 			
 			addAction(new InternalActions.PingAction());
 			addAction(new InternalActions.WeatherRefreshAction());
@@ -186,8 +219,7 @@ public class ActionManager {
 	public static List<Action> getRootActions() {
 		List<Action> result = new ArrayList<Action>();
 		
-		if (Monitors.CallData.inCall)
-			result.add(phoneCallAction);
+		result.add(phoneCallAction);
 			
 		notificationsAction.refreshSubActions();
 		result.add(notificationsAction);
@@ -233,6 +265,7 @@ public class ActionManager {
 	}
 	
 	public static void displayCallActions(final Context context) {
+		Call.endRinging(context);
 		displayAction(context, phoneCallAction);
 	}
 	

@@ -217,14 +217,19 @@ public class Test extends PreferenceActivity {
 	   
 		preferenceScreen.findPreference("call_start").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-		    	Call.startCall(context, "555-123-4567");
+				final String incomingNumber = "555-123-4567";
+				Call.inCall = true;
+				Call.phoneNumber = incomingNumber;
+		    	Call.startRinging(context, incomingNumber);
 		    	return true;
 			}
 		});
 
 		preferenceScreen.findPreference("call_stop").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-		    	Call.endCall(context);
+				Call.inCall = false;
+				Call.phoneNumber = null;
+		    	Call.endRinging(context);
 		    	return true;
 			}
 		});

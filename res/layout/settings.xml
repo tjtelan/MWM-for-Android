@@ -219,6 +219,19 @@
 			/>
 				
 	</PreferenceScreen>
+	
+	<PreferenceScreen
+	    android:title="@string/settings_phoneCalls"
+	    >
+	    
+	    <CheckBoxPreference
+			android:title="Auto Speakerphone"
+			android:key="autoSpeakerphone"
+			android:summary="Automatically enable speakerphone when a call is answered from the watch."
+			android:defaultValue="false"
+			/>
+	    
+	</PreferenceScreen>
 
 		
  	<PreferenceScreen

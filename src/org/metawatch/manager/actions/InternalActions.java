@@ -1,5 +1,6 @@
 package org.metawatch.manager.actions;
 
+import org.metawatch.manager.Call;
 import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.Monitors;
 import org.metawatch.manager.Monitors.WeatherData;
@@ -305,6 +306,10 @@ public class InternalActions {
 		
 		public String getName() {
 			return "Phonecall";
+		}
+		
+		public boolean isHidden() {
+			return !Call.inCall;
 		}
 	}
 }

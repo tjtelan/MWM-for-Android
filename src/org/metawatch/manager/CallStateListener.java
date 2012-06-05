@@ -63,17 +63,21 @@ class CallStateListener extends PhoneStateListener {
 
 		switch (state) {
 			case TelephonyManager.CALL_STATE_RINGING: 
-				Monitors.CallData.inCall = true;
-				Monitors.CallData.phoneNumber = incomingNumber;
-				Call.startCall(context, incomingNumber);
+				Call.inCall = true;
+				Call.phoneNumber = incomingNumber;
+				Call.startRinging(context, incomingNumber);
 				break;
 			case TelephonyManager.CALL_STATE_IDLE: 
-				Monitors.CallData.inCall = false;
-				Monitors.CallData.phoneNumber = null;
-				Call.endCall(context);
+				Call.inCall = false;
+				Call.phoneNumber = null;
+				Call.endRinging(context);
+				
+				if (Preferences.autoSpeakerphone) {
+					MediaControl.setSpeakerphone(context, Call.previousSpeakerphoneState);
+				}
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK: 
-				Call.endCall(context);
+				Call.endRinging(context);
 				break;
 		}
 
