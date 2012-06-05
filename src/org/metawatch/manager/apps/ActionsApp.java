@@ -125,10 +125,7 @@ public class ActionsApp extends InternalApp {
 	public void deactivate(final Context context, int watchType) {
 		if (!containerStack.isEmpty()) {
 			//Return to root.
-			containerStack.clear();
-			while(selectionStack.size() > 1)
-				selectionStack.pop();
-			currentSelection = selectionStack.pop();
+			toRoot();
 		}
 		
 		if (watchType == WatchType.DIGITAL) {
@@ -421,6 +418,13 @@ public class ActionsApp extends InternalApp {
 		containerStack.push(container);
 		selectionStack.push(currentSelection);
 		currentSelection = 0;
+	}
+	
+	public void toRoot() {
+		containerStack.clear();
+		while(selectionStack.size() > 1)
+			selectionStack.pop();
+		currentSelection = selectionStack.pop();
 	}
 
 }

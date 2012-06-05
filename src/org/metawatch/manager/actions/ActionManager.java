@@ -89,6 +89,7 @@ public class ActionManager {
 				@Override
 				public int performAction(Context context) {
 					MediaControl.dismissCall(context);
+					ActionManager.toRoot(context);
 					return InternalApp.BUTTON_USED;
 				}
 				
@@ -113,6 +114,7 @@ public class ActionManager {
 				@Override
 				public int performAction(Context context) {
 					MediaControl.dismissCall(context);
+					ActionManager.toRoot(context);
 					return InternalApp.BUTTON_USED;
 				}
 				
@@ -267,6 +269,11 @@ public class ActionManager {
 	public static void displayCallActions(final Context context) {
 		Call.endRinging(context);
 		displayAction(context, phoneCallAction);
+	}
+	
+	public static void toRoot(final Context context) {
+		ActionsApp app = (ActionsApp)AppManager.getApp(ActionsApp.APP_ID);
+		app.toRoot();
 	}
 	
 }
