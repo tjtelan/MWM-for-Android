@@ -33,7 +33,16 @@ public abstract class ContainerAction extends Action {
 	}
 	
 	public boolean isHidden() {
-		return subActions.isEmpty();
+		return visibleSubActions() > 0;
+	}
+	
+	public int visibleSubActions() {
+		int visible=0;
+		for(Action action : subActions) {
+			if (!action.isHidden())
+				visible++;
+		}
+		return visible;
 	}
 	
 	// Overridable by subclasses, but default to the name.

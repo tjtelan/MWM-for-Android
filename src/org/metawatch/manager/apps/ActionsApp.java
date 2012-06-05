@@ -231,7 +231,7 @@ public class ActionsApp extends InternalApp {
 				StringBuilder name = new StringBuilder(a.getName());
 				if (a instanceof ContainerAction) {
 					name.append(" (");
-					name.append(((ContainerAction)a).size());
+					name.append(((ContainerAction)a).visibleSubActions());
 					name.append(")");
 				}
 				
