@@ -1,0 +1,74 @@
+package org.metawatch.manager.actions;
+
+import org.metawatch.manager.Idle;
+import org.metawatch.manager.MetaWatchService;
+import org.metawatch.manager.apps.ActionsApp;
+import org.metawatch.manager.apps.AppManager;
+import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.InternalApp.AppData;
+
+import android.content.Context;
+
+public class AppManagerAction extends ContainerAction {
+
+	public String id = "apps";
+	public String getId() {
+		return id;
+	}
+	
+	public String getName() {
+		return "Apps";
+	}
+	
+	public void refreshSubActions() {
+		subActions.clear();
+		
+		for (final AppData a : AppManager.getAppInfos()) {
+			
+			int watchType = MetaWatchService.watchType;
+			if ((watchType == MetaWatchService.WatchType.ANALOG && !a.supportsAnalog) ||
+					(watchType == MetaWatchService.WatchType.DIGITAL && !a.supportsDigital))
+				continue; // Skip unsupported apps.
+				
+			
+			subActions.add(new Action() {
+				
+				public String getId() {
+					return "launch"+a.id;
+				}
+				
+				public String getName() {
+					return a.name;
+				}
+				
+				private boolean isRunning() {
+					return Idle.getAppPage(a.id)!=-1;
+				}
+
+				public String bulletIcon() {
+					return isRunning() ? "bullet_square_open.bmp" 
+							 		   : "bullet_square.bmp";
+				}
+
+				public int performAction(Context context) {
+					AppManager.getApp(a.id).open(context, false);
+					return InternalApp.BUTTON_USED_DONT_UPDATE;
+				}
+				
+				public int getSecondaryType() {
+					return isRunning() ? Action.SECONDARY_EXIT
+									   : Action.SECONDARY_NONE;
+				}
+				public int performSecondary(Context context) {
+					if (isRunning()) {
+						Idle.removeAppPage(context, AppManager.getApp(a.id));
+						return InternalApp.BUTTON_USED;
+					}
+					
+					return InternalApp.BUTTON_NOT_USED;
+				}
+			});
+		}
+	}
+
+}

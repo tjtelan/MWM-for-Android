@@ -28,12 +28,16 @@ public class ActionManager {
 	static NotificationsAction notificationsAction = null;
 	static PhoneSettingsAction phoneSettingsAction = null;
 	static PhoneCallAction phoneCallAction = null;
+	static AppManagerAction appManagerAction = null;
 	
 	public static void initActions(final Context context) {
 		if(actions.size()==0) {
 			
 			notificationsAction = new NotificationsAction();
 			addAction(notificationsAction);
+			
+			appManagerAction = new AppManagerAction();
+			addAction(appManagerAction);
 			
 			phoneSettingsAction = new PhoneSettingsAction();
 			addAction(phoneSettingsAction);
@@ -162,70 +166,16 @@ public class ActionManager {
 			return null;
 		return actions.get(id);
 	}
-	
-	private static List<Action> getAppActions() {
-		List<Action> list = new ArrayList<Action>();
 		
-		for (final AppData a : AppManager.getAppInfos()) {
-			if (a.id.equals(ActionsApp.APP_ID))
-				continue; // Skip actions app.
-			
-			int watchType = MetaWatchService.watchType;
-			if ((watchType == MetaWatchService.WatchType.ANALOG && !a.supportsAnalog) ||
-					(watchType == MetaWatchService.WatchType.DIGITAL && !a.supportsDigital))
-				continue; // Skip unsupported apps.
-				
-			
-			list.add(new Action() {
-				
-				public String getId() {
-					return "launch"+a.id;
-				}
-				
-				public String getName() {
-					return a.name;
-				}
-				
-				private boolean isRunning() {
-					return Idle.getAppPage(a.id)!=-1;
-				}
-
-				public String bulletIcon() {
-					return isRunning() ? "bullet_square_open.bmp" 
-							 		   : "bullet_square.bmp";
-				}
-
-				public int performAction(Context context) {
-					AppManager.getApp(a.id).open(context, false);
-					return InternalApp.BUTTON_USED_DONT_UPDATE;
-				}
-				
-				public int getSecondaryType() {
-					return isRunning() ? Action.SECONDARY_EXIT
-									   : Action.SECONDARY_NONE;
-				}
-				public int performSecondary(Context context) {
-					if (isRunning()) {
-						Idle.removeAppPage(context, AppManager.getApp(a.id));
-						return InternalApp.BUTTON_USED;
-					}
-					
-					return InternalApp.BUTTON_NOT_USED;
-				}
-			});
-		}
-		
-		return list;
-	}
-	
 	public static List<Action> getRootActions() {
 		List<Action> result = new ArrayList<Action>();
 		
 		result.add(phoneCallAction);
 			
 		notificationsAction.refreshSubActions();
+		appManagerAction.refreshSubActions();
 		result.add(notificationsAction);
-		result.addAll(getAppActions());
+		result.add(appManagerAction);
 		result.add(phoneSettingsAction);
 		
 		result.add(getAction(InternalActions.PingAction.id));
