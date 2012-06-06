@@ -2,7 +2,6 @@ package org.metawatch.manager.actions;
 
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatchService;
-import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
 import org.metawatch.manager.apps.InternalApp.AppData;

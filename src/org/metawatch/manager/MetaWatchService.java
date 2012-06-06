@@ -194,6 +194,7 @@ public class MetaWatchService extends Service {
 		public static boolean showNotificationQueue = false;
 		public static int appLaunchMode = AppLaunchMode.POPUP;
 		public static boolean autoSpeakerphone = false;
+		public static boolean showActionsInCall = true;
 	}
 
 	public final class WatchType {
@@ -286,6 +287,8 @@ public class MetaWatchService extends Service {
 				Preferences.idleActions);
 		Preferences.autoSpeakerphone = sharedPreferences.getBoolean("autoSpeakerphone",
 				Preferences.autoSpeakerphone);
+		Preferences.showActionsInCall = sharedPreferences.getBoolean("showActionsInCall",
+				Preferences.showActionsInCall);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(

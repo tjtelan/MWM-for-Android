@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.metawatch.manager.Call;
-import org.metawatch.manager.Idle;
 import org.metawatch.manager.MediaControl;
-import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.actions.InternalActions.PhoneCallAction;
@@ -16,7 +14,6 @@ import org.metawatch.manager.actions.InternalActions.PhoneSettingsAction;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
-import org.metawatch.manager.apps.InternalApp.AppData;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

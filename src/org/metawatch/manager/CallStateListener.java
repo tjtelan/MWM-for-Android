@@ -33,6 +33,7 @@
 package org.metawatch.manager;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.actions.ActionManager;
 
 import android.content.Context;
 import android.telephony.PhoneStateListener;
@@ -75,9 +76,15 @@ class CallStateListener extends PhoneStateListener {
 				if (Preferences.autoSpeakerphone) {
 					MediaControl.setSpeakerphone(context, Call.previousSpeakerphoneState);
 				}
+				if (Preferences.showActionsInCall) {
+					Idle.toPage(context, 0);
+				}
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK: 
 				Call.endRinging(context);
+				if (Preferences.showActionsInCall) {
+					ActionManager.displayCallActions(context);
+				}
 				break;
 		}
 
