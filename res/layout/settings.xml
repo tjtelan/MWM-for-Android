@@ -225,6 +225,13 @@
 	    >
 	    
 	    <CheckBoxPreference
+			android:title="Show actions in call"
+			android:key="showActionsInCall"
+			android:summary="Automatically display the Call Actions menu when in a call."
+			android:defaultValue="true"
+			/>	    
+	    
+	    <CheckBoxPreference
 			android:title="Auto Speakerphone"
 			android:key="autoSpeakerphone"
 			android:summary="Automatically enable speakerphone when a call is answered from the watch."

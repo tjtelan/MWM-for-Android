@@ -19,7 +19,7 @@ public class AppManagerAction extends ContainerAction {
 		return "Apps";
 	}
 	
-	public void refreshSubActions() {
+	public void refreshSubActions(Context context) {
 		subActions.clear();
 		
 		for (final AppData a : AppManager.getAppInfos()) {
