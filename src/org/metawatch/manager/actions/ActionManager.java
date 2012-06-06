@@ -16,7 +16,9 @@ import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 
 public class ActionManager {
 	
@@ -26,6 +28,7 @@ public class ActionManager {
 	static PhoneSettingsAction phoneSettingsAction = null;
 	static PhoneCallAction phoneCallAction = null;
 	static AppManagerAction appManagerAction = null;
+	static QuickDialAction quickDialAction = null;
 	
 	public static void initActions(final Context context) {
 		if(actions.size()==0) {
@@ -48,6 +51,9 @@ public class ActionManager {
 			
 			phoneCallAction = new PhoneCallAction();
 			addAction(phoneCallAction);
+			
+			quickDialAction = new QuickDialAction();
+			addAction(quickDialAction);
 			
 			// TODO: Move these into InternalActions once the functionality is finalised
 			addAction(new Action(){
@@ -164,13 +170,15 @@ public class ActionManager {
 		return actions.get(id);
 	}
 		
-	public static List<Action> getRootActions() {
+	public static List<Action> getRootActions(Context context) {
 		List<Action> result = new ArrayList<Action>();
 		
 		result.add(phoneCallAction);
+		result.add(quickDialAction);
 			
-		notificationsAction.refreshSubActions();
-		appManagerAction.refreshSubActions();
+		notificationsAction.refreshSubActions(context);
+		appManagerAction.refreshSubActions(context);
+		quickDialAction.refreshSubActions(context);
 		result.add(notificationsAction);
 		result.add(appManagerAction);
 		result.add(phoneSettingsAction);

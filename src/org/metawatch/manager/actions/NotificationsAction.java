@@ -29,7 +29,7 @@ public class NotificationsAction extends ContainerAction {
 		}
 	}	
 	
-	public void refreshSubActions() {
+	public void refreshSubActions(Context context) {
 		subActions.clear();
 		
 		for(final NotificationType n : Notification.history()) {

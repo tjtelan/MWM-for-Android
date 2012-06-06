@@ -149,10 +149,10 @@ public class ActionsApp extends InternalApp {
 		currentActions.clear();
 		if (containerStack.isEmpty()) {
 			// At the root.
-			currentActions = ActionManager.getRootActions();
+			currentActions = ActionManager.getRootActions(context);
 		} else {
 			ContainerAction container = containerStack.peek();
-			container.refreshSubActions();
+			container.refreshSubActions(context);
 			
 			Action back = container.getBackAction() == null
 					? backAction

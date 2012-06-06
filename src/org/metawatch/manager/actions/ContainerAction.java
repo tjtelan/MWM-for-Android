@@ -8,7 +8,7 @@ import android.content.Context;
 public abstract class ContainerAction extends Action {
 	protected List<Action> subActions = new ArrayList<Action>();
 	
-	public void refreshSubActions() {
+	public void refreshSubActions(Context context) {
 	}
 	
 	public List<Action> getSubActions() {
