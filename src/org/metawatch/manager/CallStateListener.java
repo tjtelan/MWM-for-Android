@@ -36,6 +36,7 @@ import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.actions.ActionManager;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -78,6 +79,11 @@ class CallStateListener extends PhoneStateListener {
 				}
 				if (Preferences.showActionsInCall) {
 					Idle.toPage(context, 0);
+				}
+				if (Call.previousRingerMode!=-1) {
+					AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+					as.setRingerMode(Call.previousRingerMode);
+					Call.previousRingerMode = -1;
 				}
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK: 

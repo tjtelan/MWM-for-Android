@@ -50,6 +50,7 @@ public class Call {
 	public static boolean inCall = false;
 	public static String phoneNumber = null;
 	public static boolean previousSpeakerphoneState = false;
+	public static int previousRingerMode = -1;
 	
 	final static byte CALL_ANSWER = 90;
 	final static byte CALL_DISMISS = 91;

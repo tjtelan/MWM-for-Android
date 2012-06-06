@@ -91,8 +91,8 @@ public class MediaControl {
 
 	public static void answerCall(Context context) {
 		if (Call.isRinging) {
-			if (Preferences.autoSpeakerphone) {
-				AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			if (Preferences.autoSpeakerphone) {		
 				audioManager.setMode(AudioManager.MODE_IN_CALL);
 				Call.previousSpeakerphoneState = audioManager.isSpeakerphoneOn();
 				audioManager.setSpeakerphoneOn(true);
@@ -103,13 +103,21 @@ public class MediaControl {
 	}
 	
 	public static void dismissCall(Context context) {
-		// TODO: Work out how to properly dismiss to voicemail
-		// currently this just answers then hangs up, which is a little rude!
+		// TODO: Find a way of making this actually work (and properly dismiss to voicemail)
 		if (Call.isRinging) {
 			sendMediaButtonEvent(context, KeyEvent.KEYCODE_HEADSETHOOK, "android.permission.CALL_PRIVILEGED");
 		}
 		sendMediaButtonEvent(context, KeyEvent.KEYCODE_HEADSETHOOK, "android.permission.CALL_PRIVILEGED");
 		Call.endRinging(context);
+	}
+	
+	public static void ignoreCall(Context context) {
+		if (Call.isRinging) {
+			AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			Call.previousRingerMode = audioManager.getRingerMode();
+			audioManager.setRingerMode( AudioManager.RINGER_MODE_SILENT );
+			Call.endRinging(context);
+		}
 	}
 
 	public static void setSpeakerphone(Context context, boolean state) {

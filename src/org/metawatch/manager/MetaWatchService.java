@@ -982,7 +982,7 @@ public class MetaWatchService extends Service {
 				MediaControl.answerCall(this);
 				break;			
 			case Call.CALL_DISMISS:
-				MediaControl.dismissCall(this);
+				MediaControl.ignoreCall(this);
 				break;
 			case Call.CALL_MENU:
 				ActionManager.displayCallActions(this);
