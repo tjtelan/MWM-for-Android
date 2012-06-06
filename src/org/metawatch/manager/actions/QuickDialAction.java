@@ -1,19 +1,13 @@
 package org.metawatch.manager.actions;
 
-import org.metawatch.manager.Idle;
-import org.metawatch.manager.MetaWatchService;
-import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
-import org.metawatch.manager.apps.InternalApp.AppData;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.Contacts.People;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.PhoneLookup;
 
 public class QuickDialAction extends ContainerAction {
 

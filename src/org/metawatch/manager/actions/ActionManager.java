@@ -16,9 +16,7 @@ import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.InternalApp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 
 public class ActionManager {
 	
