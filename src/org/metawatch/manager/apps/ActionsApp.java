@@ -275,7 +275,7 @@ public class ActionsApp extends InternalApp {
 							
 			} else {
 				//Draw elipsized text.
-				canvas.drawText((String) TextUtils.ellipsize(a.getName(), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
+				canvas.drawText((String) TextUtils.ellipsize(a.getName().replace("\n", " "), paint, 79, TruncateAt.END), 7, y+textHeight, paint);
 				y+= textHeight+1;
 			}
 		}
@@ -352,7 +352,7 @@ public class ActionsApp extends InternalApp {
 		canvas.clipRect(0, 16, 80, 32, Region.Op.REPLACE);
 		
 		Action a = currentActions.get(currentSelection);
-		String itemLine1 = a.getName();
+		String itemLine1 = a.getName().replace("\n", " ");
 		String itemLine2 = "";
 		final long timestamp = a.getTimestamp();
 		if (timestamp != -1) {
