@@ -29,7 +29,7 @@ public class QuickDialAction extends ContainerAction {
 
 			@Override
 			public String getName() {
-				return "Dial Voicemail";
+				return "Voicemail";
 			}
 
 			@Override
@@ -64,21 +64,35 @@ public class QuickDialAction extends ContainerAction {
 			
 			int hasNumberFieldIndex = people.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
 			if(Integer.parseInt(people.getString(hasNumberFieldIndex)) >0 ) {
-			
-				Cursor personNumber = context.getContentResolver().query(Phone.CONTENT_URI, null, Phone.CONTACT_ID +"=?", new String[] {id}, null);
 				
-				while (personNumber.moveToNext()) {
+				Cursor personNumbers = context.getContentResolver().query(Phone.CONTENT_URI, null, Phone.CONTACT_ID +"=?", new String[] {id}, null);
+
+				ContainerAction personContainer = null;
+				String prefix = contact + " ";
+				if (personNumbers.getCount()>1) {
+					personContainer = new ContainerAction() {
+						public String getName() {
+							return contact;
+						}
+					};
+					subActions.add(personContainer);
+					prefix = "";
+				}				
+				final String namePrefix = prefix;
+							
+				while (personNumbers.moveToNext()) {
 				
-					int phoneFieldIndex = personNumber.getColumnIndex(Phone.DATA);
-					final String number = personNumber.getString(phoneFieldIndex);
+					int phoneFieldIndex = personNumbers.getColumnIndex(Phone.DATA);
+					final String number = personNumbers.getString(phoneFieldIndex);
 					
-					// TODO: Turn this into a string
-					int typeFieldIndex = personNumber.getColumnIndex(Phone.TYPE);
-					final String type = personNumber.getString(typeFieldIndex);
+					int typeFieldIndex = personNumbers.getColumnIndex(Phone.TYPE);
+					final String type = (String) Phone.getTypeLabel(context.getResources(), personNumbers.getInt(typeFieldIndex), "");
 					
-					subActions.add(new Action(){
+					
+					
+					Action numberEntry = new Action(){
 		
-						String title = contact + " (" +type +")" +"\n" + number;
+						String title = namePrefix + type + "\n" + number;
 						String uri = "tel:" + number;
 						
 						@Override
@@ -99,7 +113,14 @@ public class QuickDialAction extends ContainerAction {
 							return InternalApp.BUTTON_USED;
 						}
 						
-					});
+					};
+					
+					if (personContainer!=null) {
+						personContainer.addSubAction(numberEntry);
+					}
+					else {
+						subActions.add(numberEntry);
+					}
 				}
 				
 			}
