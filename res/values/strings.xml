@@ -9,6 +9,8 @@
     <string name="settings_SMS_desc">New text/multimedia message notification</string>
 	<string name="settings_K9">K9 mail</string>
 	<string name="settings_K9_desc">New E-mail notification (K-9 mail)</string>
+	<string name="settings_TD">TouchDown mail</string>
+	<string name="settings_TD_desc">New E-mail notification (TouchDown)</string>
 	<string name="settings_Alarm">Alarm</string>
 	<string name="settings_Alarm_desc">Alarm clock alert</string>
 	<string name="settings_Music">Music</string>

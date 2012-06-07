@@ -163,6 +163,20 @@ public class NotificationBuilder {
 		}
 	}
 	
+	public static void createTouchdownMail(Context context, String title, String ticker) {	
+		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsTDNumberBuzzes");	
+		Bitmap icon = Utils.loadBitmapFromAssets(context, "email.bmp");
+		String description = "TouchDown: "+title;
+		if (MetaWatchService.watchType == WatchType.DIGITAL) {
+			Bitmap bitmap = smartLines(context, icon, "TouchDown", new String[] {title, ticker});
+			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), description);
+		} else {
+			byte[] scroll = new byte[800];
+			int len = Protocol.createOled2linesLong(context, ticker, scroll);
+			Notification.addOledNotification(context, Protocol.createOled1line(context, icon, "TouchDown"), Protocol.createOled2lines(context, title, ticker), scroll, len, vibratePattern, description);
+		}
+	}
+	
 	public static void createCalendar(Context context, String text) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsCalendarNumberBuzzes");
 		Bitmap icon = Utils.loadBitmapFromAssets(context, "calendar.bmp");

@@ -117,6 +117,9 @@
                 <data android:scheme="email" android:host="messages" />				            	
             </intent-filter>
             <intent-filter>
+            	<action android:name="windroid.SMART_DEVICE_UPDATE_EMAILS" />
+            </intent-filter>
+            <intent-filter>
 				<action
 					android:name="android.intent.action.PROVIDER_CHANGED"
 					android:priority="-10"

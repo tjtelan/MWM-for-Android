@@ -211,6 +211,18 @@ public class IntentReceiver extends BroadcastReceiver {
 			Idle.updateIdle(context, true);
 
 			return;
+		}
+		else if (action.equals("windroid.SMART_DEVICE_UPDATE_EMAILS")) {
+			// Nitrodesk TouchDown new email
+			if (MetaWatchService.Preferences.notifyTD) {				
+				Bundle bundle = intent.getExtras();				
+				String title = bundle.getString("windroid.extra.SMARTWATCH_TITLE");
+				String ticker = bundle.getString("windroid.extra.SMARTWATCH_TICKER");
+				NotificationBuilder.createTouchdownMail(context, title, ticker);
+			}
+			Idle.updateIdle(context, true);
+
+			return;
 		}	
 		else if (action.equals("com.android.alarmclock.ALARM_ALERT")
 				|| action.equals("com.htc.android.worldclock.ALARM_ALERT")

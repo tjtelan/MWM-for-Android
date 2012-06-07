@@ -157,6 +157,7 @@ public class MetaWatchService extends Service {
 		public static boolean notifySMS = true;
 		public static boolean notifyGmail = true;
 		public static boolean notifyK9 = true;
+		public static boolean notifyTD = true;
 		public static boolean notifyAlarm = true;
 		public static boolean notifyBatterylow = true;
 		public static boolean notifyMusic = true;
@@ -221,6 +222,8 @@ public class MetaWatchService extends Service {
 				Preferences.notifyGmail);
 		Preferences.notifyK9 = sharedPreferences.getBoolean("NotifyK9",
 				Preferences.notifyK9);
+		Preferences.notifyTD = sharedPreferences.getBoolean("NotifyTD",
+				Preferences.notifyTD);
 		Preferences.notifyAlarm = sharedPreferences.getBoolean("NotifyAlarm",
 				Preferences.notifyAlarm);
 		Preferences.notifyMusic = sharedPreferences.getBoolean("NotifyMusic",

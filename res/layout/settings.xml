@@ -84,6 +84,22 @@
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>			
+ 		<CheckBoxPreference
+			android:title="@string/settings_TD"
+			android:key="NotifyTD"
+			android:summary="@string/settings_TD_desc"
+			android:defaultValue="true"
+			/>
+		<ListPreference 
+			android:entries="@array/settings_number_buzzes_names" 
+			android:entryValues="@array/settings_number_buzzes_values" 
+			android:dialogTitle="Number of Buzzes" 
+			android:key="settingsTDNumberBuzzes" 
+			android:title="TouchDown Vibrate Pattern" 
+			android:negativeButtonText="Cancel" 
+ 			android:enabled="true" 
+ 			android:defaultValue="3"
+ 			/>			
 		<CheckBoxPreference
 			android:title="@string/settings_Alarm"
 			android:key="NotifyAlarm"
