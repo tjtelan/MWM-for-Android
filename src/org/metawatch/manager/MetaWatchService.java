@@ -881,7 +881,6 @@ public class MetaWatchService extends Service {
 
 		} catch (IOException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
-			wakeLock.acquire(5000);
 			resetConnection();
 		} catch(ArrayIndexOutOfBoundsException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
@@ -918,6 +917,8 @@ public class MetaWatchService extends Service {
 	static long lastOledCrownPress = 0;
 	void pressedButton(byte button) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "button code: " + Byte.toString(button));
+		
+		wakeLock.acquire(10000);
 		
 		if(button>0 && Preferences.hapticFeedback)
 			Protocol.vibrate(5, 5, 2);
