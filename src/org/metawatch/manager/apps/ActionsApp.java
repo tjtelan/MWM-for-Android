@@ -422,9 +422,8 @@ public class ActionsApp extends InternalApp {
 	
 	public void toRoot() {
 		containerStack.clear();
-		while(selectionStack.size() > 1)
-			selectionStack.pop();
-		currentSelection = selectionStack.pop();
+		selectionStack.clear();
+		currentSelection = 0;
 	}
 
 }
