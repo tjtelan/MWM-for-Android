@@ -156,6 +156,10 @@ public class Monitors {
 		public static int level = -1;
 	}
 	
+	public static class TouchDownData {
+		public static int unreadMailCount = -1;
+	}
+	
 	private static Monitors m = new Monitors(); // Static instance for new
 	
 	public static void updateGmailUnreadCount(String account, int count) {

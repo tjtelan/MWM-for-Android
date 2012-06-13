@@ -664,10 +664,15 @@ public class Utils {
 	
 	public static Bitmap DrawIconCountWidget(Context context, int width, int height, Bitmap icon, int count, TextPaint textPaint) {
 		String text;
-		if(height==16 && count>1999)
+		// Stop the text being too wide for the widget
+		if (height==16 && count>1999)
 			text="999+";
-		else
-			text = Integer.toString(count);
+		else {
+			if (count<0)
+				text = "-";
+			else
+				text = Integer.toString(count);
+		}
 		return DrawIconStringWidget(context,width,height,icon,text,textPaint);
 	}
 
