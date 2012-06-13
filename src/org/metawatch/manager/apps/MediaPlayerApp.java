@@ -13,6 +13,7 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.actions.Action;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -265,9 +266,14 @@ public class MediaPlayerApp extends InternalApp {
 
 			@Override
 			public int performAction(Context context) {
-				Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
+				try {
+					Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					context.startActivity(intent);
+				}
+				catch (ActivityNotFoundException e) {
+					return BUTTON_NOT_USED;
+				}
 				return BUTTON_USED;
 			}
 			

@@ -962,7 +962,10 @@ public class MetaWatchService extends Service {
 					break;
 												
 				case Application.TOGGLE_APP:
-					Application.toggleApp(context, Idle.getCurrentApp());
+					try {
+						Application.toggleApp(context, Idle.getCurrentApp());
+					}
+					catch (IllegalStateException e) {}
 					break;
 				}
 			}

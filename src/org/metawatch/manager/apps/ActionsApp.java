@@ -389,7 +389,7 @@ public class ActionsApp extends InternalApp {
 	}
 
 	public int buttonPressed(Context context, int id) {
-		if(currentActions==null) {
+		if (currentActions==null || currentActions.size()==0) {
 			return BUTTON_NOT_USED;
 		}
 		

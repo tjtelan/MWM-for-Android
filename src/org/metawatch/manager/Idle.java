@@ -418,8 +418,12 @@ public class Idle {
 		MetaWatchService.WatchModes.IDLE = true;
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
 		
-		if (idlePages != null)
+		if (idlePages != null) {
+			if (currentPage>=idlePages.size()) {
+				currentPage=0;
+			}
 			idlePages.get(currentPage).activate(context, MetaWatchService.watchType);
+		}
 		
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
 			sendLcdIdle(context, true);
