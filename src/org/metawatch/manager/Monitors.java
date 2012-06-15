@@ -113,6 +113,9 @@ public class Monitors {
 	private static BroadcastReceiver batteryLevelReceiver;
 	
 	public static boolean calendarChanged = false;
+	
+	public static long getRTCTimestamp = 0;
+	public static int rtcOffset = 0; // Offset in seconds to add to the RTC to allow for latency
 
   public static class WeatherData {
 		public static boolean received = false;

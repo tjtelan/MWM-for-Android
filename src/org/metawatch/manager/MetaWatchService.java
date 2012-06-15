@@ -435,10 +435,6 @@ public class MetaWatchService extends Service {
 		powerManger = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				"MetaWatch");
-		
-		Idle.updateIdle(this, true);
-		
-		Monitors.start(this, telephonyManager);
 
 		start();
 
@@ -527,7 +523,8 @@ public class MetaWatchService extends Service {
 
 			Protocol.startProtocolSender();
 			//Protocol.setNvalTime(context);
-			Protocol.sendRtcNow(context);
+			Protocol.getRealTimeClock();
+			//Protocol.sendRtcNow(context);
 			Protocol.getDeviceType();
 
 			Notification.startNotificationSender(this);
@@ -541,6 +538,9 @@ public class MetaWatchService extends Service {
 			if (notifyOnConnect) {
 				NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected");
 			}
+			
+			Idle.updateIdle(this, true);
+			Monitors.start(this, telephonyManager);
 			
 		} catch (IOException ioexception) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, ioexception.toString());
@@ -876,7 +876,18 @@ public class MetaWatchService extends Service {
 						"MetaWatchService.readFromDevice(): received light sensor response."
 								+ " light_sense=" + lightSense
 								+ " light_average=" + lightAverage);
-			
+			} else if (bytes[2] == eMessageType.GetRealTimeClockResponse.msg) {
+				long timeNow = System.currentTimeMillis();
+				long roundTrip = timeNow - Monitors.getRTCTimestamp;
+				
+				if (Preferences.logging) Log.d(MetaWatch.TAG, 
+						"MetaWatchService.readFromDevice(): received rtc response."
+								+ " round trip= "+roundTrip );
+				
+				Monitors.rtcOffset = (int)(roundTrip/2000);
+				
+				Protocol.sendRtcNow(context);
+				
 			} else {
 				if (Preferences.logging) Log.d(MetaWatch.TAG,
 						"MetaWatchService.readFromDevice(): Unknown message : 0x"+Integer.toString((bytes[2] & 0xff) + 0x100, 16).substring(1) + ", ");
