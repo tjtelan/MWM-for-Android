@@ -215,8 +215,10 @@ public class ActionManager {
 	
 	public static void displayAction(final Context context, ContainerAction container) {
 		ActionsApp app = (ActionsApp)AppManager.getApp(ActionsApp.APP_ID);
-		app.displayContainer(container);
-		app.open(context, true);
+		if (app!=null) {
+			app.displayContainer(container);
+			app.open(context, true);
+		}
 	}
 	
 	public static void displayCallActions(final Context context) {
