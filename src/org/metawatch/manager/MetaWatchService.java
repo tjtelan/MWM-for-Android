@@ -436,6 +436,8 @@ public class MetaWatchService extends Service {
 		wakeLock = powerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				"MetaWatch");
 
+		Monitors.start(this, telephonyManager);
+		
 		start();
 
 	}
@@ -540,7 +542,6 @@ public class MetaWatchService extends Service {
 			}
 			
 			Idle.updateIdle(this, true);
-			Monitors.start(this, telephonyManager);
 			
 		} catch (IOException ioexception) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, ioexception.toString());
