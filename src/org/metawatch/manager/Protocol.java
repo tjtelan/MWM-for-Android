@@ -353,7 +353,7 @@ public class Protocol {
 		bytes[3] = 0;
 
 		Monitors.getRTCTimestamp = System.currentTimeMillis();	
-		enqueue(bytes);
+		pushhead(bytes);
 	}
 
 	public static byte[] crc(byte[] bytes) {
