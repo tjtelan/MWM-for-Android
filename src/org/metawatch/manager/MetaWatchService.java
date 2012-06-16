@@ -165,6 +165,7 @@ public class MetaWatchService extends Service {
 		public static String watchMacAddress = "";
 		public static int packetWait = 10;
 		public static boolean skipSDP = false;
+		public static boolean insecureBtSocket = false;
 		public static boolean invertLCD = false;
 		public static boolean notificationCenter = false;
 		public static boolean notifyLight = false;
@@ -234,6 +235,8 @@ public class MetaWatchService extends Service {
 				Preferences.watchMacAddress);
 		Preferences.skipSDP = sharedPreferences.getBoolean("SkipSDP",
 				Preferences.skipSDP);
+		Preferences.insecureBtSocket = sharedPreferences.getBoolean("InsecureBtSocket", 
+				Preferences.insecureBtSocket);
 		Preferences.invertLCD = sharedPreferences.getBoolean("InvertLCD",
 				Preferences.invertLCD);
 		Preferences.notificationCenter = sharedPreferences.getBoolean(
@@ -511,8 +514,14 @@ public class MetaWatchService extends Service {
 				} else {
 					UUID uuid = UUID
 							.fromString("00001101-0000-1000-8000-00805F9B34FB");
-					bluetoothSocket = bluetoothDevice
-							.createInsecureRfcommSocketToServiceRecord(uuid);
+					if (Preferences.insecureBtSocket) {
+						bluetoothSocket = bluetoothDevice
+								.createInsecureRfcommSocketToServiceRecord(uuid);
+					} else {
+						bluetoothSocket = bluetoothDevice
+								.createRfcommSocketToServiceRecord(uuid);
+					}
+					
 				}
 
 				bluetoothSocket.connect();

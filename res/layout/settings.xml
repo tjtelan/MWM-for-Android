@@ -480,6 +480,12 @@
 			android:defaultValue="false"
 			/>
 		<CheckBoxPreference
+		    android:title="Use Insecure BT socket"
+		    android:key="InsecureBtSocket"
+		    android:summary="Enable if you have problems with your phone constantly requesting the PIN when bluetooth connects"
+		    android:defaultValue="false"
+		    />
+		<CheckBoxPreference
 			android:title="Debug logging"
 			android:key="logging"
 			android:summary="Log events to the debug log - Disable to improve performance - please turn this on and use logcat if reporting problems"
