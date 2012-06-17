@@ -89,8 +89,6 @@ public abstract class InternalApp {
 				canvas.drawBitmap(bmp, 79, 0, null);				
 			}
 		}
-		else
-			throw new IllegalStateException("Unknown app state.");
 	}
 	
 	public abstract Bitmap update(Context context, boolean preview, int watchType);
