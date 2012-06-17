@@ -191,15 +191,16 @@
 			android:entryValues="@array/settings_number_buzzes_values" 
 			android:dialogTitle="Number of Buzzes" 
 			android:key="settingsOtherNotificationNumberBuzzes" 
-			android:title="Other Apps Vibrate Pattern" 
+			android:title="Other Apps Vibrate Pattern"
+			android:summary="Default vibrate pattern for other apps"
 			android:negativeButtonText="Cancel" 
  			android:enabled="true" 
  			android:defaultValue="1"
  			/>				
 		<Preference
-			android:title="Application Blacklist"
-			android:key="appBlacklist"
-			android:summary="List of applications to ignore notifications from"
+			android:title="Other Apps Settings"
+			android:key="otherAppsList"
+			android:summary="Set individual vibrate patterns and which apps to include notifications from"
 			/>
 
 		<ListPreference 

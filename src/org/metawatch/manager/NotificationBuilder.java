@@ -56,12 +56,14 @@ import android.text.format.DateFormat;
 public class NotificationBuilder {
 	
 	public static final String DEFAULT_NUMBER_OF_BUZZES = "3";
-	
+
+	public static VibratePattern createVibratePatternFromBuzzes(int numberOfBuzzes) {
+		return new VibratePattern((numberOfBuzzes > 0),500,500,numberOfBuzzes);
+	}
 	public static VibratePattern createVibratePatternFromPreference(Context context, String preferenceName) {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		String buzzPref = sharedPreferences.getString(preferenceName, DEFAULT_NUMBER_OF_BUZZES); 
-		int numberOfBuzzes = Integer.parseInt(buzzPref);
-		return new VibratePattern((numberOfBuzzes > 0),500,500,numberOfBuzzes);
+		return createVibratePatternFromBuzzes(Integer.parseInt(buzzPref));
 	}
 
 	public static void createSMS(Context context, String number, String text) {
@@ -235,8 +237,13 @@ public class NotificationBuilder {
 		}
 	}
 	
-	public static void createOtherNotification(Context context, Bitmap icon, String appName, String notificationText) {
-		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsOtherNotificationNumberBuzzes");	
+	public static void createOtherNotification(Context context, Bitmap icon, String appName, String notificationText, int buzzes) {
+		VibratePattern vibratePattern;
+		if (buzzes != -1) {
+			vibratePattern = createVibratePatternFromBuzzes(buzzes);
+		} else {
+			vibratePattern = createVibratePatternFromPreference(context, "settingsOtherNotificationNumberBuzzes");
+		}
 		if (icon==null) {
 			icon = Utils.loadBitmapFromAssets(context, "notify.bmp"); 
 		}

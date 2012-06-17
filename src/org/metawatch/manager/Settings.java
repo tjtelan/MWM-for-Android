@@ -70,10 +70,10 @@ public class Settings extends PreferenceActivity {
 		});
 		
 		
-		Preference appBlacklist = findPreference("appBlacklist");
-		appBlacklist.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		Preference otherAppsList = findPreference("otherAppsList");
+		otherAppsList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
-				startActivity(new Intent(Settings.this, AppBlacklist.class));
+				startActivity(new Intent(Settings.this, OtherAppsList.class));
 				return false;
 			}
 		});

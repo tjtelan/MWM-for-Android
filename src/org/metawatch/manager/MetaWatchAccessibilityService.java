@@ -133,7 +133,7 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 			if (sharedPreferences.getBoolean("NotifyOtherNotification", true)) {
 	
 				String[] appBlacklist = sharedPreferences.getString("appBlacklist",
-						AppBlacklist.DEFAULT_BLACKLIST).split(",");
+						OtherAppsList.DEFAULT_BLACKLIST).split(",");
 				Arrays.sort(appBlacklist);
 	
 				/* Ignore if on blacklist */
@@ -157,20 +157,22 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 				} catch (NameNotFoundException e) {
 					/* OK, appName is null */
 				}
+				
+				int buzzes = sharedPreferences.getInt("appVibrate_" + packageName, -1);
 	
 				if (appName == null) {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Unknown app -- sending notification: '"
 									+ notification.tickerText + "'.");
 					NotificationBuilder.createOtherNotification(this, icon,
-							"Notification", notification.tickerText.toString());
+							"Notification", notification.tickerText.toString(), buzzes);
 				} else {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Sending notification: app='"
 									+ appName + "' notification='"
 									+ notification.tickerText + "'.");
 					NotificationBuilder.createOtherNotification(this, icon, appName,
-							notification.tickerText.toString());
+							notification.tickerText.toString(), buzzes);
 				}
 			}
 		}
