@@ -3,6 +3,8 @@ package org.metawatch.manager.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.metawatch.manager.apps.InternalApp;
+
 import android.content.Context;
 
 public abstract class ContainerAction extends Action {
@@ -28,15 +30,11 @@ public abstract class ContainerAction extends Action {
 		action.setParent(null);
 	}
 	
-	public int size() {
-		return subActions.size();
-	}
-	
 	public boolean isHidden() {
-		return visibleSubActions() == 0;
+		return size() == 0;
 	}
 	
-	public int visibleSubActions() {
+	public int size() {
 		int visible=0;
 		for(Action action : subActions) {
 			if (!action.isHidden())
@@ -54,9 +52,9 @@ public abstract class ContainerAction extends Action {
 		return "bullet_plus.bmp"; //plus
 	}
 	
-	// Never used, here to avoid having to reimplement it in subclasses.
+	// Override to do something after opening the container
 	public int performAction(Context context) {
-		return 0;
+		return InternalApp.BUTTON_USED;
 	}
 	
 	// Override to provide a custom back action
