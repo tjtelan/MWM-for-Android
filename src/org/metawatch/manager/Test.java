@@ -243,7 +243,10 @@ public class Test extends PreferenceActivity {
 
 		preferenceScreen.findPreference("set_rtc").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-		    	Protocol.sendRtcNow(context);
+				// Query the time on the watch, which will trigger timing
+				// of the round trip, so we can try and correct for that
+				// when setting the time
+		    	Protocol.getRealTimeClock();
 		    	return true;
 			}
 		});

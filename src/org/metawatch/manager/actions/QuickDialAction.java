@@ -66,7 +66,9 @@ public class QuickDialAction extends ContainerAction {
 			if(Integer.parseInt(people.getString(hasNumberFieldIndex)) >0 ) {
 				
 				Cursor personNumbers = context.getContentResolver().query(Phone.CONTENT_URI, null, Phone.CONTACT_ID +"=?", new String[] {id}, null);
-
+				if (personNumbers==null)
+					continue;
+				
 				ContainerAction personContainer = null;
 				String prefix = contact + " ";
 				if (personNumbers.getCount()>1) {

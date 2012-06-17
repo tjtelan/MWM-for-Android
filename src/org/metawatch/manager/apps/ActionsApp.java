@@ -351,16 +351,27 @@ public class ActionsApp extends InternalApp {
 		
 		Action a = currentActions.get(currentSelection);
 		String itemLine1 = a.getName().replace("\n", " ");
-		String itemLine2 = "";
 		final long timestamp = a.getTimestamp();
 		if (timestamp != -1) {
-			itemLine2 = (timestamp > 0 ?
+			// If item has a timestamp, then display truncated item text plus timestamp
+			String itemLine2 = (timestamp > 0 ?
 					Utils.ticksToText(context, timestamp, true) :
 					"---");
+			
+			canvas.drawText((String) TextUtils.ellipsize(itemLine1, paint, 74, TruncateAt.END), 0, 21, paint);
+			canvas.drawText((String) TextUtils.ellipsize(itemLine2, paint, 74, TruncateAt.END), 0, 32, paint);
+		}
+		else {
+			// Wrap item over multiple lines
+			final StaticLayout layout = new StaticLayout(itemLine1, paint, 74, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+
+			canvas.save();		
+			canvas.translate(0, 16);
+			layout.draw(canvas);
+			canvas.restore();
 		}
 		
-		canvas.drawText((String) TextUtils.ellipsize(itemLine1, paint, 74, TruncateAt.END), 0, 22, paint);
-		canvas.drawText((String) TextUtils.ellipsize(itemLine2, paint, 74, TruncateAt.END), 0, 29, paint);
+
 		
 		final int type = a.getSecondaryType();
 		//TODO split the secodary icons to separate files and draw them in addition to the right icon.
@@ -376,7 +387,7 @@ public class ActionsApp extends InternalApp {
 	}
 
 	public int buttonPressed(Context context, int id) {
-		if(currentActions==null) {
+		if (currentActions==null || currentActions.size()==0) {
 			return BUTTON_NOT_USED;
 		}
 		

@@ -209,7 +209,7 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
-		if (WeatherData.received) {
+		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 			
 			// icon
 			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
@@ -274,7 +274,7 @@ public class WeatherWidget implements InternalWidget {
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
-			if (WeatherData.forecast!=null) {
+			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 				canvas.drawText("High", 64, 23, paintSmall);
 				canvas.drawText("Low", 64, 31, paintSmall);
 				
@@ -313,7 +313,7 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (WeatherData.received && WeatherData.forecast.length>3) {
+		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>3) {
 			int weatherIndex = 0;
 			if(WeatherData.forecast.length>4)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
@@ -407,7 +407,7 @@ public class WeatherWidget implements InternalWidget {
 			}
 			Utils.drawOutlinedText(string.toString(), canvas, 80, 5, paintSmall, paintSmallOutline);
 			
-			if (WeatherData.forecast!=null) {
+			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 				string = new StringBuilder();
 				string.append(WeatherData.forecast[0].tempHigh);
 				string.append("/");
@@ -469,7 +469,7 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (WeatherData.received && WeatherData.forecast.length>3) {
+		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>3) {
 			int weatherIndex = 0;
 			if(WeatherData.forecast.length>3)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries

@@ -165,6 +165,7 @@ public class MetaWatchService extends Service {
 		public static String watchMacAddress = "";
 		public static int packetWait = 10;
 		public static boolean skipSDP = false;
+		public static boolean insecureBtSocket = false;
 		public static boolean invertLCD = false;
 		public static boolean notificationCenter = false;
 		public static boolean notifyLight = false;
@@ -234,6 +235,8 @@ public class MetaWatchService extends Service {
 				Preferences.watchMacAddress);
 		Preferences.skipSDP = sharedPreferences.getBoolean("SkipSDP",
 				Preferences.skipSDP);
+		Preferences.insecureBtSocket = sharedPreferences.getBoolean("InsecureBtSocket", 
+				Preferences.insecureBtSocket);
 		Preferences.invertLCD = sharedPreferences.getBoolean("InvertLCD",
 				Preferences.invertLCD);
 		Preferences.notificationCenter = sharedPreferences.getBoolean(
@@ -435,11 +438,9 @@ public class MetaWatchService extends Service {
 		powerManger = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				"MetaWatch");
-		
-		Idle.updateIdle(this, true);
-		
-		Monitors.start(this, telephonyManager);
 
+		Monitors.start(this, telephonyManager);
+		
 		start();
 
 	}
@@ -513,8 +514,14 @@ public class MetaWatchService extends Service {
 				} else {
 					UUID uuid = UUID
 							.fromString("00001101-0000-1000-8000-00805F9B34FB");
-					bluetoothSocket = bluetoothDevice
-							.createRfcommSocketToServiceRecord(uuid);
+					if (Preferences.insecureBtSocket) {
+						bluetoothSocket = bluetoothDevice
+								.createInsecureRfcommSocketToServiceRecord(uuid);
+					} else {
+						bluetoothSocket = bluetoothDevice
+								.createRfcommSocketToServiceRecord(uuid);
+					}
+					
 				}
 
 				bluetoothSocket.connect();
@@ -527,7 +534,8 @@ public class MetaWatchService extends Service {
 
 			Protocol.startProtocolSender();
 			//Protocol.setNvalTime(context);
-			Protocol.sendRtcNow(context);
+			Protocol.getRealTimeClock();
+			//Protocol.sendRtcNow(context);
 			Protocol.getDeviceType();
 
 			Notification.startNotificationSender(this);
@@ -541,6 +549,8 @@ public class MetaWatchService extends Service {
 			if (notifyOnConnect) {
 				NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected");
 			}
+			
+			Idle.updateIdle(this, true);
 			
 		} catch (IOException ioexception) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, ioexception.toString());
@@ -876,7 +886,18 @@ public class MetaWatchService extends Service {
 						"MetaWatchService.readFromDevice(): received light sensor response."
 								+ " light_sense=" + lightSense
 								+ " light_average=" + lightAverage);
-			
+			} else if (bytes[2] == eMessageType.GetRealTimeClockResponse.msg) {
+				long timeNow = System.currentTimeMillis();
+				long roundTrip = timeNow - Monitors.getRTCTimestamp;
+				
+				if (Preferences.logging) Log.d(MetaWatch.TAG, 
+						"MetaWatchService.readFromDevice(): received rtc response."
+								+ " round trip= "+roundTrip );
+				
+				Monitors.rtcOffset = (int)(roundTrip/2000);
+				
+				Protocol.sendRtcNow(context);
+				
 			} else {
 				if (Preferences.logging) Log.d(MetaWatch.TAG,
 						"MetaWatchService.readFromDevice(): Unknown message : 0x"+Integer.toString((bytes[2] & 0xff) + 0x100, 16).substring(1) + ", ");
