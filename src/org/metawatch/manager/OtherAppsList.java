@@ -8,7 +8,9 @@ import java.util.List;
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -21,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -28,22 +31,30 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AppBlacklist extends Activity {
+public class OtherAppsList extends Activity {
 
-	public static final String DEFAULT_BLACKLIST = "com.android.mms,com.google.android.gm,com.fsck.k9,com.android.alarmclock,com.htc.android.worldclock,com.android.deskclock,com.sonyericsson.alarm,com.motorola.blur.alarmclock";
+	public static final String DEFAULT_BLACKLIST = 
+			"com.android.mms," +
+			"com.google.android.gm," +
+			"com.fsck.k9," +
+			"com.android.alarmclock," +
+			"com.htc.android.worldclock," +
+			"com.android.deskclock," +
+			"com.sonyericsson.alarm," +
+			"com.motorola.blur.alarmclock";
 	private List<AppInfo> appInfos;
 
 	private class AppLoader extends AsyncTask<Void, Void, List<AppInfo>> {
 		private ProgressDialog pdWait;
 
 		protected void onPreExecute() {
-			pdWait = ProgressDialog.show(AppBlacklist.this, "", "Loading apps, please wait...");
+			pdWait = ProgressDialog.show(OtherAppsList.this, "", "Loading apps, please wait...");
 		}
 
 		@Override
 		protected List<AppInfo> doInBackground(Void... params) {
 			SharedPreferences sharedPreferences = PreferenceManager
-					.getDefaultSharedPreferences(AppBlacklist.this);
+					.getDefaultSharedPreferences(OtherAppsList.this);
 			String[] blacklist = sharedPreferences.getString("appBlacklist",
 					DEFAULT_BLACKLIST).split(",");
 			Arrays.sort(blacklist);
@@ -66,6 +77,8 @@ public class AppBlacklist extends Activity {
 				appInfo.packageName = pi.packageName;
 				appInfo.isBlacklisted = 
 					(Arrays.binarySearch(blacklist, pi.packageName) >= 0);
+				appInfo.buzzes =
+					sharedPreferences.getInt("appVibrate_" + pi.packageName, -1);
 				appInfos.add(appInfo);
 			}
 			Collections.sort(appInfos);
@@ -77,7 +90,7 @@ public class AppBlacklist extends Activity {
 		protected void onPostExecute(List<AppInfo> appInfos) {
 			ListView listView = (ListView) findViewById(android.R.id.list);
 			listView.setAdapter(new BlacklistAdapter(appInfos));
-			AppBlacklist.this.appInfos = appInfos;
+			OtherAppsList.this.appInfos = appInfos;
 			pdWait.dismiss();
 
 		}
@@ -89,6 +102,7 @@ public class AppBlacklist extends Activity {
 		Drawable icon;
 		String packageName;
 		boolean isBlacklisted;
+		int buzzes;
 
 		public int compareTo(AppInfo another) {
 			return this.name.compareTo(another.name);
@@ -97,25 +111,42 @@ public class AppBlacklist extends Activity {
 
 	class BlacklistAdapter extends ArrayAdapter<AppInfo> {
 		private final List<AppInfo> apps;
+		private final String[] buzzSettingNames;
+		private final String[] buzzSettingValues;
 
-		public BlacklistAdapter( List<AppInfo> apps) {
-			super(AppBlacklist.this, R.layout.app_blacklist_list_item, apps);
+		public BlacklistAdapter(List<AppInfo> apps) {
+			super(OtherAppsList.this, R.layout.other_apps_list_item, apps);
 			this.apps = apps;
+
+			this.buzzSettingNames = getResources().getStringArray(R.array.settings_number_buzzes_names);
+			this.buzzSettingValues = getResources().getStringArray(R.array.settings_number_buzzes_values);
+		}
+		
+		private String getBuzzesText(int buzzes) {
+			if (buzzes == -1) {
+				return "Def.";
+			} else if (buzzes == 0) {
+				return "No";
+			} else {
+				return String.valueOf(buzzes);
+			}
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
-			LayoutInflater inflater = AppBlacklist.this.getLayoutInflater();
+			LayoutInflater inflater = OtherAppsList.this.getLayoutInflater();
 			if(view == null) {
-			    view = inflater.inflate(R.layout.app_blacklist_list_item, null);
+			    view = inflater.inflate(R.layout.other_apps_list_item, null);
 			}
 			ImageView icon = (ImageView) view
-					.findViewById(R.id.app_blacklist_list_item_icon);
+					.findViewById(R.id.other_apps_list_item_icon);
 			TextView appName = (TextView) view
-					.findViewById(R.id.app_blacklist_list_item_name);
+					.findViewById(R.id.other_apps_list_item_name);
 			CheckBox checkbox = (CheckBox) view
-					.findViewById(R.id.app_blacklist_list_item_check);
+					.findViewById(R.id.other_apps_list_item_check);
+			final Button buzzes = (Button) view
+					.findViewById(R.id.other_apps_list_item_buzzes);
 			final AppInfo appInfo = apps.get(position);
 			icon.setImageDrawable(appInfo.icon);
 			appName.setText(appInfo.name);
@@ -123,12 +154,46 @@ public class AppBlacklist extends Activity {
 			// Remove any previous listener to not confuse the system...
 			checkbox.setOnCheckedChangeListener(null);
 			// ...otherwise this row triggers for the old app when the View is reused.
-			checkbox.setChecked(appInfo.isBlacklisted);
+			checkbox.setChecked(!appInfo.isBlacklisted);
 			checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					appInfo.isBlacklisted = isChecked;
+					appInfo.isBlacklisted = !isChecked;
+					buzzes.setEnabled(isChecked);
 				}
 			});
+			
+			buzzes.setEnabled(!appInfo.isBlacklisted);
+			buzzes.setText(getBuzzesText(appInfo.buzzes));
+			buzzes.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					int index = -1;
+					for (int i = 0; i < buzzSettingValues.length && index == -1; i++) {
+						if (Integer.parseInt(buzzSettingValues[i]) == appInfo.buzzes) {
+							index =  i;
+						}
+					}
+					
+					AlertDialog.Builder builder = new AlertDialog.Builder(OtherAppsList.this);
+					builder.setTitle("Number of Buzzes");
+					builder.setSingleChoiceItems(buzzSettingNames, index, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							appInfo.buzzes = Integer.parseInt(buzzSettingValues[item]);
+							buzzes.setText(getBuzzesText(appInfo.buzzes));
+							dialog.dismiss();
+						}
+					});
+					builder.setNeutralButton("Use default value", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							appInfo.buzzes = -1;
+							buzzes.setText(getBuzzesText(appInfo.buzzes));
+						}
+					});
+					builder.setNegativeButton(android.R.string.cancel, null);
+					builder.setCancelable(true);
+					builder.create().show();
+				}
+			});
+			
 			return view;
 		}
 
@@ -138,7 +203,7 @@ public class AppBlacklist extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.app_blacklist);
+		setContentView(R.layout.other_apps_list);
 
 		AppLoader appLoader = new AppLoader();
 		appLoader.execute((Void[]) null);
@@ -148,6 +213,10 @@ public class AppBlacklist extends Activity {
 	protected void onPause() {
 		super.onPause();
 		try {
+			SharedPreferences sharedPreferences = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			SharedPreferences.Editor editor = sharedPreferences.edit();
+			
 			StringBuilder sb = new StringBuilder();
 			for (AppInfo appInfo : appInfos) {
 				if (appInfo.isBlacklisted) {
@@ -156,14 +225,16 @@ public class AppBlacklist extends Activity {
 					}
 					sb.append(appInfo.packageName);
 				}
+				if (appInfo.buzzes == -1) {
+					editor.remove("appVibrate_" + appInfo.packageName);
+				} else {
+					editor.putInt("appVibrate_" + appInfo.packageName, appInfo.buzzes);
+				}
 			}
-			SharedPreferences sharedPreferences = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
 			String blacklist = sb.toString();
 			editor.putString("appBlacklist", blacklist);
 			editor.commit();		
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "App blacklist: " + blacklist);
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "OtherAppsList: " + blacklist);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

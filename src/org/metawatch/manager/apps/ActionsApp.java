@@ -123,10 +123,8 @@ public class ActionsApp extends InternalApp {
 	}
 
 	public void deactivate(final Context context, int watchType) {
-		if (!containerStack.isEmpty()) {
-			//Return to root.
-			toRoot();
-		}
+		//Return to root.
+		toRoot();
 		
 		if (watchType == WatchType.DIGITAL) {
 			Protocol.disableButton(1, 1, MetaWatchService.WatchBuffers.APPLICATION);
@@ -228,7 +226,7 @@ public class ActionsApp extends InternalApp {
 				StringBuilder name = new StringBuilder(a.getName());
 				if (a instanceof ContainerAction) {
 					name.append(" (");
-					name.append(((ContainerAction)a).visibleSubActions());
+					name.append(((ContainerAction)a).size());
 					name.append(")");
 				}
 				
@@ -410,12 +408,8 @@ public class ActionsApp extends InternalApp {
 		case ACTION_PERFORM:
 			if (currentAction instanceof ContainerAction) {
 				displayContainer((ContainerAction)currentAction);
-				
-				return BUTTON_USED;
-				
-			} else {
-				return currentAction.performAction(context);
 			}
+			return currentAction.performAction(context);
 			
 		case ACTION_SECONDARY:
 			return currentAction.performSecondary(context);
