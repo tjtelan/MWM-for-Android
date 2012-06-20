@@ -105,14 +105,21 @@ public class NotificationBuilder {
 	
 	public static void createSmart(Context context, String title, String text) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsOtherNotificationNumberBuzzes");
-		createSmart(context, title, text, vibratePattern);
+		createSmart(context, title, text, null, true, vibratePattern);
 	}
 	
-	public static void createSmart(Context context, String title, String text, VibratePattern vibratePattern) {
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "notify.bmp");
+	public static void createSmart(Context context, String title, String text, Bitmap icon, boolean sticky, VibratePattern vibratePattern) {
+		if (icon == null) {
+			icon = Utils.loadBitmapFromAssets(context, "notify.bmp");
+		}
 		String description = "Smart: "+text;
-		if (MetaWatchService.watchType == WatchType.DIGITAL) {		
-			Bitmap[] bitmaps = smartNotify(context, icon, title, text);
+		if (MetaWatchService.watchType == WatchType.DIGITAL) {
+			Bitmap[] bitmaps;
+			if (sticky) {
+				bitmaps = smartNotify(context, icon, title, text);
+			} else {
+				bitmaps = new Bitmap[] { smartLines(context, icon, title, new String[] { text }) };
+			}
 			Notification.addBitmapNotification(context, bitmaps, vibratePattern, -1, description);
 		} else {
 			byte[] scroll = new byte[800];

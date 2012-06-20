@@ -39,6 +39,7 @@ import org.metawatch.manager.widgets.WidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 public class ApiIntentReceiver extends BroadcastReceiver {
@@ -134,7 +135,17 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 				}
 				String text = intent.getStringExtra("text");
 				
-				NotificationBuilder.createSmart(context, title, text, vibrate);
+				Bitmap icon = null;
+				if (intent.hasExtra("icon")) {
+					icon = Bitmap.createBitmap(intent.getIntArrayExtra("icon"),
+							intent.getIntExtra("iconWidth", 16),
+							intent.getIntExtra("iconHeight", 16),
+							Bitmap.Config.RGB_565);
+				}
+				
+				boolean sticky = intent.getBooleanExtra("sticky", true);
+				
+				NotificationBuilder.createSmart(context, title, text, icon, sticky, vibrate);
 				
 				if (Preferences.logging) Log.d(MetaWatch.TAG,
 						"ApiIntentReceiver.onReceive(): sending text notification; text='"
