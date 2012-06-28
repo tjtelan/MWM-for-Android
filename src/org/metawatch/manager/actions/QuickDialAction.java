@@ -55,6 +55,9 @@ public class QuickDialAction extends ContainerAction {
 
 		Cursor people = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection, "starred=?", new String[] {"1"}, ContactsContract.Contacts.TIMES_CONTACTED + " DESC");
 		
+		if (people==null)
+			return;
+		
 		while (people.moveToNext()) {
 			int idFieldIndex = people.getColumnIndex(ContactsContract.Contacts._ID);
 			final String id = people.getString(idFieldIndex);

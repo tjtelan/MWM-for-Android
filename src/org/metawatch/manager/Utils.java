@@ -146,6 +146,9 @@ public class Utils {
 		    Cursor c = context.getContentResolver().query(contactUri,
 		            projection, null, null, null);
 
+		    if (c==null)
+		    	return null;
+		    
 		    if (c.moveToFirst()) {
 		    	// Try openContactPhotoInputStream first.
 		        long contactId = c.getLong(c.getColumnIndex(ContactsContract.Contacts._ID));
