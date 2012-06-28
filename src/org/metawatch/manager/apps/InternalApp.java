@@ -59,7 +59,7 @@ public abstract class InternalApp {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			SharedPreferences.Editor editor = prefs.edit();
 			editor.putBoolean(getInfo().pageSettingKey, value);
-			editor.apply();
+			editor.commit();
 		}
 		if (info.pageSettingAttribute != null) {
 			try {
