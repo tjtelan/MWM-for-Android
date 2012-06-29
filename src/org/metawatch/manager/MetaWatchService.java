@@ -441,6 +441,9 @@ public class MetaWatchService extends Service {
 
 		Monitors.start(this, telephonyManager);
 		
+		// Initialise theme
+		BitmapCache.getBitmap(context, "");
+		
 		start();
 
 	}
