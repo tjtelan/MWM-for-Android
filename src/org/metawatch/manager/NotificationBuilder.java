@@ -69,7 +69,7 @@ public class NotificationBuilder {
 	public static void createSMS(Context context, String number, String text) {
 		String name = Utils.getContactNameFromNumber(context, number);
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsSMSNumberBuzzes");
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "message.bmp");
+		Bitmap icon = Utils.getBitmap(context, "message.bmp");
 		String description = "SMS: "+name;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			if (Preferences.stickyNotifications & !number.equals("Google Chat")) {
@@ -91,7 +91,7 @@ public class NotificationBuilder {
 	public static void createMMS(Context context, String number) {
 		String name = Utils.getContactNameFromNumber(context, number);
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsSMSNumberBuzzes");
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "message.bmp");
+		Bitmap icon = Utils.getBitmap(context, "message.bmp");
 		String description = "MMS: "+name;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "MMS from", new String[] {name});		
@@ -110,7 +110,7 @@ public class NotificationBuilder {
 	
 	public static void createSmart(Context context, String title, String text, Bitmap icon, boolean sticky, VibratePattern vibratePattern) {
 		if (icon == null) {
-			icon = Utils.loadBitmapFromAssets(context, "notify.bmp");
+			icon = Utils.getBitmap(context, "notify.bmp");
 		}
 		String description = "Smart: "+text;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
@@ -130,7 +130,7 @@ public class NotificationBuilder {
 	
 	public static void createK9(Context context, String sender, String subject, String folder) {	
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsK9NumberBuzzes");	
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "email.bmp");
+		Bitmap icon = Utils.getBitmap(context, "email.bmp");
 		String description = "K9: "+sender;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "K9 mail", new String[] {sender, subject, folder});
@@ -144,7 +144,7 @@ public class NotificationBuilder {
 	
 	public static void createGmail(Context context, String sender, String email, String subject, String snippet) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsGmailNumberBuzzes");	
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "gmail.bmp");
+		Bitmap icon = Utils.getBitmap(context, "gmail.bmp");
 		String description = "Gmail: "+sender;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Gmail", new String[] { sender, email, subject});
@@ -160,7 +160,7 @@ public class NotificationBuilder {
 	public static void createGmailBlank(Context context, String recipient, int count) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsGmailNumberBuzzes");
 		String messages = count + " new " + (count == 1 ? "message" : "messages");
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "gmail.bmp");
+		Bitmap icon = Utils.getBitmap(context, "gmail.bmp");
 		String description = "Gmail: unread "+count;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Gmail", new String[] {messages, recipient});	
@@ -174,7 +174,7 @@ public class NotificationBuilder {
 	
 	public static void createTouchdownMail(Context context, String title, String ticker) {	
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsTDNumberBuzzes");	
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "email.bmp");
+		Bitmap icon = Utils.getBitmap(context, "email.bmp");
 		String description = "TouchDown: "+title;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "TouchDown", new String[] {title, ticker});
@@ -188,7 +188,7 @@ public class NotificationBuilder {
 	
 	public static void createCalendar(Context context, String text) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsCalendarNumberBuzzes");
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "calendar.bmp");
+		Bitmap icon = Utils.getBitmap(context, "calendar.bmp");
 		String description = "Cal: "+text;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Calendar", new String[] {text});	
@@ -204,7 +204,7 @@ public class NotificationBuilder {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsAlarmNumberBuzzes");	
 	    final Calendar t = Calendar.getInstance();
 	    final String currentTime = DateFormat.getTimeFormat(context).format(t.getTime());
-	    Bitmap icon = Utils.loadBitmapFromAssets(context, "timer.bmp");
+	    Bitmap icon = Utils.getBitmap(context, "timer.bmp");
 	    String description = "Alarm";
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Alarm", new String[] {currentTime}, FontCache.FontSize.LARGE);		
@@ -216,7 +216,7 @@ public class NotificationBuilder {
 	
 	public static void createMusic(Context context, String artist, String track, String album) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsMusicNumberBuzzes");	
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "play.bmp");
+		Bitmap icon = Utils.getBitmap(context, "play.bmp");
 		String description = "Music: "+track;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Music", new String[] { track, album, artist});
@@ -231,7 +231,7 @@ public class NotificationBuilder {
 	public static void createTimezonechange(Context context) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsTimezoneNumberBuzzes");	
 		TimeZone tz = TimeZone.getDefault();
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "timezone.bmp");
+		Bitmap icon = Utils.getBitmap(context, "timezone.bmp");
 		String description = "Timezone Changed";
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Timezone", new String[] {"Timezone Changed", tz.getDisplayName()});		
@@ -252,7 +252,7 @@ public class NotificationBuilder {
 			vibratePattern = createVibratePatternFromPreference(context, "settingsOtherNotificationNumberBuzzes");
 		}
 		if (icon==null) {
-			icon = Utils.loadBitmapFromAssets(context, "notify.bmp"); 
+			icon = Utils.getBitmap(context, "notify.bmp"); 
 		}
 		String description = appName;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
@@ -267,7 +267,7 @@ public class NotificationBuilder {
 	
 	public static void createWinamp(Context context, String artist, String track, String album) {
 		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsMusicNumberBuzzes");	
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "winamp.bmp");
+		Bitmap icon = Utils.getBitmap(context, "winamp.bmp");
 		String description = "Winamp: "+track;
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon, "Winamp", new String[] { track, album, artist});
@@ -286,7 +286,7 @@ public class NotificationBuilder {
 		builder.append(Monitors.BatteryData.level);
 		builder.append("%");
 		String description = "Battery low";
-		Bitmap icon = Utils.loadBitmapFromAssets(context, "batterylow.bmp");
+		Bitmap icon = Utils.getBitmap(context, "batterylow.bmp");
 		if (MetaWatchService.watchType == WatchType.DIGITAL) {
 			Bitmap bitmap = smartLines(context, icon,
 					"Battery", new String[] { "Phone battery at", builder.toString() });
@@ -422,14 +422,14 @@ public class NotificationBuilder {
 			canvas.drawLine(88, iconHeight, 88, 95, paint);
 			
 			if (y>0)
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "arrow_up.bmp"), 90, 17, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "arrow_up.bmp"), 90, 17, null);
 			
 			if((h-y)>(displayHeight)) {
 				more = true;
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "arrow_down.bmp"), 90, 56, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "arrow_down.bmp"), 90, 56, null);
 			}
 						
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "close.bmp"), 90, 89, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "close.bmp"), 90, 89, null);
 			
 			y += scroll;
 			bitmaps.add(bitmap);

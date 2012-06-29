@@ -77,7 +77,7 @@ public class GmailWidget implements InternalWidget {
 			iconFile = "idle_gmail_10.bmp";
 		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		int count = Utils.getUnreadGmailCount(context);
 

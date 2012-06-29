@@ -78,7 +78,7 @@ public class SmsWidget implements InternalWidget {
 			iconFile = "idle_sms_10.bmp";
 		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		int count = Utils.getUnreadSmsCount(context);
 

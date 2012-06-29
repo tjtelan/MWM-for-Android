@@ -824,8 +824,8 @@ public class MetaWatchService extends Service {
 							.getDefaultSharedPreferences(this);
 					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
 					if (displaySplash) {
-						Protocol.sendOledBitmap(Utils.loadBitmapFromAssets(this, "splash_16_0.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 0);
-						Protocol.sendOledBitmap(Utils.loadBitmapFromAssets(this, "splash_16_1.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 1);
+						Protocol.sendOledBitmap(Utils.getBitmap(this, "splash_16_0.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 0);
+						Protocol.sendOledBitmap(Utils.getBitmap(this, "splash_16_1.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 1);
 					}
 
 				} else {
@@ -844,7 +844,7 @@ public class MetaWatchService extends Service {
 							.getDefaultSharedPreferences(this);
 					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
 					if (displaySplash) {
-						Notification.addBitmapNotification(this, Utils.loadBitmapFromAssets(this, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000, "Splash");
+						Notification.addBitmapNotification(this, Utils.getBitmap(this, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000, "Splash");
 					}
 					
 					Protocol.queryNvalTime();

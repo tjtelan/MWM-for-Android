@@ -218,7 +218,7 @@ public class ActionsApp extends InternalApp {
 			Action a = currentActions.get(i);
 			
 			if (a.bulletIcon() != null) {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, a.bulletIcon()), 1, y, null);
+				canvas.drawBitmap(Utils.getBitmap(context, a.bulletIcon()), 1, y, null);
 			}
 			
 			if (i == currentSelection) {
@@ -289,16 +289,16 @@ public class ActionsApp extends InternalApp {
 		
 		// Draw icons.
 		drawDigitalAppSwitchIcon(context, canvas, preview);
-		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down.bmp"), 87, 43, null);
+		canvas.drawBitmap(Utils.getBitmap(context, "action_down.bmp"), 87, 43, null);
 		
 		final int currentType = currentActions.get(currentSelection).getSecondaryType();
 		//TODO split the secodary icons to separate files and draw them in addition to the right icon.
 		if (currentType == Action.SECONDARY_RESET) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right.bmp"), 79, 87, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_reset_right.bmp"), 79, 87, null);
 		} else if (currentType == Action.SECONDARY_EXIT) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_exit_right.bmp"), 79, 87, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_exit_right.bmp"), 79, 87, null);
 		} else {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right.bmp"), 87, 87, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_right.bmp"), 87, 87, null);
 		}
 		
 		// If the screen hasn't scrolled, the bitmap is too large, shrink it.
@@ -344,7 +344,7 @@ public class ActionsApp extends InternalApp {
 		canvas.drawText((String) TextUtils.ellipsize(title, paint, 74, TruncateAt.END), 0, 6, paint);
 		canvas.drawText((String) TextUtils.ellipsize(position.toString(), paint, 74, TruncateAt.END), 0, 13, paint);
 		
-		canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_down_5.bmp"), 75, 11, null);
+		canvas.drawBitmap(Utils.getBitmap(context, "action_down_5.bmp"), 75, 11, null);
 		
 		// Bottom screen
 		canvas.clipRect(0, 16, 80, 32, Region.Op.REPLACE);
@@ -376,11 +376,11 @@ public class ActionsApp extends InternalApp {
 		final int type = a.getSecondaryType();
 		//TODO split the secodary icons to separate files and draw them in addition to the right icon.
 		if (type == Action.SECONDARY_RESET) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reset_right_5.bmp"), 75, 16, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_reset_right_5.bmp"), 75, 16, null);
 		} else if (type == Action.SECONDARY_EXIT) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_exit_right_5.bmp"), 75, 16, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_exit_right_5.bmp"), 75, 16, null);
 		} else {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_right_5.bmp"), 75, 16, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_right_5.bmp"), 75, 16, null);
 		}
 				
 		return bitmap;

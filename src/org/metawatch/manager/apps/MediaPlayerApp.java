@@ -130,10 +130,10 @@ public class MediaPlayerApp extends InternalApp {
 			canvas.drawColor(Color.WHITE);	
 			
 			if(MediaControl.lastTrack=="") {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player_idle.png"), 0, 0, null);				
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player_idle.png"), 0, 0, null);				
 			}
 			else {	
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player.png"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player.png"), 0, 0, null);
 				
 				
 				TextPaint tp = null;
@@ -187,10 +187,10 @@ public class MediaPlayerApp extends InternalApp {
 			canvas.drawColor(Color.WHITE);	
 	
 			if(MediaControl.lastTrack=="") {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player_idle_oled.png"), 0, 0, null);				
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player_idle_oled.png"), 0, 0, null);				
 			}
 			else {	
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player_oled.png"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player_oled.png"), 0, 0, null);
 								
 				TextPaint tp = null;
 				if( paintLarge.measureText(MediaControl.lastTrack) < 75) {

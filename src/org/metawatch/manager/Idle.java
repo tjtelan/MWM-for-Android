@@ -118,7 +118,7 @@ public class Idle {
 			boolean showClock = (pageIndex==0 || Preferences.clockOnEveryPage);
 			
 			if(watchType == WatchType.DIGITAL && preview && showClock) {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "dummy_clock.png"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "dummy_clock.png"), 0, 0, null);
 			} 
 			
 			int totalHeight = 0;

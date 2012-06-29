@@ -78,7 +78,7 @@ public class TouchDownWidget implements InternalWidget {
 			iconFile = "idle_touchdown_10.bmp";
 		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		int count = Monitors.TouchDownData.unreadMailCount;
 

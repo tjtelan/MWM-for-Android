@@ -212,7 +212,7 @@ public class WeatherWidget implements InternalWidget {
 		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 			
 			// icon
-			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
 			canvas.drawBitmap(image, 0, 4, null);
 								
 			// temperatures
@@ -246,7 +246,7 @@ public class WeatherWidget implements InternalWidget {
 		if (WeatherData.received) {
 			
 			// icon
-			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
 			if (Preferences.overlayWeatherText)
 				canvas.drawBitmap(image, 36, 5, null);
 			else
@@ -320,7 +320,7 @@ public class WeatherWidget implements InternalWidget {
 
 			for (int i=0;i<4;++i) {
 				int x = i*24;
-				Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.forecast[weatherIndex].icon);
+				Bitmap image = Utils.getBitmap(context, WeatherData.forecast[weatherIndex].icon);
 				canvas.drawBitmap(image, x, 4, null);
 				Utils.drawOutlinedText(WeatherData.forecast[weatherIndex].day, canvas, x, 6, paintSmall, paintSmallOutline);
 				
@@ -363,7 +363,7 @@ public class WeatherWidget implements InternalWidget {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*24);
-			Bitmap image = shouldInvert ? Utils.loadBitmapFromAssets(context, "moon-inv.bmp") : Utils.loadBitmapFromAssets(context, "moon.bmp");
+			Bitmap image = shouldInvert ? Utils.getBitmap(context, "moon-inv.bmp") : Utils.getBitmap(context, "moon.bmp");
 			canvas.drawBitmap(image, x, 0, null);
 			
 			canvas.drawText(Integer.toString(WeatherData.moonPercentIlluminated)+"%", 12, 30, paintSmall);
@@ -385,7 +385,7 @@ public class WeatherWidget implements InternalWidget {
 			
 			// icon
 			String smallIcon = WeatherData.icon.replace(".bmp", "_12.bmp");
-			Bitmap image = Utils.loadBitmapFromAssets(context, smallIcon);	
+			Bitmap image = Utils.getBitmap(context, smallIcon);	
 			canvas.drawBitmap(image, 46, 2, null);
 			
 			// condition
@@ -451,7 +451,7 @@ public class WeatherWidget implements InternalWidget {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*16);
-			Bitmap image = shouldInvert ? Utils.loadBitmapFromAssets(context, "moon-inv_10.bmp") : Utils.loadBitmapFromAssets(context, "moon_10.bmp");
+			Bitmap image = shouldInvert ? Utils.getBitmap(context, "moon-inv_10.bmp") : Utils.getBitmap(context, "moon_10.bmp");
 			canvas.drawBitmap(image, x, 0, null);
 		} else {
 			canvas.drawText("--", 8, 9, paintSmall);
@@ -477,7 +477,7 @@ public class WeatherWidget implements InternalWidget {
 			for (int i=0;i<3;++i) {
 				int x = i*26;
 				final String smallIcon = WeatherData.forecast[weatherIndex].icon.replace(".bmp", "_12.bmp");
-				Bitmap image = Utils.loadBitmapFromAssets(context, smallIcon);
+				Bitmap image = Utils.getBitmap(context, smallIcon);
 				canvas.drawBitmap(image, x+12, 0, null);
 				Utils.drawOutlinedText(WeatherData.forecast[weatherIndex].day.substring(0, 2), canvas, x+1, 6, paintSmall, paintSmallOutline);
 				

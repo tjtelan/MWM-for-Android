@@ -46,6 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -476,7 +478,26 @@ public class Utils {
 
 	}
 	
-	public static Bitmap loadBitmapFromAssets(Context context, String path) {
+	public static Bitmap getBitmap(Context context, String path) {
+		
+		String themeName = "default";
+		
+		File themeFile = new File(Utils.getExternalFilesDir(context, "Themes"), themeName+".zip");
+		if (themeFile.exists()) {
+			Bitmap bitmap = loadBitmapFromZip(context, path, themeFile);
+			//Bitmap bitmap = getBtimapFromZip(themeFile, themeName+"/"+path);
+			if (bitmap!=null) {
+				Log.d(MetaWatch.TAG, "Loaded "+path+" from theme");
+				return bitmap;
+			}
+		}
+		
+		return loadBitmapFromAssets(context, path);
+		
+	}
+	
+	private static Bitmap loadBitmapFromAssets(Context context, String path) {
+		
 		try {
 			InputStream inputStream = context.getAssets().open(path);
 	        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
@@ -488,6 +509,60 @@ public class Utils {
 			return null;
 		}
 	}
+		
+	private static Bitmap loadBitmapFromZip(Context context, String path, File themeFile) {
+		
+		FileInputStream fis = null;
+		ZipInputStream zis = null;
+		
+		try {
+		
+		    fis = new FileInputStream(themeFile);
+			zis = new ZipInputStream(fis);
+					
+			ZipEntry ze = zis.getNextEntry();
+            while (ze != null) 
+            { 
+                //for each entry to be extracted
+            	
+                String entryName = ze.getName();
+                
+                //Log.d(MetaWatch.TAG, "Zip entry " +entryName);
+                
+                if (path.equalsIgnoreCase(entryName)) {
+                	final int size = (int) ze.getSize();
+                	byte[] buffer = new byte[size];
+                	zis.read(buffer);
+                	//Bitmap bitmap = BitmapFactory.decodeStream(zis);
+                	Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0, size);
+                	if (bitmap==null)
+                		Log.d(MetaWatch.TAG, "Reading "+entryName+ " failed");
+                	return bitmap;
+                }
+                
+                zis.closeEntry();
+                ze = zis.getNextEntry();
+
+            }
+			
+		} catch (FileNotFoundException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+		finally {
+			try {
+				if (zis!=null)
+					zis.close();
+				if (fis!=null)
+					fis.close();
+			} catch (IOException e) {
+			}
+		}
+	   
+		return null;
+	}
+	
 	/*
 	public static Bitmap loadBitmapFromPath(Context context, String path) {
 			return BitmapFactory.decodeFile(path);
