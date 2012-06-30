@@ -457,6 +457,12 @@
 	    			    
 	</PreferenceScreen>
 	
+	<Preference
+		android:title="Choose Theme"
+		android:key="Theme"
+		android:summary="Select a graphical theme for your watch"
+		/>
+	
 	<PreferenceScreen
 		android:title="@string/settings_Other"
 		>

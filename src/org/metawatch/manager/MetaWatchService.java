@@ -197,7 +197,7 @@ public class MetaWatchService extends Service {
 		public static int appLaunchMode = AppLaunchMode.POPUP;
 		public static boolean autoSpeakerphone = false;
 		public static boolean showActionsInCall = true;
-		public static String themeName = "default";
+		public static String themeName = "";
 	}
 
 	public final class WatchType {
@@ -296,6 +296,8 @@ public class MetaWatchService extends Service {
 				Preferences.autoSpeakerphone);
 		Preferences.showActionsInCall = sharedPreferences.getBoolean("showActionsInCall",
 				Preferences.showActionsInCall);
+		Preferences.themeName = sharedPreferences.getString("ThemeName",
+				Preferences.themeName);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
@@ -320,6 +322,15 @@ public class MetaWatchService extends Service {
 		Editor editor = sharedPreferences.edit();
 
 		editor.putString("MAC", mac);
+		editor.commit();
+	}
+	
+	public static void saveTheme(Context context, String theme) {
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Editor editor = sharedPreferences.edit();
+
+		editor.putString("ThemeName", theme);
 		editor.commit();
 	}
 	

@@ -178,6 +178,9 @@
         <activity android:name="WidgetPicker" 
         		  android:launchMode="standard">
         </activity>        
+        <activity android:name="ThemePicker" 
+        		  android:launchMode="standard">
+        </activity>  
         <activity android:name="org.metawatch.manager.Test" 
                   android:launchMode="singleTask">
         </activity>
