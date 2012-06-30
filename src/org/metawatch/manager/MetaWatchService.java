@@ -197,6 +197,7 @@ public class MetaWatchService extends Service {
 		public static int appLaunchMode = AppLaunchMode.POPUP;
 		public static boolean autoSpeakerphone = false;
 		public static boolean showActionsInCall = true;
+		public static String themeName = "default";
 	}
 
 	public final class WatchType {

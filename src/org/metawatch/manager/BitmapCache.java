@@ -9,12 +9,13 @@ import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.metawatch.manager.MetaWatchService.Preferences;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 public class BitmapCache {
-	public static String themeName = "default";
 	
 	private static String currentTheme = "";
 	private static long themeTimeStamp = 0;
@@ -23,10 +24,10 @@ public class BitmapCache {
 	
 	public static Bitmap getBitmap(Context context, String path) {
 		
-		File themeFile = new File(Utils.getExternalFilesDir(context, "Themes"), themeName+".zip");
+		File themeFile = new File(Utils.getExternalFilesDir(context, "Themes"), Preferences.themeName+".zip");
 		
-		if (themeName != currentTheme || (themeFile.lastModified() != themeTimeStamp)) {
-			currentTheme = themeName;
+		if (Preferences.themeName != currentTheme || (themeFile.lastModified() != themeTimeStamp)) {
+			currentTheme = Preferences.themeName;
 			cache = new HashMap<String,Bitmap>();
 			themeTimeStamp = themeFile.lastModified();
 			
@@ -77,6 +78,10 @@ public class BitmapCache {
                 String entryName = ze.getName();
                 
             	final int size = (int) ze.getSize();
+            	
+            	// Need to copy into a buffer rather than decoding directly from zis
+            	// as BitmapFactory seems unable to read a .bmp file from a
+            	// ZipInputStream :-\
             	byte[] buffer = new byte[size];
             	zis.read(buffer);
             	Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0, size);
