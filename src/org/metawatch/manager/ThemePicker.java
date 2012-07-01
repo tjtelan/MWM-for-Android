@@ -10,6 +10,7 @@ import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -186,7 +187,10 @@ public class ThemePicker extends ListActivity {
 
     	super.onListItemClick(l, v, position, id);
     	
-    	Idle.updateIdle(this, false);
+    	ProgressDialog dialog = ProgressDialog.show(this, "", 
+                "Applying Theme. Please wait...", true);
+    	Idle.updateIdle(this, true);
+    	dialog.dismiss();
     	
     	finish();
     }
