@@ -305,22 +305,38 @@ public class NotificationBuilder {
 	}
 	
 	static Bitmap smartLines(Context context, Bitmap icon, String header, String[] lines, FontCache.FontSize size) {
+		final int textTop = 24;
+		final int textLeft = 3;
+		final int textWidth = 90;
+		final int textHeight = 69;
+		
+		final int iconTop = 0;
+		final int iconLeft = 0;
+		
+		final int headerLeft = 20;
+		final int headerBaseline = 15;
+		
+		final int headerColor = Color.WHITE;
+		final int textColor = Color.BLACK;
+		
 		FontInfo font = FontCache.instance(context).Get(size);	
 		
 		Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(bitmap);		
 		
 		Paint paintHead = new Paint();
-		paintHead.setColor(Color.BLACK);		
+		paintHead.setColor(headerColor);		
 		paintHead.setTextSize(FontCache.instance(context).Large.size);
 		paintHead.setTypeface(FontCache.instance(context).Large.face);
 		
 		Paint paint = new Paint();
-		paint.setColor(Color.BLACK);		
+		paint.setColor(textColor);		
 		paint.setTextSize(font.size);	
 		paint.setTypeface(font.face);
 				
 		canvas.drawColor(Color.WHITE);
+		
+		canvas.drawBitmap(Utils.getBitmap(context, "notify_background.png"), 0, 0, null);
 		
 		int iconWidth = 0;
 		int iconHeight = 16;
@@ -329,13 +345,11 @@ public class NotificationBuilder {
 			iconHeight = Math.max(16, icon.getHeight()); // make sure the text fits
 			
 			// align icon to bottom of text
-			canvas.drawBitmap(icon, 0, iconHeight - icon.getHeight(), paint);
+			canvas.drawBitmap(icon, iconLeft, iconTop + iconHeight - icon.getHeight(), paint);
 		}			
 		
-		canvas.drawText(header, iconWidth+1, iconHeight-2, paintHead);
-		
-		canvas.drawLine(1, iconHeight, 95, iconHeight, paint);
-		
+		canvas.drawText(header, headerLeft, headerBaseline, paintHead);
+				
 		String body = "";		
 		for (String line : lines) {
 			if (body.length() > 0)
@@ -344,33 +358,47 @@ public class NotificationBuilder {
 		}
 		
 		TextPaint textPaint = new TextPaint(paint);
-		StaticLayout staticLayout = new StaticLayout(body, textPaint, 94,
+		StaticLayout staticLayout = new StaticLayout(body, textPaint, textWidth,
 				android.text.Layout.Alignment.ALIGN_CENTER, 1.3f, 0, false);
 		
-		int textHeight = staticLayout.getHeight();
-		int headerHeight = iconHeight+2;
-		int textY = (56) - (textHeight/2);
-		if (textY < headerHeight)
-			textY = headerHeight;
+		int layoutHeight = staticLayout.getHeight();
+		int textY = textTop + (textHeight/2) - (layoutHeight/2);
+		if (textY < textTop)
+			textY = textTop;
 		
-		canvas.translate(1, textY); // position the text
+		canvas.translate(textLeft, textY); // position the text
 		staticLayout.draw(canvas);
 
 		return bitmap;
 	}
 		
 	static Bitmap[] smartNotify(Context context, Bitmap icon, String header, String body) {	
+
+		final int textTop = 24;
+		final int textLeft = 3;
+		final int textWidth = 85;
+		final int textHeight = 69;
+		
+		final int iconTop = 0;
+		final int iconLeft = 0;
+		
+		final int headerLeft = 20;
+		final int headerBaseline = 15;
+		
+		final int headerColor = Color.WHITE;
+		final int textColor = Color.BLACK;
+		
 		FontInfo font = FontCache.instance(context).Get();		
 		
 		List<Bitmap> bitmaps = new ArrayList<Bitmap>();	
 		
 		Paint paintHead = new Paint();
-		paintHead.setColor(Color.BLACK);		
+		paintHead.setColor(headerColor);		
 		paintHead.setTextSize(FontCache.instance(context).Large.size);
 		paintHead.setTypeface(FontCache.instance(context).Large.face);
 		
 		Paint paint = new Paint();
-		paint.setColor(Color.BLACK);		
+		paint.setColor(textColor);		
 		paint.setTextSize(font.size);	
 		paint.setTypeface(font.face);
 		
@@ -378,7 +406,7 @@ public class NotificationBuilder {
 		whitePaint.setColor(Color.WHITE);	
 		
 		TextPaint textPaint = new TextPaint(paint);
-		StaticLayout staticLayout = new StaticLayout(body, textPaint, 86,
+		StaticLayout staticLayout = new StaticLayout(body, textPaint, textWidth,
 				android.text.Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
 		
 
@@ -390,12 +418,12 @@ public class NotificationBuilder {
 			iconHeight = Math.max(16, icon.getHeight());
 			iconOffset = iconHeight - icon.getHeight(); // align icon to bottom of text
 		}
-
+			
 		int h = staticLayout.getHeight();
 		int y = 0;
-		int displayHeight = 96 - iconHeight+2;
+		int displayHeight = 96 - textTop;
 		
-		int scroll = 72;
+		int scroll = textHeight-font.size;
 		boolean more = true;
 		
 		while (more) {	
@@ -404,32 +432,35 @@ public class NotificationBuilder {
 			Canvas canvas = new Canvas(bitmap);	
 			
 			canvas.drawColor(Color.WHITE);
+
+			canvas.drawBitmap(Utils.getBitmap(context, "notify_background_sticky.png"), 0, 0, null);
 			
 			canvas.save();
-			canvas.translate(1, iconHeight+2 - y); // position the text
+			canvas.translate(textLeft, textTop - y); // position the text
+			canvas.clipRect(0, y, textWidth, textHeight+y);
 			staticLayout.draw(canvas);
 			canvas.restore();
 			
 			// Draw header
-			canvas.drawRect(new android.graphics.Rect(0,0,96,iconHeight), whitePaint);
+			//canvas.drawRect(new android.graphics.Rect(0,0,96,iconHeight), whitePaint);
 			if (icon != null)
-				canvas.drawBitmap(icon, 0, iconOffset, paint);
-			canvas.drawText(header, iconWidth+1, iconHeight-2, paintHead);
+				canvas.drawBitmap(icon, iconLeft, iconOffset+iconTop, paint);
+			canvas.drawText(header, headerLeft, headerBaseline, paintHead);
 			
 			//canvas.drawText(""+(h-y)+" "+displayHeight, icon.getWidth()+1, icon.getHeight()-2, paintHead);
 			
-			canvas.drawLine(1, iconHeight, 88, iconHeight, paint);
-			canvas.drawLine(88, iconHeight, 88, 95, paint);
+			//canvas.drawLine(1, iconHeight, 88, iconHeight, paint);
+			//canvas.drawLine(88, iconHeight, 88, 95, paint);
 			
 			if (y>0)
-				canvas.drawBitmap(Utils.getBitmap(context, "arrow_up.bmp"), 90, 17, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "arrow_up.bmp"), 91, 23, null);
 			
 			if((h-y)>(displayHeight)) {
 				more = true;
-				canvas.drawBitmap(Utils.getBitmap(context, "arrow_down.bmp"), 90, 56, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "arrow_down.bmp"), 91, 56, null);
 			}
 						
-			canvas.drawBitmap(Utils.getBitmap(context, "close.bmp"), 90, 89, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "close.bmp"), 91, 89, null);
 			
 			y += scroll;
 			bitmaps.add(bitmap);
