@@ -35,6 +35,7 @@ package org.metawatch.manager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.TimeZone;
 
 import org.metawatch.manager.FontCache.FontInfo;
@@ -305,19 +306,22 @@ public class NotificationBuilder {
 	}
 	
 	static Bitmap smartLines(Context context, Bitmap icon, String header, String[] lines, FontCache.FontSize size) {
-		final int textTop = 24;
-		final int textLeft = 3;
-		final int textWidth = 90;
-		final int textHeight = 69;
 		
-		final int iconTop = 0;
-		final int iconLeft = 0;
+		Properties props = BitmapCache.getProperties(context, "notification.xml");
 		
-		final int headerLeft = 20;
-		final int headerBaseline = 15;
+		final int textTop = Integer.parseInt(props.getProperty("textTop", "24"));
+		final int textLeft = Integer.parseInt(props.getProperty("textLeft", "3"));
+		final int textWidth = Integer.parseInt(props.getProperty("textWidth", "90"));
+		final int textHeight = Integer.parseInt(props.getProperty("textHeight", "69"));
 		
-		final int headerColor = Color.WHITE;
-		final int textColor = Color.BLACK;
+		final int iconTop = Integer.parseInt(props.getProperty("iconTop", "0"));
+		final int iconLeft = Integer.parseInt(props.getProperty("iconLeft", "0"));
+		
+		final int headerLeft = Integer.parseInt(props.getProperty("headerLeft", "20"));
+		final int headerBaseline = Integer.parseInt(props.getProperty("headerBaseline", "15"));
+		
+		final int headerColor = props.getProperty("headerColor", "white").equalsIgnoreCase("black") ? Color.BLACK : Color.WHITE;
+		final int textColor = props.getProperty("textColor", "black").equalsIgnoreCase("black") ? Color.BLACK : Color.WHITE;
 		
 		FontInfo font = FontCache.instance(context).Get(size);	
 		
@@ -338,10 +342,8 @@ public class NotificationBuilder {
 		
 		canvas.drawBitmap(Utils.getBitmap(context, "notify_background.png"), 0, 0, null);
 		
-		int iconWidth = 0;
 		int iconHeight = 16;
 		if (icon!=null) {
-			iconWidth = icon.getWidth();
 			iconHeight = Math.max(16, icon.getHeight()); // make sure the text fits
 			
 			// align icon to bottom of text
@@ -373,20 +375,31 @@ public class NotificationBuilder {
 	}
 		
 	static Bitmap[] smartNotify(Context context, Bitmap icon, String header, String body) {	
-
-		final int textTop = 24;
-		final int textLeft = 3;
-		final int textWidth = 85;
-		final int textHeight = 69;
 		
-		final int iconTop = 0;
-		final int iconLeft = 0;
+		Properties props = BitmapCache.getProperties(context, "notification_sticky.xml");
 		
-		final int headerLeft = 20;
-		final int headerBaseline = 15;
+		final int textTop = Integer.parseInt(props.getProperty("textTop", "24"));
+		final int textLeft = Integer.parseInt(props.getProperty("textLeft", "3"));
+		final int textWidth = Integer.parseInt(props.getProperty("textWidth", "85"));
+		final int textHeight = Integer.parseInt(props.getProperty("textHeight", "69"));
 		
-		final int headerColor = Color.WHITE;
-		final int textColor = Color.BLACK;
+		final int iconTop = Integer.parseInt(props.getProperty("iconTop", "0"));
+		final int iconLeft = Integer.parseInt(props.getProperty("iconLeft", "0"));
+		
+		final int headerLeft = Integer.parseInt(props.getProperty("headerLeft", "20"));
+		final int headerBaseline = Integer.parseInt(props.getProperty("headerBaseline", "15"));
+		
+		final int headerColor = props.getProperty("headerColor", "white").equalsIgnoreCase("black") ? Color.BLACK : Color.WHITE;
+		final int textColor = props.getProperty("textColor", "black").equalsIgnoreCase("black") ? Color.BLACK : Color.WHITE;
+		
+		final int arrowUpLeft = Integer.parseInt(props.getProperty("arrowUpLeft", "91"));
+		final int arrowUpTop = Integer.parseInt(props.getProperty("arrowUpTop", "23"));
+		
+		final int arrowDownLeft = Integer.parseInt(props.getProperty("arrowDownLeft", "91"));
+		final int arrowDownTop = Integer.parseInt(props.getProperty("arrowDownTop", "56"));
+		
+		final int closeLeft = Integer.parseInt(props.getProperty("closeLeft", "91"));
+		final int closeTop = Integer.parseInt(props.getProperty("closeTop", "89"));
 		
 		FontInfo font = FontCache.instance(context).Get();		
 		
@@ -410,11 +423,9 @@ public class NotificationBuilder {
 				android.text.Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
 		
 
-		int iconWidth = 0;
 		int iconHeight = 16;
 		int iconOffset = 0;
 		if (icon != null) {
-			iconWidth = icon.getWidth();
 			iconHeight = Math.max(16, icon.getHeight());
 			iconOffset = iconHeight - icon.getHeight(); // align icon to bottom of text
 		}
@@ -442,25 +453,19 @@ public class NotificationBuilder {
 			canvas.restore();
 			
 			// Draw header
-			//canvas.drawRect(new android.graphics.Rect(0,0,96,iconHeight), whitePaint);
 			if (icon != null)
 				canvas.drawBitmap(icon, iconLeft, iconOffset+iconTop, paint);
 			canvas.drawText(header, headerLeft, headerBaseline, paintHead);
 			
-			//canvas.drawText(""+(h-y)+" "+displayHeight, icon.getWidth()+1, icon.getHeight()-2, paintHead);
-			
-			//canvas.drawLine(1, iconHeight, 88, iconHeight, paint);
-			//canvas.drawLine(88, iconHeight, 88, 95, paint);
-			
 			if (y>0)
-				canvas.drawBitmap(Utils.getBitmap(context, "arrow_up.bmp"), 91, 23, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "arrow_up.bmp"), arrowUpLeft, arrowUpTop, null);
 			
 			if((h-y)>(displayHeight)) {
 				more = true;
-				canvas.drawBitmap(Utils.getBitmap(context, "arrow_down.bmp"), 91, 56, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "arrow_down.bmp"), arrowDownLeft, arrowDownTop, null);
 			}
 						
-			canvas.drawBitmap(Utils.getBitmap(context, "close.bmp"), 91, 89, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "close.bmp"), closeLeft, closeTop, null);
 			
 			y += scroll;
 			bitmaps.add(bitmap);
