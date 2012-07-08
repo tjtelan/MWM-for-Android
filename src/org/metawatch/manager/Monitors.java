@@ -36,9 +36,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Date;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -53,9 +53,12 @@ import org.anddev.android.weatherforecast.weather.WeatherSet;
 import org.anddev.android.weatherforecast.weather.WeatherUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -324,6 +327,7 @@ public class Monitors {
 				Geocoder geocoder;
 				String locality = "";
 				String PostalCode="";
+				
 				try{
 					geocoder = new Geocoder(context, Locale.getDefault());
 					addresses = geocoder.getFromLocation(LocationData.latitude, LocationData.longitude, 1);
@@ -356,74 +360,84 @@ public class Monitors {
 					WeatherData.locationName = locality;
 				}
 				
-				queryString = "http://www.google.com/ig/api?weather=" + PostalCode;
+				// queryString = "http://www.google.com/ig/api?weather=" + PostalCode;
+				long lat = (long) (LocationData.latitude * 1000000);
+				long lon = (long) (LocationData.longitude * 1000000);
+				queryString = "http://www.google.com/ig/api?weather=,,," + lat + "," + lon;
 			}
 			else{
 				queryString = "http://www.google.com/ig/api?weather=" + Preferences.weatherCity;
 				WeatherData.locationName = Preferences.weatherCity;
 			}
-						
-			URL url = new URL(queryString.replace(" ", "%20"));			 
 			
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp = spf.newSAXParser();
-			XMLReader xr = sp.getXMLReader();
+			HttpClient hc = new DefaultHttpClient();
+			HttpGet httpGet = new HttpGet(queryString);
+			HttpResponse rp = hc.execute(httpGet);
 
-			GoogleWeatherHandler gwh = new GoogleWeatherHandler();
-			xr.setContentHandler(gwh);
-			xr.parse(new InputSource(url.openStream()));
-			WeatherSet ws = gwh.getWeatherSet();
-			WeatherCurrentCondition wcc = ws
-					.getWeatherCurrentCondition();
-			
-			ArrayList<WeatherForecastCondition> conditions = ws.getWeatherForecastConditions();
-			
-			int days = conditions.size();
-			WeatherData.forecast = new Forecast[days];
-			
-			for (int i=0; i<days; ++i) {
-				WeatherForecastCondition wfc = conditions.get(i);
+			if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				String s = EntityUtils.toString(rp.getEntity());
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Got weather data " + s);
+
+				SAXParserFactory spf = SAXParserFactory.newInstance();
+				SAXParser sp = spf.newSAXParser();
+				XMLReader xr = sp.getXMLReader();
+
+				GoogleWeatherHandler gwh = new GoogleWeatherHandler();
+				xr.setContentHandler(gwh);
+				xr.parse(new InputSource(new StringReader(s)));
+				WeatherSet ws = gwh.getWeatherSet();
+				WeatherCurrentCondition wcc = ws
+						.getWeatherCurrentCondition();
 				
-				WeatherData.forecast[i] = m.new Forecast();
-				WeatherData.forecast[i].day = null;
+				ArrayList<WeatherForecastCondition> conditions = ws.getWeatherForecastConditions();
 				
-				WeatherData.forecast[i].icon = getIconGoogleWeather(wfc.getCondition().toLowerCase());
-				WeatherData.forecast[i].day = wfc.getDayofWeek();
+				int days = conditions.size();
+				WeatherData.forecast = new Forecast[days];
 				
-				if (Preferences.weatherCelsius) {
-					WeatherData.forecast[i].tempHigh = wfc.getTempMaxCelsius().toString();
-					WeatherData.forecast[i].tempLow = wfc.getTempMinCelsius().toString();
-				} else {
-					WeatherData.forecast[i].tempHigh = 
-							  Integer.toString(WeatherUtils
-									.celsiusToFahrenheit(wfc
-											.getTempMaxCelsius()).intValue());
-					WeatherData.forecast[i].tempLow = 
-							  Integer.toString(WeatherUtils
-									.celsiusToFahrenheit(wfc
-											.getTempMinCelsius()).intValue());
+				for (int i=0; i<days; ++i) {
+					WeatherForecastCondition wfc = conditions.get(i);
+					
+					WeatherData.forecast[i] = m.new Forecast();
+					WeatherData.forecast[i].day = null;
+					
+					WeatherData.forecast[i].icon = getIconGoogleWeather(wfc.getCondition().toLowerCase());
+					WeatherData.forecast[i].day = wfc.getDayofWeek();
+					
+					if (Preferences.weatherCelsius) {
+						WeatherData.forecast[i].tempHigh = wfc.getTempMaxCelsius().toString();
+						WeatherData.forecast[i].tempLow = wfc.getTempMinCelsius().toString();
+					} else {
+						WeatherData.forecast[i].tempHigh = 
+								  Integer.toString(WeatherUtils
+										.celsiusToFahrenheit(wfc
+												.getTempMaxCelsius()).intValue());
+						WeatherData.forecast[i].tempLow = 
+								  Integer.toString(WeatherUtils
+										.celsiusToFahrenheit(wfc
+												.getTempMinCelsius()).intValue());
+					}
 				}
-			}
+				
+				WeatherData.celsius = Preferences.weatherCelsius;
+									
+				String cond =  wcc.getCondition();
+				WeatherData.condition = cond;
 			
-			WeatherData.celsius = Preferences.weatherCelsius;
-								
-			String cond =  wcc.getCondition();
-			WeatherData.condition = cond;
-		
-			if (Preferences.weatherCelsius) {
-				WeatherData.temp = Integer.toString(wcc.getTempCelcius());
-			} else {
-				WeatherData.temp = Integer.toString(wcc.getTempFahrenheit());
+				if (Preferences.weatherCelsius) {
+					WeatherData.temp = Integer.toString(wcc.getTempCelcius());
+				} else {
+					WeatherData.temp = Integer.toString(wcc.getTempFahrenheit());
+				}
+	
+				cond = cond.toLowerCase();
+	
+				WeatherData.icon = getIconGoogleWeather(cond);
+				WeatherData.received = true;
+				WeatherData.timeStamp = System.currentTimeMillis();		
+	
+				Idle.updateIdle(context, true);
+				MetaWatchService.notifyClients();
 			}
-
-			cond = cond.toLowerCase();
-
-			WeatherData.icon = getIconGoogleWeather(cond);
-			WeatherData.received = true;
-			WeatherData.timeStamp = System.currentTimeMillis();		
-
-			Idle.updateIdle(context, true);
-			MetaWatchService.notifyClients();
 			
 		} catch (Exception e) {
 			if (Preferences.logging) Log.e(MetaWatch.TAG, "Exception while retreiving weather", e);
