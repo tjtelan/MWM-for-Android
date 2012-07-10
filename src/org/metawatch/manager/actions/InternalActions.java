@@ -3,7 +3,6 @@ package org.metawatch.manager.actions;
 import org.metawatch.manager.Call;
 import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.Monitors;
-import org.metawatch.manager.Monitors.WeatherData;
 import org.metawatch.manager.apps.InternalApp;
 
 import android.content.Context;
@@ -148,7 +147,7 @@ public class InternalActions {
 		}
 		
 		public String getName() {
-			return WeatherData.received 
+			return Monitors.weatherData.received 
 					? "Refresh Weather"
 					: "Refreshing...";
 		}
@@ -164,7 +163,7 @@ public class InternalActions {
 		}
 		
 		public long getTimestamp() {
-			return WeatherData.timeStamp;
+			return Monitors.weatherData.timeStamp;
 		}
 	}
 	

@@ -39,14 +39,11 @@ import java.io.InputStream;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Monitors.LocationData;
-import org.metawatch.manager.Monitors.WeatherData;
-
-import com.bugsense.trace.BugSenseHandler;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.TabActivity;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -70,6 +67,8 @@ import android.webkit.WebView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.bugsense.trace.BugSenseHandler;
 
 public class MetaWatch extends TabActivity {
    
@@ -295,12 +294,12 @@ public class MetaWatch extends TabActivity {
     	
     	if (Preferences.weatherProvider != WeatherProvider.DISABLED) {
     		textView.append("\n");
-    		if (WeatherData.received) {
+    		if (Monitors.weatherData.received) {
     			textView.append("Weather last updated:\n");
     			textView.append("  Forecast:\n    ");
-    			printDate(WeatherData.forecastTimeStamp);
+    			printDate(Monitors.weatherData.forecastTimeStamp);
     			textView.append("  Current Observation:\n    ");
-    			printDate(WeatherData.timeStamp);
+    			printDate(Monitors.weatherData.timeStamp);
     		}
     		else {
     			textView.append("Waiting for weather data.\n");

@@ -173,7 +173,7 @@ public class MetaWatchService extends Service {
 		public static int weatherProvider = WeatherProvider.GOOGLE;
 		public static String weatherCity = "Dallas,US";
 		public static boolean weatherCelsius = false;
-		public static boolean weatherGeolocation = false;
+		public static boolean weatherGeolocation = true;
 		public static String wundergroundKey = "";
 		public static int fontSize = 2;
 		public static int smsLoopInterval = 15;
@@ -213,7 +213,7 @@ public class MetaWatchService extends Service {
 	public static void loadPreferences(Context context) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-
+		
 		Preferences.logging = sharedPreferences.getBoolean("logging",
 				Preferences.logging);
 		Preferences.notifyCall = sharedPreferences.getBoolean("NotifyCall",

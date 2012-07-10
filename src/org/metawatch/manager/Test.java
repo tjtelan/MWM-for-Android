@@ -40,16 +40,15 @@ import java.util.Random;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Monitors.LocationData;
-import org.metawatch.manager.Monitors.WeatherData;
 import org.metawatch.manager.Notification.VibratePattern;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Debug;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.util.Log;
 
 public class Test extends PreferenceActivity {
@@ -326,7 +325,7 @@ public class Test extends PreferenceActivity {
 		    	LocationData.longitude = (rnd.nextDouble()*360.0)-180.0;
 		    	LocationData.timeStamp = System.currentTimeMillis();	
 		    	LocationData.received = true;
-		    	WeatherData.timeStamp = 0;
+		    	Monitors.weatherData.timeStamp = 0;
 		    	Monitors.updateWeatherData(context);
 		    	return true;
 			}

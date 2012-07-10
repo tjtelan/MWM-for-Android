@@ -6,8 +6,8 @@ import java.util.Map;
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.Monitors;
 import org.metawatch.manager.Monitors.LocationData;
-import org.metawatch.manager.Monitors.WeatherData;
 import org.metawatch.manager.Utils;
 
 import android.content.Context;
@@ -151,7 +151,7 @@ public class WeatherWidget implements InternalWidget {
 			widget.height = 32;
 			
 			widget.bitmap = draw3();
-			widget.priority = WeatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
+			widget.priority = Monitors.weatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
 			
 			result.put(widget.id, widget);
 		}
@@ -179,7 +179,7 @@ public class WeatherWidget implements InternalWidget {
 			widget.height = 16;
 			
 			widget.bitmap = draw5();
-			widget.priority = WeatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
+			widget.priority = Monitors.weatherData.moonPercentIlluminated !=-1 ? calcPriority() : -1;
 			
 			result.put(widget.id, widget);
 		}
@@ -219,7 +219,7 @@ public class WeatherWidget implements InternalWidget {
 		if(Preferences.weatherProvider == MetaWatchService.WeatherProvider.DISABLED)
 			return -1;
 		
-		return WeatherData.received ? 1 : 0;
+		return Monitors.weatherData.received ? 1 : 0;
 	}
 		
 	private Bitmap draw0() {
@@ -227,23 +227,23 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
-		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>0) {
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {
 			
 			// icon
-			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, Monitors.weatherData.icon);
 			canvas.drawBitmap(image, 0, 4, null);
 								
 			// temperatures
-			if (WeatherData.celsius) {
-				Utils.drawOutlinedText(WeatherData.temp+"°C", canvas, 0, 7, paintSmall, paintSmallOutline);
+			if (Monitors.weatherData.celsius) {
+				Utils.drawOutlinedText(Monitors.weatherData.temp+"°C", canvas, 0, 7, paintSmall, paintSmallOutline);
 			}
 			else {
-				Utils.drawOutlinedText(WeatherData.temp+"°F", canvas, 0, 7, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(Monitors.weatherData.temp+"°F", canvas, 0, 7, paintSmall, paintSmallOutline);
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
-			Utils.drawOutlinedText("H "+WeatherData.forecast[0].tempHigh, canvas, 0, 25, paintSmall, paintSmallOutline);
-			Utils.drawOutlinedText("L "+WeatherData.forecast[0].tempLow, canvas, 0, 31, paintSmall, paintSmallOutline);
+			Utils.drawOutlinedText("H "+Monitors.weatherData.forecast[0].getTempHigh(), canvas, 0, 25, paintSmall, paintSmallOutline);
+			Utils.drawOutlinedText("L "+Monitors.weatherData.forecast[0].getTempLow(), canvas, 0, 31, paintSmall, paintSmallOutline);
 									
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
@@ -261,10 +261,10 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
-		if (WeatherData.received) {
+		if (Monitors.weatherData.received) {
 			
 			// icon
-			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, Monitors.weatherData.icon);
 			if (Preferences.overlayWeatherText)
 				canvas.drawBitmap(image, 36, 5, null);
 			else
@@ -272,15 +272,15 @@ public class WeatherWidget implements InternalWidget {
 			
 			// condition
 			if (Preferences.overlayWeatherText)
-				Utils.drawWrappedOutlinedText(WeatherData.condition, canvas, 1, 2, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
+				Utils.drawWrappedOutlinedText(Monitors.weatherData.condition, canvas, 1, 2, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
 			else
-				Utils.drawWrappedOutlinedText(WeatherData.condition, canvas, 1, 2, 34, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
+				Utils.drawWrappedOutlinedText(Monitors.weatherData.condition, canvas, 1, 2, 34, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
 
 			// temperatures
 			paintLarge.setTextAlign(Paint.Align.RIGHT);
 			paintLargeOutline.setTextAlign(Paint.Align.RIGHT);
-			Utils.drawOutlinedText(WeatherData.temp, canvas, 82, 13, paintLarge, paintLargeOutline);
-			if (WeatherData.celsius) {
+			Utils.drawOutlinedText(Monitors.weatherData.temp, canvas, 82, 13, paintLarge, paintLargeOutline);
+			if (Monitors.weatherData.celsius) {
 				//RM: since the degree symbol draws wrong...
 				canvas.drawText("O", 82, 7, paintSmall);
 				canvas.drawText("C", 95, 13, paintLarge);
@@ -292,17 +292,17 @@ public class WeatherWidget implements InternalWidget {
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
-			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
+			if (Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {
 				canvas.drawText("High", 64, 23, paintSmall);
 				canvas.drawText("Low", 64, 31, paintSmall);
 				
 				paintSmall.setTextAlign(Paint.Align.RIGHT);
-				canvas.drawText(WeatherData.forecast[0].tempHigh, 95, 23, paintSmall);
-				canvas.drawText(WeatherData.forecast[0].tempLow, 95, 31, paintSmall);
+				canvas.drawText(Monitors.weatherData.forecast[0].getTempHigh(), 95, 23, paintSmall);
+				canvas.drawText(Monitors.weatherData.forecast[0].getTempLow(), 95, 31, paintSmall);
 				paintSmall.setTextAlign(Paint.Align.LEFT);
 			}
 
-			Utils.drawOutlinedText((String) TextUtils.ellipsize(WeatherData.locationName, paintSmall, 63, TruncateAt.END), canvas, 1, 31, paintSmall, paintSmallOutline);
+			Utils.drawOutlinedText((String) TextUtils.ellipsize(Monitors.weatherData.locationName, paintSmall, 63, TruncateAt.END), canvas, 1, 31, paintSmall, paintSmallOutline);
 						
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
@@ -331,19 +331,19 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>3) {
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>3) {
 			int weatherIndex = 0;
-			if(WeatherData.forecast.length>4)
+			if(Monitors.weatherData.forecast.length>4)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
 
 			for (int i=0;i<4;++i) {
 				int x = i*24;
-				Bitmap image = Utils.getBitmap(context, WeatherData.forecast[weatherIndex].icon);
+				Bitmap image = Utils.getBitmap(context, Monitors.weatherData.forecast[weatherIndex].getIcon());
 				canvas.drawBitmap(image, x, 4, null);
-				Utils.drawOutlinedText(WeatherData.forecast[weatherIndex].day, canvas, x, 6, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(Monitors.weatherData.forecast[weatherIndex].getDay(), canvas, x, 6, paintSmall, paintSmallOutline);
 				
-				Utils.drawOutlinedText("H "+WeatherData.forecast[weatherIndex].tempHigh, canvas, x, 25, paintSmall, paintSmallOutline);
-				Utils.drawOutlinedText("L "+WeatherData.forecast[weatherIndex].tempLow, canvas, x, 31, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText("H "+Monitors.weatherData.forecast[weatherIndex].getTempHigh(), canvas, x, 25, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText("L "+Monitors.weatherData.forecast[weatherIndex].getTempLow(), canvas, x, 31, paintSmall, paintSmallOutline);
 				
 				weatherIndex++;
 			}
@@ -377,14 +377,14 @@ public class WeatherWidget implements InternalWidget {
 		
 		final boolean shouldInvert = Preferences.invertLCD || (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG);
 		
-		if (WeatherData.received && WeatherData.ageOfMoon >=0 && WeatherData.ageOfMoon < phaseImage.length ) {
-			int moonPhase = WeatherData.ageOfMoon;
+		if (Monitors.weatherData.received && Monitors.weatherData.ageOfMoon >=0 && Monitors.weatherData.ageOfMoon < phaseImage.length ) {
+			int moonPhase = Monitors.weatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*24);
 			Bitmap image = shouldInvert ? Utils.getBitmap(context, "moon-inv.bmp") : Utils.getBitmap(context, "moon.bmp");
 			canvas.drawBitmap(image, x, 0, null);
 			
-			canvas.drawText(Integer.toString(WeatherData.moonPercentIlluminated)+"%", 12, 30, paintSmall);
+			canvas.drawText(Integer.toString(Monitors.weatherData.moonPercentIlluminated)+"%", 12, 30, paintSmall);
 		} else {
 			canvas.drawText("Wait", 12, 16, paintSmall);
 		}
@@ -399,15 +399,15 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
-		if (WeatherData.received) {
+		if (Monitors.weatherData.received) {
 			
 			// icon
-			String smallIcon = WeatherData.icon.replace(".bmp", "_12.bmp");
+			String smallIcon = Monitors.weatherData.icon.replace(".bmp", "_12.bmp");
 			Bitmap image = Utils.getBitmap(context, smallIcon);	
 			canvas.drawBitmap(image, 46, 2, null);
 			
 			// condition
-			Utils.drawWrappedOutlinedText(WeatherData.condition, canvas, 0, 0, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
+			Utils.drawWrappedOutlinedText(Monitors.weatherData.condition, canvas, 0, 0, 60, paintSmall, paintSmallOutline, Layout.Alignment.ALIGN_NORMAL);
 			
 			// temperatures
 			
@@ -415,9 +415,9 @@ public class WeatherWidget implements InternalWidget {
 			paintSmallOutline.setTextAlign(Paint.Align.RIGHT);
 						
 			StringBuilder string = new StringBuilder();
-			string.append(WeatherData.temp);
+			string.append(Monitors.weatherData.temp);
 			
-			if (WeatherData.celsius) {
+			if (Monitors.weatherData.celsius) {
 				string.append("°C");
 			}
 			else {
@@ -425,18 +425,18 @@ public class WeatherWidget implements InternalWidget {
 			}
 			Utils.drawOutlinedText(string.toString(), canvas, 80, 5, paintSmall, paintSmallOutline);
 			
-			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
+			if (Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {
 				string = new StringBuilder();
-				string.append(WeatherData.forecast[0].tempHigh);
+				string.append(Monitors.weatherData.forecast[0].getTempHigh());
 				string.append("/");
-				string.append(WeatherData.forecast[0].tempLow);
+				string.append(Monitors.weatherData.forecast[0].getTempLow());
 						
 				Utils.drawOutlinedText(string.toString(), canvas, 80, 16, paintSmall, paintSmallOutline);
 			}
 			paintSmall.setTextAlign(Paint.Align.LEFT);
 			paintSmallOutline.setTextAlign(Paint.Align.LEFT);
 			
-			Utils.drawOutlinedText((String) TextUtils.ellipsize(WeatherData.locationName, paintSmall, 47, TruncateAt.END), canvas, 0, 16, paintSmall, paintSmallOutline);
+			Utils.drawOutlinedText((String) TextUtils.ellipsize(Monitors.weatherData.locationName, paintSmall, 47, TruncateAt.END), canvas, 0, 16, paintSmall, paintSmallOutline);
 						
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
@@ -465,8 +465,8 @@ public class WeatherWidget implements InternalWidget {
 		final boolean shouldInvert = Preferences.invertLCD || (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG);
 		
 		paintSmall.setTextAlign(Paint.Align.CENTER);
-		if (WeatherData.received && WeatherData.ageOfMoon >=0 && WeatherData.ageOfMoon < phaseImage.length) {
-			int moonPhase = WeatherData.ageOfMoon;
+		if (Monitors.weatherData.received && Monitors.weatherData.ageOfMoon >=0 && Monitors.weatherData.ageOfMoon < phaseImage.length) {
+			int moonPhase = Monitors.weatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*16);
 			Bitmap image = shouldInvert ? Utils.getBitmap(context, "moon-inv_10.bmp") : Utils.getBitmap(context, "moon_10.bmp");
@@ -487,22 +487,22 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>3) {
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>3) {
 			int weatherIndex = 0;
-			if(WeatherData.forecast.length>3)
+			if(Monitors.weatherData.forecast.length>3)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
 
 			for (int i=0;i<3;++i) {
 				int x = i*26;
-				final String smallIcon = WeatherData.forecast[weatherIndex].icon.replace(".bmp", "_12.bmp");
+				final String smallIcon = Monitors.weatherData.forecast[weatherIndex].getIcon().replace(".bmp", "_12.bmp");
 				Bitmap image = Utils.getBitmap(context, smallIcon);
 				canvas.drawBitmap(image, x+12, 0, null);
-				Utils.drawOutlinedText(WeatherData.forecast[weatherIndex].day.substring(0, 2), canvas, x+1, 6, paintSmall, paintSmallOutline);
+				Utils.drawOutlinedText(Monitors.weatherData.forecast[weatherIndex].getDay().substring(0, 2), canvas, x+1, 6, paintSmall, paintSmallOutline);
 				
 				StringBuilder hilow = new StringBuilder();
-				hilow.append(WeatherData.forecast[weatherIndex].tempHigh);
+				hilow.append(Monitors.weatherData.forecast[weatherIndex].getTempHigh());
 				hilow.append("/");
-				hilow.append(WeatherData.forecast[weatherIndex].tempLow);
+				hilow.append(Monitors.weatherData.forecast[weatherIndex].getTempLow());
 				
 				Utils.drawOutlinedText(hilow.toString(), canvas, x+1, 16, paintSmallNumerals, paintSmallNumeralsOutline);
 				
@@ -533,18 +533,18 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
-		if (WeatherData.received) {
+		if (Monitors.weatherData.received) {
 			
 			// icon
-			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, Monitors.weatherData.icon);
 			
 			canvas.drawBitmap(image, 0, 0, null);
 			
 			// temperatures
 			paintLarge.setTextAlign(Paint.Align.RIGHT);
 			paintLargeOutline.setTextAlign(Paint.Align.RIGHT);
-			Utils.drawOutlinedText(WeatherData.temp, canvas, 43, 13, paintLarge, paintLargeOutline);
-			if (WeatherData.celsius) {
+			Utils.drawOutlinedText(Monitors.weatherData.temp, canvas, 43, 13, paintLarge, paintLargeOutline);
+			if (Monitors.weatherData.celsius) {
 				canvas.drawText("C", 43, 7, paintSmall);
 			}
 			else {
@@ -552,19 +552,19 @@ public class WeatherWidget implements InternalWidget {
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
-			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
+			if (Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {
 				
 				StringBuilder builder = new StringBuilder();
-				builder.append(WeatherData.forecast[0].tempHigh);
+				builder.append(Monitors.weatherData.forecast[0].getTempHigh());
 				builder.append("/");
-				builder.append(WeatherData.forecast[0].tempLow);
+				builder.append(Monitors.weatherData.forecast[0].getTempLow());
 				
 				paintSmall.setTextAlign(Paint.Align.RIGHT);
 				canvas.drawText(builder.toString(), 47, 21, paintSmall);
 				paintSmall.setTextAlign(Paint.Align.LEFT);
 			}
 
-			Utils.drawOutlinedText((String) TextUtils.ellipsize(WeatherData.locationName, paintSmall, 48, TruncateAt.END), canvas, 0, 30, paintSmall, paintSmallOutline);
+			Utils.drawOutlinedText((String) TextUtils.ellipsize(Monitors.weatherData.locationName, paintSmall, 48, TruncateAt.END), canvas, 0, 30, paintSmall, paintSmallOutline);
 						
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);

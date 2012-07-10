@@ -372,7 +372,7 @@
 				android:title="Weather Geolocation"
 				android:key="WeatherGeolocation"
 				android:summary="Use Geolocation for weather"
-				android:defaultValue="false"
+				android:defaultValue="true"
 				/>
 			<EditTextPreference
 				android:title="API Key"

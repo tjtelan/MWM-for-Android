@@ -32,40 +32,11 @@
 
 package org.metawatch.manager;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.anddev.android.weatherforecast.weather.GoogleWeatherHandler;
-import org.anddev.android.weatherforecast.weather.WeatherCurrentCondition;
-import org.anddev.android.weatherforecast.weather.WeatherForecastCondition;
-import org.anddev.android.weatherforecast.weather.WeatherSet;
-import org.anddev.android.weatherforecast.weather.WeatherUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.metawatch.manager.MetaWatchService.Preferences;
-import org.metawatch.manager.MetaWatchService.WeatherProvider;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
+import org.metawatch.manager.weather.WeatherData;
+import org.metawatch.manager.weather.WeatherEngineFactory;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -75,8 +46,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -120,35 +89,7 @@ public class Monitors {
 	public static long getRTCTimestamp = 0;
 	public static int rtcOffset = 0; // Offset in seconds to add to the RTC to allow for latency
 
-  public static class WeatherData {
-		public static boolean received = false;
-		public static String icon;
-		public static String temp;
-		public static String condition;
-		public static String locationName;
-		public static boolean celsius = false;
-		
-		public static int sunriseH = 7;
-		public static int sunriseM = 0;
-		
-		public static int sunsetH = 19;
-		public static int sunsetM = 0;
-		
-		public static int moonPercentIlluminated = -1;
-		public static int ageOfMoon = -1;
-		
-		public static Forecast[] forecast = null;
-		
-		public static long timeStamp = 0;
-		public static long forecastTimeStamp = 0;
-	}
-		
-	public class Forecast {
-		public String day;
-		public String icon;
-		public String tempHigh;
-		public String tempLow;
-	}
+	public static WeatherData weatherData = new WeatherData();
 	
 	public static class LocationData {
 		public static boolean received = false;
@@ -166,7 +107,6 @@ public class Monitors {
 		public static int unreadMailCount = -1;
 	}
 	
-	private static Monitors m = new Monitors(); // Static instance for new
 	
 	public static void updateGmailUnreadCount(String account, int count) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Monitors.updateGmailUnreadCount(): account='"
@@ -302,372 +242,17 @@ public class Monitors {
 		}
 	}
 	
-	private static synchronized void updateWeatherDataGoogle(Context context) {
-		try {
-			
-			// Prevent weather updating more frequently than every 5 mins
-			if (WeatherData.timeStamp!=0 && WeatherData.received) {
-				long currentTime = System.currentTimeMillis();
-				long diff = currentTime - WeatherData.timeStamp;
-				
-				if (diff < 5 * 60*1000) {
-					if (Preferences.logging) Log.d(MetaWatch.TAG,
-							"Skipping weather update - updated less than 5m ago");
-
-					return;
-				}
-			}
-			
-			if (Preferences.logging) Log.d(MetaWatch.TAG,
-					"Monitors.updateWeatherDataGoogle(): start");
-		
-			String queryString;
-			List<Address> addresses;
-			if (Preferences.weatherGeolocation && LocationData.received) {
-				Geocoder geocoder;
-				String locality = "";
-				String PostalCode="";
-				
-				try{
-					geocoder = new Geocoder(context, Locale.getDefault());
-					addresses = geocoder.getFromLocation(LocationData.latitude, LocationData.longitude, 1);
-
-					for (Address address : addresses) {
-						if (!address.getPostalCode().equalsIgnoreCase("")){
-							PostalCode=address.getPostalCode();
-							locality=address.getLocality();
-							if (locality.equals("")) {
-								locality=PostalCode;
-							}
-							else {
-								PostalCode = locality+", "+PostalCode;
-							}
-								
-						}
-					}
-				}
-				catch (IOException e){
-					if (Preferences.logging) Log.e(MetaWatch.TAG, "Exception while retreiving postalcode", e);
-				}
-				
-				if (PostalCode.equals("")){
-					PostalCode=Preferences.weatherCity;
-				}
-				if (locality.equals("")){
-					WeatherData.locationName = PostalCode;
-				}
-				else{
-					WeatherData.locationName = locality;
-				}
-				
-				// queryString = "http://www.google.com/ig/api?weather=" + PostalCode;
-				long lat = (long) (LocationData.latitude * 1000000);
-				long lon = (long) (LocationData.longitude * 1000000);
-				queryString = "http://www.google.com/ig/api?weather=,,," + lat + "," + lon;
-			}
-			else{
-				queryString = "http://www.google.com/ig/api?weather=" + Preferences.weatherCity;
-				WeatherData.locationName = Preferences.weatherCity;
-			}
-			
-			HttpClient hc = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(queryString);
-			HttpResponse rp = hc.execute(httpGet);
-
-			if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				String s = EntityUtils.toString(rp.getEntity());
-				if (Preferences.logging) Log.d(MetaWatch.TAG, "Got weather data " + s);
-
-				SAXParserFactory spf = SAXParserFactory.newInstance();
-				SAXParser sp = spf.newSAXParser();
-				XMLReader xr = sp.getXMLReader();
-
-				GoogleWeatherHandler gwh = new GoogleWeatherHandler();
-				xr.setContentHandler(gwh);
-				xr.parse(new InputSource(new StringReader(s)));
-				WeatherSet ws = gwh.getWeatherSet();
-				WeatherCurrentCondition wcc = ws
-						.getWeatherCurrentCondition();
-				
-				ArrayList<WeatherForecastCondition> conditions = ws.getWeatherForecastConditions();
-				
-				int days = conditions.size();
-				WeatherData.forecast = new Forecast[days];
-				
-				for (int i=0; i<days; ++i) {
-					WeatherForecastCondition wfc = conditions.get(i);
-					
-					WeatherData.forecast[i] = m.new Forecast();
-					WeatherData.forecast[i].day = null;
-					
-					WeatherData.forecast[i].icon = getIconGoogleWeather(wfc.getCondition().toLowerCase());
-					WeatherData.forecast[i].day = wfc.getDayofWeek();
-					
-					if (Preferences.weatherCelsius) {
-						WeatherData.forecast[i].tempHigh = wfc.getTempMaxCelsius().toString();
-						WeatherData.forecast[i].tempLow = wfc.getTempMinCelsius().toString();
-					} else {
-						WeatherData.forecast[i].tempHigh = 
-								  Integer.toString(WeatherUtils
-										.celsiusToFahrenheit(wfc
-												.getTempMaxCelsius()).intValue());
-						WeatherData.forecast[i].tempLow = 
-								  Integer.toString(WeatherUtils
-										.celsiusToFahrenheit(wfc
-												.getTempMinCelsius()).intValue());
-					}
-				}
-				
-				WeatherData.celsius = Preferences.weatherCelsius;
-									
-				String cond =  wcc.getCondition();
-				WeatherData.condition = cond;
-			
-				if (Preferences.weatherCelsius) {
-					WeatherData.temp = Integer.toString(wcc.getTempCelcius());
-				} else {
-					WeatherData.temp = Integer.toString(wcc.getTempFahrenheit());
-				}
-	
-				cond = cond.toLowerCase();
-	
-				WeatherData.icon = getIconGoogleWeather(cond);
-				WeatherData.received = true;
-				WeatherData.timeStamp = System.currentTimeMillis();		
-	
-				Idle.updateIdle(context, true);
-				MetaWatchService.notifyClients();
-			}
-			
-		} catch (Exception e) {
-			if (Preferences.logging) Log.e(MetaWatch.TAG, "Exception while retreiving weather", e);
-		} finally {
-			if (Preferences.logging) Log.d(MetaWatch.TAG,
-					"Monitors.updateWeatherData(): finish");
-		}
-		
-	}
-
-	private static synchronized void updateWeatherDataWunderground(Context context) {
-		try {
-			
-			long currentTime = System.currentTimeMillis();
-			
-			// Prevent weather updating more frequently than every 5 mins
-			if (WeatherData.timeStamp!=0 && WeatherData.received) {
-				
-				long diff = currentTime - WeatherData.timeStamp;
-				if (diff < 5 * 60*1000) {
-					if (Preferences.logging) Log.d(MetaWatch.TAG,
-							"Skipping weather update - updated less than 5m ago");
-					Idle.updateIdle(context, true);
-					return;
-				}
-			}
-			
-			if (Preferences.logging) Log.d(MetaWatch.TAG,
-					"Monitors.updateWeatherDataWunderground(): start");
-			
-			if ((LocationData.received || (Preferences.weatherGeolocation==false)) && Preferences.wundergroundKey != "") {
-				
-				String weatherLocation = Double.toString(LocationData.latitude)+","+Double.toString(LocationData.longitude);
-				if (Preferences.weatherGeolocation==false)
-					weatherLocation = Preferences.weatherCity.replace(",", "").replace(" ", "%20");
-				
-				String forecastQuery = "";
-				boolean hasForecast = false;
-				
-				long diff = currentTime - WeatherData.forecastTimeStamp;
-				if (WeatherData.forecast==null || (diff > 3 * 60*60*1000)) {
-					// Only update forecast every three hours
-					forecastQuery = "forecast10day/astronomy/";
-					hasForecast = true;
-				}
-				
-				
-				
-				String requestUrl =  "http://api.wunderground.com/api/"+Preferences.wundergroundKey+"/geolookup/conditions/"+forecastQuery+"q/"+weatherLocation+".json";
-				
-				if (Preferences.logging) Log.d(MetaWatch.TAG,
-						"Request: "+requestUrl);
-				
-				JSONObject json = getJSONfromURL( requestUrl );
-				
-				JSONObject location = json.getJSONObject("location");
-				JSONObject current = json.getJSONObject("current_observation");
-							
-				if (hasForecast) {
-					JSONObject moon = json.getJSONObject("moon_phase");
-					JSONObject sunrise = moon.getJSONObject("sunrise");
-					WeatherData.sunriseH = sunrise.getInt("hour");
-					WeatherData.sunriseM = sunrise.getInt("minute");
-					JSONObject sunset = moon.getJSONObject("sunset");
-					WeatherData.sunsetH = sunset.getInt("hour");
-					WeatherData.sunsetM = sunset.getInt("minute");
-					
-					WeatherData.moonPercentIlluminated = moon.getInt("percentIlluminated");
-					WeatherData.ageOfMoon = moon.getInt("ageOfMoon");
-				}
-				
-				boolean isDay = true;
-				
-				Date dt = new Date();
-                int hours = dt.getHours();
-                int minutes = dt.getMinutes();
-                
-                if ((hours<WeatherData.sunriseH) ||
-                	(hours==WeatherData.sunriseH && minutes<WeatherData.sunriseM) ||
-                	(hours>WeatherData.sunsetH) ||
-                	(hours==WeatherData.sunsetH && minutes>WeatherData.sunsetM))
-                {
-                	isDay = false;
-                }
-                						
-				WeatherData.locationName = location.getString("city");			
-				WeatherData.condition = current.getString("weather");	
-				WeatherData.icon = getIconWunderground(current.getString("icon"), isDay);
-				
-				if (Preferences.weatherCelsius) {
-					WeatherData.temp = current.getString("temp_c");
-				}
-				else {
-					WeatherData.temp = current.getString("temp_f");
-				}
-					
-				if (hasForecast) {
-					JSONObject forecast = json.getJSONObject("forecast");
-					JSONArray forecastday = forecast.getJSONObject("simpleforecast").getJSONArray("forecastday");
-				
-					int days = forecastday.length();
-					WeatherData.forecast = new Forecast[days];
-					
-					for (int i=0; i<days; ++i) {
-						WeatherData.forecast[i] = m.new Forecast();
-						JSONObject day = forecastday.getJSONObject(i);
-						JSONObject date = day.getJSONObject("date");
-						
-						WeatherData.forecast[i].icon = getIconWunderground(day.getString("icon"), true);
-						WeatherData.forecast[i].day = date.getString("weekday_short");
-						if (Preferences.weatherCelsius) {
-							WeatherData.forecast[i].tempLow = day.getJSONObject("low").getString("celsius");
-							WeatherData.forecast[i].tempHigh= day.getJSONObject("high").getString("celsius");
-						}
-						else {
-							WeatherData.forecast[i].tempLow = day.getJSONObject("low").getString("fahrenheit");
-							WeatherData.forecast[i].tempHigh= day.getJSONObject("high").getString("fahrenheit");
-						}			
-					}
-					
-					WeatherData.forecastTimeStamp = System.currentTimeMillis();
-				}
-			
-				WeatherData.celsius = Preferences.weatherCelsius;
-				
-				WeatherData.received = true;
-				WeatherData.timeStamp = System.currentTimeMillis();
-				
-				Idle.updateIdle(context, true);
-				MetaWatchService.notifyClients();
-		    }
-
-			
-		} catch (Exception e) {
-			if (Preferences.logging) Log.e(MetaWatch.TAG, "Exception while retreiving weather", e);
-		} finally {
-			if (Preferences.logging) Log.d(MetaWatch.TAG,
-					"Monitors.updateWeatherData(): finish");	
-		}
-	}
-	
-	private static String getIconGoogleWeather(String cond) {
-		if (cond.equals("clear")
-				|| cond.equals("sunny"))
-			return "weather_sunny.bmp";
-		else if (cond.equals("cloudy")
-				|| cond.equals("overcast") )
-			return "weather_cloudy.bmp";
-		else if (cond.equals("mostly cloudy")
-				|| cond.equals("partly cloudy")
-				|| cond.equals("mostly sunny")
-				|| cond.equals("partly sunny"))
-			return "weather_partlycloudy.bmp";
-		else if (cond.equals("light rain") || cond.equals("rain")
-				|| cond.equals("rain showers")
-				|| cond.equals("showers")
-				|| cond.equals("chance of showers")
-				|| cond.equals("scattered showers")
-				|| cond.equals("freezing rain")
-				|| cond.equals("freezing drizzle")
-				|| cond.equals("rain and snow"))
-			return "weather_rain.bmp";
-		else if (cond.equals("thunderstorm")
-				|| cond.equals("chance of storm")
-				|| cond.equals("isolated thunderstorms"))
-			return "weather_thunderstorm.bmp";
-		else if (cond.equals("chance of snow")
-				|| cond.equals("snow showers")
-				|| cond.equals("ice/snow")
-				|| cond.equals("flurries"))
-			return "weather_snow.bmp";
-		else
-			return "weather_cloudy.bmp";
-	}
-	
-	private static String getIconWunderground(String cond, boolean isDay) {
-
-		if (cond.equals("clear") 
-				|| cond.equals("sunny"))
-			if (isDay)
-				return "weather_sunny.bmp";
-			else
-				return "weather_nt_clear.bmp";
-		else if (cond.equals("cloudy"))
-			return "weather_cloudy.bmp";
-		else if (cond.equals("partlycloudy")
-				|| cond.equals("mostlycloudy")
-				|| cond.equals("partlysunny")
-				|| cond.equals("mostlysunny"))
-			if (isDay)
-				return "weather_partlycloudy.bmp";
-			else
-				return "weather_nt_partlycloudy.bmp";
-		else if (cond.equals("rain") 
-				|| cond.equals("chancerain"))
-			return "weather_rain.bmp";
-		else if (cond.equals("fog") 
-				|| cond.equals("hazy"))
-			return "weather_fog.bmp";
-		else if (cond.equals("tstorms") 
-				|| cond.equals("chancetstorms"))
-			return "weather_thunderstorm.bmp";
-		else if (cond.equals("snow") 
-				|| cond.equals("chancesnow")
-				|| cond.equals("sleet")
-				|| cond.equals("chancesleet")
-				|| cond.equals("flurries")
-				|| cond.equals("chanceflurries"))
-			return "weather_snow.bmp";
-		else
-			return "weather_cloudy.bmp";		
-	}
 
 	public static void updateWeatherData(final Context context) {
 		Thread thread = new Thread("WeatherUpdater") {
+
 			@Override
 			public void run() {
 				PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 				PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Weather");
 			 	wl.acquire();
 			 	
-			 	switch (Preferences.weatherProvider) {
-			 	case WeatherProvider.GOOGLE:
-			 		updateWeatherDataGoogle(context);
-			 		break;
-			 		
-			 	case WeatherProvider.WUNDERGROUND:
-			 		updateWeatherDataWunderground(context);
-			 		break;
-			 	}
+			 	weatherData = WeatherEngineFactory.getEngine().update(context, weatherData);
 			 	
 			 	wl.release();
 			}
@@ -677,9 +262,9 @@ public class Monitors {
 	
 	// Force the update, by clearing the timestamps
 	public static void updateWeatherDataForced(final Context context) {
-		WeatherData.received = false;
-		WeatherData.timeStamp = 0;
-		WeatherData.forecastTimeStamp = 0;
+		weatherData.received = false;
+		weatherData.timeStamp = 0;
+		weatherData.forecastTimeStamp = 0;
 		updateWeatherData(context);
 	}
 		
@@ -783,7 +368,7 @@ public class Monitors {
 				fastUpdates = false;
 			}
 			
-			if (!WeatherData.received /*&& !WeatherData.updating*/) {
+			if (!weatherData.received /*&& !WeatherData.updating*/) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "First location - getting weather");
 				
 				Monitors.updateWeatherData(context);
@@ -800,73 +385,6 @@ public class Monitors {
 		}
 	}
 	
-	//http://p-xr.com/android-tutorial-how-to-parse-read-json-data-into-a-android-listview/
-	public static JSONObject getJSONfromURL(String url){
-
-		//initialize
-		InputStream is = null;
-		String result = "";
-		JSONObject jArray = null;
-
-		//http post
-		try{
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(url);
-			HttpResponse response = httpclient.execute(httppost);
-			HttpEntity entity = response.getEntity();
-			is = entity.getContent();
-
-		}catch(Exception e){
-			if (Preferences.logging) Log.e(MetaWatch.TAG, "Error in http connection "+e.toString());
-		}
-
-		//convert response to string
-		if (is != null) {
-			try {
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(is, "iso-8859-1"), 8);
-				StringBuilder sb = new StringBuilder();
-				String line = null;
-				while ((line = reader.readLine()) != null) {
-					sb.append(line + "\n");
-				}
-				is.close();
-				result = sb.toString();
-			} catch (Exception e) {
-				if (Preferences.logging)
-					Log.e(MetaWatch.TAG,
-							"Error converting result " + e.toString());
-			}
-
-//			// dump to sdcard for debugging
-//			File sdCard = Environment.getExternalStorageDirectory();
-//			File file = new File(sdCard, "weather.json");
-//
-//			try {
-//				FileWriter writer = new FileWriter(file);
-//				writer.append(result);
-//				writer.flush();
-//				writer.close();
-//			} catch (FileNotFoundException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-
-			// try parse the string to a JSON object
-			try {
-				jArray = new JSONObject(result);
-			} catch (JSONException e) {
-				if (Preferences.logging)
-					Log.e(MetaWatch.TAG, "Error parsing data " + e.toString());
-			}
-		}
-		return jArray;
-	}
-	
-
 
 	private static void createBatteryLevelReciever(Context context) {
 		if(batteryLevelReceiver!=null)
