@@ -147,7 +147,7 @@ public class Test extends PreferenceActivity {
 		
 		preferenceScreen.findPreference("sms2").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-		    	String smsText = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+		    	String smsText = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.";
 		    	NotificationBuilder.createSMS(context, "555-123-4567", smsText);
 		    	return true;
 			}
