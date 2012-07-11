@@ -162,6 +162,7 @@ public class MetaWatchService extends Service {
 		public static boolean notifyBatterylow = true;
 		public static boolean notifyMusic = true;
 		public static boolean notifyCalendar = true;
+		public static boolean notifyNMA = true;
 		public static String watchMacAddress = "";
 		public static int packetWait = 10;
 		public static boolean skipSDP = false;
@@ -232,6 +233,8 @@ public class MetaWatchService extends Service {
 				Preferences.notifyMusic);
 		Preferences.notifyCalendar = sharedPreferences.getBoolean(
 				"NotifyCalendar", Preferences.notifyCalendar);
+		Preferences.notifyNMA = sharedPreferences.getBoolean("notifyNMA",
+				Preferences.notifyNMA);
 		Preferences.watchMacAddress = sharedPreferences.getString("MAC",
 				Preferences.watchMacAddress);
 		Preferences.skipSDP = sharedPreferences.getBoolean("SkipSDP",

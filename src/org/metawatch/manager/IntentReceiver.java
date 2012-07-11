@@ -376,9 +376,20 @@ public class IntentReceiver extends BroadcastReceiver {
 				else {			
 					Monitors.updateWeatherData(context);
 				}
-			}
-
+			}		
+		}
+		else if (intent.getAction().equals("com.usk.app.notifymyandroid.NEW_NOTIFICATION")) {
 			
+			if (!MetaWatchService.Preferences.notifyNMA)
+				return;
+			
+			final String app = intent.getStringExtra("app");
+			final String event = intent.getStringExtra("event");
+			final String desc = intent.getStringExtra("desc");
+			final int prio = intent.getIntExtra("prio", 0);
+			final String url = intent.getStringExtra("url");
+			
+			NotificationBuilder.createNMA(context, app, event, desc, prio, url);
 		}
 		
 	}

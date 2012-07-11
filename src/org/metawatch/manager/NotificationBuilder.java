@@ -301,6 +301,19 @@ public class NotificationBuilder {
 		}
 	}	
 	
+	public static void createNMA(Context context, String appName, String event, String desc, int prio, String url) {
+		VibratePattern vibratePattern = createVibratePatternFromPreference(context, "settingsNMANumberBuzzes");		
+		Bitmap icon = Utils.getBitmap(context, "notifymyandroid.bmp");
+		if (MetaWatchService.watchType == WatchType.DIGITAL) {
+			Bitmap bitmap = smartLines(context, icon, appName, new String[] {event, desc});		
+			Notification.addBitmapNotification(context, bitmap, vibratePattern, Notification.getDefaultNotificationTimeout(context), appName+" "+event);
+		} else {
+			byte[] scroll = new byte[800];
+			int len = Protocol.createOled2linesLong(context, desc, scroll);
+			Notification.addOledNotification(context, Protocol.createOled1line(context, icon, appName), Protocol.createOled2lines(context, event, desc), scroll, len, vibratePattern, appName+" "+event);
+		}
+	}
+	
 	static Bitmap smartLines(Context context, Bitmap icon, String header, String[] lines) {
 		return smartLines(context, icon, header, lines, FontCache.FontSize.AUTO);
 	}
