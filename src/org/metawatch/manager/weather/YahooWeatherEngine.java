@@ -136,12 +136,22 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 			if (isUpdateRequired(weatherData)) {
 				if (Preferences.logging)
 					Log.d(MetaWatch.TAG,
-							"Monitors.updateWeatherDataGoogle(): start");
+							"Monitors.updateWeatherDataYahoo(): start");
 
+				String placeFinderUrl = null;
 				if (Preferences.weatherGeolocation && LocationData.received) {
-					requestWeatherFromGeoLocation(LocationData.latitude,
-							LocationData.longitude, weatherData);
+					placeFinderUrl = "http://where.yahooapis.com/geocode?q="
+							+ LocationData.latitude + ","
+							+ LocationData.longitude + "&gflags=R";
+				} else {
+					String weatherLocation = Preferences.weatherCity.replace(
+							" ", "%20");
+					placeFinderUrl = "http://where.yahooapis.com/geocode?q="
+							+ weatherLocation;
 				}
+
+				return requestWeatherFromYahooPlacefinder(placeFinderUrl,
+						weatherData);
 			}
 
 		} catch (Exception e) {
@@ -155,15 +165,19 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 		return weatherData;
 	}
 
-	private WeatherData requestWeatherFromGeoLocation(double latitude,
-			double longitude, WeatherData weatherData) throws IOException {
+	/**
+	 * Checks the YAHOO PLACEFINDER service to lookup WOED, an unique weather
+	 * location id. This is required to access the weather service later on.
+	 */
+	private WeatherData requestWeatherFromYahooPlacefinder(
+			String placeFinderUrl, WeatherData weatherData) throws IOException {
 		try {
-			// Ask Yahoo Placefinder to search the WOEID.
+			if (Preferences.logging)
+				Log.d(MetaWatch.TAG, "Placefinder URL: " + placeFinderUrl);
+
+			// Ask YAHOO PLACEFINDER to search the WOEID.
 			HttpClient hc = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(
-					"http://where.yahooapis.com/geocode?q="
-							+ LocationData.latitude + ","
-							+ LocationData.longitude + "&gflags=R");
+			HttpGet httpGet = new HttpGet(placeFinderUrl);
 			HttpResponse rp = hc.execute(httpGet);
 			if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -180,13 +194,16 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 				String woeId = handler.getWoeId();
 				String city = handler.getCity();
 
+				// if (Preferences.weatherGeolocation)
 				weatherData.locationName = city;
+				// else
+				// weatherData.locationName = Preferences.weatherCity;
 
 				if (Preferences.logging)
-					Log.d(MetaWatch.TAG, "Got WOEID: " + woeId);
-				if (Preferences.logging)
-					Log.d(MetaWatch.TAG, "Got CITY: " + city);
+					Log.d(MetaWatch.TAG, "Got WOEID: " + woeId + " and CITY: "
+							+ city);
 
+				// Seconds web service access, now with WOEID
 				return requestWeatherFromWoeId(woeId, weatherData);
 
 			} else {
@@ -200,6 +217,22 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 		}
 	}
 
+	/**
+	 * YAHOO Weather API. Checkout documentation:
+	 * http://developer.yahoo.com/weather/.
+	 * 
+	 * To request the weather from "DALLAS,US" the WOEID (Where On Earth ID) is
+	 * "2388929". http://weather.yahooapis.com/forecastrss?w=2388929
+	 * 
+	 * If temperature shall be returned in CELSIUS and all units in metric
+	 * system, an argument "u=c" shall be sent to the API.
+	 * 
+	 * @param woeId
+	 *            Where On Earth ID of YAHOO web services
+	 * @param weatherData
+	 * @return
+	 * @throws IOException
+	 */
 	private WeatherData requestWeatherFromWoeId(String woeId,
 			WeatherData weatherData) throws IOException {
 		try {
@@ -207,6 +240,8 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 			if (Preferences.weatherCelsius) {
 				url += "&u=c";
 			}
+			if (Preferences.logging)
+				Log.d(MetaWatch.TAG, "Weather URL: " + url);
 
 			// Ask Yahoo Weather API
 			HttpClient hc = new DefaultHttpClient();
@@ -219,7 +254,7 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 
 				String s = EntityUtils.toString(rp.getEntity());
 				if (Preferences.logging)
-					Log.d(MetaWatch.TAG, "Got weather API response " + s);
+					Log.d(MetaWatch.TAG, "Got Weather API response " + s);
 
 				YahooWeatherHandler handler = new YahooWeatherHandler();
 				xr.setContentHandler(handler);
