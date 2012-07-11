@@ -1,5 +1,7 @@
 package org.metawatch.manager.weather;
 
+import java.util.Arrays;
+
 public class WeatherData {
 	public boolean received = false;
 	public String icon;
@@ -21,4 +23,18 @@ public class WeatherData {
 
 	public long timeStamp = 0;
 	public long forecastTimeStamp = 0;
+	@Override
+	public String toString() {
+		return "WeatherData [received=" + received + ", icon=" + icon
+				+ ", temp=" + temp + ", condition=" + condition
+				+ ", locationName=" + locationName + ", celsius=" + celsius
+				+ ", sunriseH=" + sunriseH + ", sunriseM=" + sunriseM
+				+ ", sunsetH=" + sunsetH + ", sunsetM=" + sunsetM
+				+ ", moonPercentIlluminated=" + moonPercentIlluminated
+				+ ", ageOfMoon=" + ageOfMoon + ", forecast="
+				+ Arrays.toString(forecast) + ", timeStamp=" + timeStamp
+				+ ", forecastTimeStamp=" + forecastTimeStamp + "]";
+	}
+	
+	
 }

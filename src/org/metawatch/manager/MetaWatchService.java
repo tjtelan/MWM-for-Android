@@ -129,6 +129,7 @@ public class MetaWatchService extends Service {
 		public static final int DISABLED = 0;
 		public static final int GOOGLE = 1;
 		public static final int WUNDERGROUND = 2;
+		public static final int YAHOO = 3;
 	}
 
 	final static class WatchModes {

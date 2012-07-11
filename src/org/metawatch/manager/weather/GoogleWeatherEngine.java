@@ -96,6 +96,8 @@ public class GoogleWeatherEngine extends AbstractWeatherEngine {
 						if (Preferences.logging)
 							Log.e(MetaWatch.TAG,
 									"Exception while retreiving postalcode", e);
+						PostalCode = "";
+						locality = "UNKNOWN";
 					}
 
 					if (PostalCode.equals("")) {

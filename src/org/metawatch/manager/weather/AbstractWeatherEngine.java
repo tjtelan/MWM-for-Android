@@ -17,6 +17,7 @@ public abstract class AbstractWeatherEngine implements WeatherEngine {
 	 * @return True if weather data shall be updated
 	 */
 	public boolean isUpdateRequired(WeatherData data) {
+
 		if (data.timeStamp > 0 && data.received) {
 			long currentTime = System.currentTimeMillis();
 			long diff = currentTime - data.timeStamp;
