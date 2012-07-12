@@ -2,7 +2,9 @@ package org.metawatch.manager.weather;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -138,16 +140,21 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 					Log.d(MetaWatch.TAG,
 							"Monitors.updateWeatherDataYahoo(): start");
 
+				// http://developer.yahoo.com/geo/placefinder/guide/requests.html#gflags-parameter
+				// The problem is when we do not use the "gflags=R" argument, we
+				// don't always get a WOEID
+				String arguments = "&count=1&gflags=R";
+
 				String placeFinderUrl = null;
 				if (Preferences.weatherGeolocation && LocationData.received) {
 					placeFinderUrl = "http://where.yahooapis.com/geocode?q="
 							+ LocationData.latitude + ","
-							+ LocationData.longitude + "&gflags=R";
+							+ LocationData.longitude + arguments;
 				} else {
 					String weatherLocation = Preferences.weatherCity.replace(
 							" ", "%20");
 					placeFinderUrl = "http://where.yahooapis.com/geocode?q="
-							+ weatherLocation;
+							+ weatherLocation + arguments;
 				}
 
 				return requestWeatherFromYahooPlacefinder(placeFinderUrl,
@@ -198,6 +205,11 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 				weatherData.locationName = city;
 				// else
 				// weatherData.locationName = Preferences.weatherCity;
+
+				// DEBUG - WILL BE REMOVED AFTER SOME TEST PERIOD
+				String tt = new SimpleDateFormat("hh:mm").format(new Date());
+				weatherData.locationName = tt + " " + city;
+				// DEBUG
 
 				if (Preferences.logging)
 					Log.d(MetaWatch.TAG, "Got WOEID: " + woeId + " and CITY: "
@@ -351,8 +363,9 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 				code = parseCode(attributes.getValue("code"));
 				temp = attributes.getValue("temp");
 
-				Log.d(MetaWatch.TAG, "Weather Condition " + text + " " + code
-						+ " " + temp);
+				if (Preferences.logging)
+					Log.d(MetaWatch.TAG, "Weather Condition " + text + " "
+							+ code + " " + temp);
 
 			} else if (localName.equals("forecast")) {
 				// <yweather:forecast day="Wed" date="11 Jul 2012" low="55"
