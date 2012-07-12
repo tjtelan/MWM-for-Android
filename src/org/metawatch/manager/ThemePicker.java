@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
 
@@ -26,20 +27,22 @@ import android.widget.TextView;
 
 public class ThemePicker extends ListActivity {
 	
-	public class ThemeData {
-		public String name;
-		public String description;
+	public class ThemeDescription {
+		public String name = "";
+		public String description = "";
+		public String author = "";
+		public String url = "";
 
-		public Bitmap bitmap;
+		public Bitmap bitmap = null;
 	}
 	
-	private List<ThemeData> themeList;
+	private List<ThemeDescription> themeList;
 
     private static class EfficientAdapter extends BaseAdapter {
         private LayoutInflater mInflater;
-        private List<ThemeData> mThemes;
+        private List<ThemeDescription> mThemes;
 
-        public EfficientAdapter(Context context, List<ThemeData> themes) {
+        public EfficientAdapter(Context context, List<ThemeDescription> themes) {
             // Cache the LayoutInflate to avoid asking for a new one each time.
             mInflater = LayoutInflater.from(context);
             mThemes = themes;
@@ -107,9 +110,15 @@ public class ThemePicker extends ListActivity {
             }
 
             // Bind the data efficiently with the holder.
-            String desc = mThemes.get(position).description;
+            
+            ThemeDescription themeDesc = mThemes.get(position);
+            String desc = themeDesc.description;
+
             if (mThemes.get(position).name.equalsIgnoreCase(Preferences.themeName)) {
             	desc += " (current)";
+            }
+            if (themeDesc.author!=null) {
+            	desc += "\nby "+themeDesc.author;
             }
             holder.text.setText(desc);
             if(mThemes.get(position).bitmap!=null)
@@ -124,10 +133,10 @@ public class ThemePicker extends ListActivity {
         }
     }
     
-    private static Comparator<ThemeData> COMPARATOR = new Comparator<ThemeData>()
+    private static Comparator<ThemeDescription> COMPARATOR = new Comparator<ThemeDescription>()
     {
 	// This is where the sorting happens.
-        public int compare(ThemeData o1, ThemeData o2)
+        public int compare(ThemeDescription o1, ThemeDescription o2)
         {
             return o1.name.compareTo(o2.name);
         }
@@ -137,42 +146,46 @@ public class ThemePicker extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
             
-        //Map<String,WidgetData> widgetMap = WidgetManager.refreshWidgets(this, null);
-        themeList = new ArrayList<ThemeData>();
+        themeList = new ArrayList<ThemeDescription>();
         
-        ThemeData defaultTheme = new ThemeData();
-        defaultTheme.name = "";
-        defaultTheme.description = "MetaWatch 'rm' default theme";
-        defaultTheme.bitmap = BitmapCache.getDefaultThemeBanner(this);
+        addTheme(BitmapCache.getInternalTheme(this));
         
-        themeList.add(defaultTheme);
-        
-        File searchDir = Utils.getExternalFilesDir(this, "Themes");
-        
+        File searchDir = Utils.getExternalFilesDir(this, "Themes");  
         File[] themeFiles = searchDir.listFiles();
-
 		for (File file : themeFiles) {
-			String themeName = file.getName().replace(".zip", "");
-			
+			String themeName = file.getName().replace(".zip", "");		
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Found theme "+themeName);
-			
-			Bitmap themeBanner = BitmapCache.getThemeBanner(this, themeName);
-		
-			ThemeData theme = new ThemeData();
-			theme.name = themeName;
-			theme.description = themeName;
-			theme.bitmap = themeBanner;
-			
-			themeList.add(theme);
+			addTheme(BitmapCache.loadTheme(this, themeName));
 		}
         
-               
         Collections.sort(themeList, COMPARATOR);
         
         if (Preferences.logging) Log.d(MetaWatch.TAG, "Showing " +themeList.size() + " themes");
         
         setListAdapter(new EfficientAdapter(this, themeList));
     }
+    
+    private String getProperty(Properties properties, String key, String defaultVal) {
+		if(properties!=null && properties.containsKey(key))
+			return properties.getProperty(key);
+		else
+			return defaultVal;
+    }
+
+	private void addTheme(BitmapCache.ThemeData themeData) {		
+		Properties properties = themeData.getThemeProperties();
+		
+		ThemeDescription theme = new ThemeDescription();
+		theme.name = themeData.themeName;
+		
+		theme.description = getProperty(properties, "description", themeData.themeName);
+		theme.author = getProperty(properties, "author", null);
+		theme.url = getProperty(properties, "url", null);
+		
+		theme.bitmap = themeData.getBanner();
+		
+		themeList.add(theme);
+	}
     
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {

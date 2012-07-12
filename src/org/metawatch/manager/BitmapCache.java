@@ -20,10 +20,179 @@ import android.util.Log;
 
 public class BitmapCache {
 	
-	private static String currentTheme = "";
-	private static long themeTimeStamp = 0;
+	public static class ThemeData {
+		public ThemeData( String name ) {
+			themeName = name;
+		}
+		
+		public String themeName = "";
+		public long timeStamp = 0;
+
+		protected HashMap<String, Object> data = new HashMap<String,Object>();
+		
+		public Object get(String key) {
+			return data.containsKey(key) ? data.get(key) : null;
+		}
+		
+		public Bitmap getBitmap(String key) {
+			Object obj = data.get(key);
+			return obj instanceof Bitmap ? (Bitmap) obj : null;
+		}
+		
+		public Properties getProperties(String key) {
+			Object obj = data.get(key);
+			return obj instanceof Properties ? (Properties) obj : null;
+		}
+		
+		public void readTheme(File themeFile) {
+			
+			HashMap<String, Object> newCache = new HashMap<String,Object>();
+			
+			FileInputStream fis = null;
+			ZipInputStream zis = null;
+			
+			timeStamp = themeFile.lastModified();
+			
+			try {
+			
+			    fis = new FileInputStream(themeFile);
+				zis = new ZipInputStream(fis);
+						
+				ZipEntry ze = zis.getNextEntry();
+	            while (ze != null) 
+	            { 
+	                String entryName = ze.getName();
+	                
+	            	final int size = (int) ze.getSize();
+	            	
+	            	// Need to copy into a buffer rather than decoding directly from zis
+	            	// as BitmapFactory seems unable to read a .bmp file from a
+	            	// ZipInputStream :-\
+	            	byte[] buffer = new byte[size];
+	            	int offset = 0;
+	            	int read=0;
+	            	do {
+	            		read = zis.read(buffer, offset, size-offset);
+	            		offset += read;
+	            	} while(read>0);
+	            	
+	            	if( entryName.toLowerCase().endsWith(".bmp") || entryName.toLowerCase().endsWith(".png")) {	            	
+		            	Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0, size);
+		            	if (bitmap !=null) {
+		            		//if (Preferences.logging) Log.d(MetaWatch.TAG, "Loaded "+ze.getName());
+		            		newCache.put(entryName, bitmap);
+		            	} else {
+		            		if (Preferences.logging) Log.d(MetaWatch.TAG, "Failed to load "+ze.getName());
+		            	}           	
+	            	}
+	            	else if( entryName.toLowerCase().endsWith(".xml")) {
+	            		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer);
+	            		Properties properties = new Properties();
+	            		properties.loadFromXML(byteArrayInputStream);
+	            		
+	            		newCache.put(entryName, properties);
+	            	}
+
+	                zis.closeEntry();
+	                ze = zis.getNextEntry();
+
+	            }
+				
+			} catch (FileNotFoundException e) {
+			} catch (IOException e) {
+			}
+			finally {
+				try {
+					if (zis!=null)
+						zis.close();
+					if (fis!=null)
+						fis.close();
+				} catch (IOException e) {
+				}
+			}
+			
+			data = newCache;
+		   
+		}
+
+		public Bitmap getBanner() {
+			return getBitmap("theme_banner.png");
+		}
+		
+		public Properties getThemeProperties() {
+			return getProperties("theme.xml");		
+		}
 	
-	private static HashMap<String, Object> cache = new HashMap<String,Object>();
+	}
+	
+	private static class DefaultTheme extends ThemeData {
+		public DefaultTheme(Context context) {
+			super("");
+			this.context = context;
+		}
+		
+		Context context;
+		
+		@Override
+		public void readTheme(File themeFile) {		
+		}
+		
+		@Override
+		public Bitmap getBitmap(String key) {
+			Bitmap bitmap = super.getBitmap(key);
+			if (bitmap!=null) return bitmap;
+			
+			bitmap = loadBitmapFromAssets(context, key);
+			
+			if (bitmap!=null) {
+				data.put(key, bitmap);
+				return bitmap;
+			}
+			return null;
+		}
+		
+		@Override
+		public Properties getProperties(String key) {
+			Properties properties = super.getProperties(key);
+			if (properties!=null) return properties;
+			
+			properties = loadPropertiesFromAssets(context, key);
+			
+			if (properties!=null) {
+				data.put(key, properties);
+				return properties;
+			}
+			return null;
+		}
+		
+		private Bitmap loadBitmapFromAssets(Context context, String path) {
+			
+			try {
+				InputStream inputStream = context.getAssets().open(path);
+		        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+		        inputStream.close();
+		        return bitmap;
+			} catch (IOException e) {
+				return null;
+			}
+		}
+		
+		private Properties loadPropertiesFromAssets(Context context, String path) {
+			
+			try {
+				InputStream inputStream = context.getAssets().open(path);
+		        Properties properties = new Properties();
+	    		properties.loadFromXML(inputStream);       
+		        inputStream.close();
+		        return properties;
+			} catch (IOException e) {
+				return null;
+			}
+		}
+	}
+	
+	private static DefaultTheme internalTheme = null;
+	private static ThemeData currentTheme = null;
 	
 	private static File getThemeFile(Context context, String themeName) {
 		return new File(Utils.getExternalFilesDir(context, "Themes"), themeName+".zip");
@@ -33,17 +202,13 @@ public class BitmapCache {
 		
 		updateCache(context);
 		
-		if (cache.containsKey(path)) {
-			Object obj = cache.get(path);
-			return obj instanceof Bitmap ? (Bitmap)obj : null;
-		}
+		Bitmap bitmap = currentTheme.getBitmap(path);
+		if (bitmap!=null) return bitmap;
 		
-		Bitmap bitmap = loadBitmapFromAssets(context, path);
-		
-		if (bitmap!=null) {
-			cache.put(path, bitmap);
-		}
-		return bitmap;
+		bitmap = internalTheme.getBitmap(path);
+		if (bitmap!=null) return bitmap;
+	
+		return null;
 		
 	}
 
@@ -51,153 +216,55 @@ public class BitmapCache {
 	public static synchronized Properties getProperties(Context context, String path) {
 		
 		updateCache(context);
+
+		Properties properties = currentTheme.getProperties(path);
+		if (properties!=null) return properties;
 		
-		if (cache.containsKey(path)) {
-			Object obj = cache.get(path);
-			return obj instanceof Properties ? (Properties)obj : new Properties();
-		}
+		properties = internalTheme.getProperties(path);
+		if (properties!=null) return properties;
 		
-		Properties properties = loadPropertiesFromAssets(context, path);
-		
-		if (properties!=null) {
-			cache.put(path, properties);
-			return properties;
-		}
 		return new Properties();
 	}
 	
 	public static Bitmap getDefaultThemeBanner(Context context) {
-		return getThemeBanner(context, null);
+		return internalTheme.getBanner();
 	}
 	
-	public static Bitmap getThemeBanner(Context context, String themeName) {
-		if (themeName==null || themeName.isEmpty()) {
-			return loadBitmapFromAssets(context, "theme_banner.png");
-		}
-		else {
-			File themeFile = getThemeFile(context, themeName);
-			if (themeFile.exists()) {
-				HashMap<String, Object> themeData = readTheme(themeFile);
-				if (Preferences.logging) Log.d(MetaWatch.TAG, "Theme "+themeName+" contains "+themeData.size()+" assets");
-				if (themeData.containsKey("theme_banner.png")) {
-					if (Preferences.logging) Log.d(MetaWatch.TAG, "Theme "+themeName+" has a banner");
-					return (Bitmap)themeData.get("theme_banner.png");
-				}
-				else {
-					if (Preferences.logging) Log.d(MetaWatch.TAG, "Theme "+themeName+" has no banner");
-				}
-			}
-		}
-		return null;
-	}
-
 	private static void updateCache(Context context) {
+		
+		if (internalTheme==null) {
+			internalTheme = new DefaultTheme(context);
+		}
+		
 		File themeFile = getThemeFile(context, Preferences.themeName);
 		
-		if (Preferences.themeName != currentTheme || (themeFile.lastModified() != themeTimeStamp)) {
-			currentTheme = Preferences.themeName;
-			cache = new HashMap<String,Object>();
-			themeTimeStamp = themeFile.lastModified();
-			
-			if (themeFile.exists()) {
-				cache = readTheme(themeFile);
-			}
+		if (currentTheme == null || Preferences.themeName != currentTheme.themeName || (themeFile.lastModified() != currentTheme.timeStamp)) {
+			currentTheme = loadTheme(context, Preferences.themeName, themeFile);
 		}
 	}
 	
-	private static Bitmap loadBitmapFromAssets(Context context, String path) {
-		
-		try {
-			InputStream inputStream = context.getAssets().open(path);
-	        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-	        inputStream.close();
-	        return bitmap;
-		} catch (IOException e) {
-			return null;
-		}
+	public static ThemeData getInternalTheme(Context context) {
+		updateCache(context);
+		return internalTheme;
 	}
 	
-	private static Properties loadPropertiesFromAssets(Context context, String path) {
+	public static ThemeData loadTheme(Context context, String themeName) {
+		File themeFile = getThemeFile(context, themeName);
 		
-		try {
-			InputStream inputStream = context.getAssets().open(path);
-	        Properties properties = new Properties();
-    		properties.loadFromXML(inputStream);       
-	        inputStream.close();
-	        return properties;
-		} catch (IOException e) {
-			return null;
+		return loadTheme(context, themeName, themeFile);
+	}
+	
+	private static ThemeData loadTheme(Context context, String themeName, File themeFile) {
+		
+		ThemeData theme = new ThemeData(themeName);
+		
+		if (themeFile.exists()) {
+			theme.readTheme(themeFile);
 		}
+		
+		return theme;
 	}
 	
 	
-	private static HashMap<String, Object> readTheme(File themeFile) {
-		
-		HashMap<String, Object> newCache = new HashMap<String,Object>();
-		
-		FileInputStream fis = null;
-		ZipInputStream zis = null;
-		
-		try {
-		
-		    fis = new FileInputStream(themeFile);
-			zis = new ZipInputStream(fis);
-					
-			ZipEntry ze = zis.getNextEntry();
-            while (ze != null) 
-            { 
-                String entryName = ze.getName();
-                
-            	final int size = (int) ze.getSize();
-            	
-            	// Need to copy into a buffer rather than decoding directly from zis
-            	// as BitmapFactory seems unable to read a .bmp file from a
-            	// ZipInputStream :-\
-            	byte[] buffer = new byte[size];
-            	int offset = 0;
-            	int read=0;
-            	do {
-            		read = zis.read(buffer, offset, size-offset);
-            		offset += read;
-            	} while(read>0);
-            	
-            	if( entryName.toLowerCase().endsWith(".bmp") || entryName.toLowerCase().endsWith(".png")) {	            	
-	            	Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0, size);
-	            	if (bitmap !=null) {
-	            		//if (Preferences.logging) Log.d(MetaWatch.TAG, "Loaded "+ze.getName());
-	            		newCache.put(entryName, bitmap);
-	            	} else {
-	            		if (Preferences.logging) Log.d(MetaWatch.TAG, "Failed to load "+ze.getName());
-	            	}           	
-            	}
-            	else if( entryName.toLowerCase().endsWith(".xml")) {
-            		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(buffer);
-            		Properties properties = new Properties();
-            		properties.loadFromXML(byteArrayInputStream);
-            		
-            		newCache.put(entryName, properties);
-            	}
-
-                zis.closeEntry();
-                ze = zis.getNextEntry();
-
-            }
-			
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		}
-		finally {
-			try {
-				if (zis!=null)
-					zis.close();
-				if (fis!=null)
-					fis.close();
-			} catch (IOException e) {
-			}
-		}
-		
-		return newCache;
-	   
-	}
 	
 }
