@@ -215,13 +215,25 @@ public class IntentReceiver extends BroadcastReceiver {
 		else if (action.equals("windroid.SMART_DEVICE_UPDATE_EMAILS")) {
 			// Nitrodesk TouchDown new email
 			if (MetaWatchService.Preferences.notifyTD) {				
-				Bundle bundle = intent.getExtras();				
-				String title = bundle.getString("windroid.extra.SMARTWATCH_TITLE");
-				String ticker = bundle.getString("windroid.extra.SMARTWATCH_TICKER");
-				NotificationBuilder.createTouchdownMail(context, title, ticker);
+				Bundle bundle = intent.getExtras();	
+				
+				String title = null;
+				if (bundle.containsKey("windroid.extra.SMARTWATCH_TITLE")) 
+					title = bundle.getString("windroid.extra.SMARTWATCH_TITLE");
+				
+				String ticker = null;
+				if (bundle.containsKey("windroid.extra.SMARTWATCH_TICKER")) 
+					ticker = bundle.getString("windroid.extra.SMARTWATCH_TICKER");
+				
+				if (bundle.containsKey("windroid.extra.SMARTWATCH_COUNT")) {
+					Monitors.TouchDownData.unreadMailCount = bundle.getInt("windroid.extra.SMARTWATCH_COUNT");
+					Idle.updateIdle(context, true);
+				}
+				
+				if(title!=null && ticker!=null)
+					NotificationBuilder.createTouchdownMail(context, title, ticker);
 			}
-			Idle.updateIdle(context, true);
-
+			
 			return;
 		}	
 		else if (action.equals("com.android.alarmclock.ALARM_ALERT")
@@ -364,9 +376,20 @@ public class IntentReceiver extends BroadcastReceiver {
 				else {			
 					Monitors.updateWeatherData(context);
 				}
-			}
-
+			}		
+		}
+		else if (intent.getAction().equals("com.usk.app.notifymyandroid.NEW_NOTIFICATION")) {
 			
+			if (!MetaWatchService.Preferences.notifyNMA)
+				return;
+			
+			final String app = intent.getStringExtra("app");
+			final String event = intent.getStringExtra("event");
+			final String desc = intent.getStringExtra("desc");
+			final int prio = intent.getIntExtra("prio", 0);
+			final String url = intent.getStringExtra("url");
+			
+			NotificationBuilder.createNMA(context, app, event, desc, prio, url);
 		}
 		
 	}

@@ -146,6 +146,9 @@ public class Utils {
 		    Cursor c = context.getContentResolver().query(contactUri,
 		            projection, null, null, null);
 
+		    if (c==null)
+		    	return null;
+		    
 		    if (c.moveToFirst()) {
 		    	// Try openContactPhotoInputStream first.
 		        long contactId = c.getLong(c.getColumnIndex(ContactsContract.Contacts._ID));
@@ -473,23 +476,9 @@ public class Utils {
 
 	}
 	
-	public static Bitmap loadBitmapFromAssets(Context context, String path) {
-		try {
-			InputStream inputStream = context.getAssets().open(path);
-	        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-	        inputStream.close();
-	        //if (Preferences.logging) Log.d(MetaWatch.TAG, "ok");
-	        return bitmap;
-		} catch (IOException e) {
-			//if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
-			return null;
-		}
+	public static Bitmap getBitmap(Context context, String path) {
+		return BitmapCache.getBitmap(context, path);
 	}
-	/*
-	public static Bitmap loadBitmapFromPath(Context context, String path) {
-			return BitmapFactory.decodeFile(path);
-	}
-	*/
 	
 	public static Bitmap ditherTo1bit(Bitmap input, boolean inverted) {
 	
@@ -664,10 +653,15 @@ public class Utils {
 	
 	public static Bitmap DrawIconCountWidget(Context context, int width, int height, Bitmap icon, int count, TextPaint textPaint) {
 		String text;
-		if(height==16 && count>1999)
+		// Stop the text being too wide for the widget
+		if (height==16 && count>1999)
 			text="999+";
-		else
-			text = Integer.toString(count);
+		else {
+			if (count<0)
+				text = "-";
+			else
+				text = Integer.toString(count);
+		}
 		return DrawIconStringWidget(context,width,height,icon,text,textPaint);
 	}
 

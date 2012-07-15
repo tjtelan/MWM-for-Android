@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.metawatch.manager"
       android:versionCode="1"
-      android:installLocation="internalOnly" android:versionName="0.2.4.rm15">
+      android:installLocation="internalOnly" android:versionName="0.2.4.rm16">
       
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="10"/>
     <supports-screens android:resizeable="true" android:normalScreens="true" android:anyDensity="true" 
@@ -84,8 +84,8 @@
             android:launchMode="singleTask">
 		</activity>
 		<activity
-			android:label="App Blacklist"
-			android:name=".AppBlacklist"
+			android:label="Other Apps"
+			android:name=".OtherAppsList"
 			android:configChanges="keyboardHidden|orientation"
 			android:launchMode="singleTask">
 		</activity>
@@ -107,6 +107,7 @@
             	<action android:name="com.sonyericsson.alarm.ALARM_ALERT" />
             	<action android:name="com.sonyericsson.music.playbackcontrol.ACTION_TRACK_STARTED" />
             	<action android:name="org.metawatch.manager.UPDATE_CALENDAR"/>
+            	<action android:name="com.usk.app.notifymyandroid.NEW_NOTIFICATION" />
             </intent-filter>
             <intent-filter>
 	            <action android:name="android.intent.action.EVENT_REMINDER" />
@@ -178,6 +179,9 @@
         <activity android:name="WidgetPicker" 
         		  android:launchMode="standard">
         </activity>        
+        <activity android:name="ThemePicker" 
+        		  android:launchMode="standard">
+        </activity>  
         <activity android:name="org.metawatch.manager.Test" 
                   android:launchMode="singleTask">
         </activity>

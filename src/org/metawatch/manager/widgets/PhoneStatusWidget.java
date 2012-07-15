@@ -80,7 +80,7 @@ public class PhoneStatusWidget implements InternalWidget {
 			iconFile = "idle_phone_status_10.bmp";
 		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		int level = Monitors.BatteryData.level;
 		String count = level==-1 ? "-" : level+"%";

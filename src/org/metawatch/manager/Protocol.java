@@ -31,6 +31,7 @@ package org.metawatch.manager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -240,6 +241,22 @@ public class Protocol {
 		if (sendQueue.size() % 10 == 0)
 			MetaWatchService.notifyClients();
 	}
+	
+	// Force the message packet to the head of the queue
+	// this should only be used when really necessary / time critical
+	public static void pushhead(byte[] bytes) {
+		
+		if (MetaWatchService.fakeWatch)
+			return;
+		
+		ArrayList<byte[]> temp = new ArrayList<byte[]>();		
+		sendQueue.drainTo(temp);		
+		sendQueue.add(bytes);
+		sendQueue.addAll(temp);
+
+		if (sendQueue.size() % 10 == 0)
+			MetaWatchService.notifyClients();
+	}
 
 	public static void send(byte[] bytes) throws IOException {
 		if (bytes == null)
@@ -321,12 +338,25 @@ public class Protocol {
 			bytes[8] = (byte) (calendar.get(Calendar.DAY_OF_WEEK) - 1);
 			bytes[9] = (byte) calendar.get(Calendar.HOUR_OF_DAY);
 			bytes[10] = (byte) calendar.get(Calendar.MINUTE);
-			bytes[11] = (byte) calendar.get(Calendar.SECOND);
+			bytes[11] = (byte) (calendar.get(Calendar.SECOND) + Monitors.rtcOffset);
 
-			enqueue(bytes);
+			pushhead(bytes);
 
 		} catch (Exception x) {
 		}
+	}
+
+	public static void getRealTimeClock() {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.getRealTimeClock()");
+		byte[] bytes = new byte[4];
+
+		bytes[0] = eMessageType.start;
+		bytes[1] = (byte) (bytes.length+2); // length
+		bytes[2] = eMessageType.GetRealTimeClock.msg;
+		bytes[3] = 0;
+
+		Monitors.getRTCTimestamp = System.currentTimeMillis();	
+		pushhead(bytes);
 	}
 
 	public static byte[] crc(byte[] bytes) {

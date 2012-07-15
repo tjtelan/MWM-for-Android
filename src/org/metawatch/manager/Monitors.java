@@ -113,6 +113,9 @@ public class Monitors {
 	private static BroadcastReceiver batteryLevelReceiver;
 	
 	public static boolean calendarChanged = false;
+	
+	public static long getRTCTimestamp = 0;
+	public static int rtcOffset = 0; // Offset in seconds to add to the RTC to allow for latency
 
   public static class WeatherData {
 		public static boolean received = false;
@@ -154,6 +157,10 @@ public class Monitors {
 	
 	public static class BatteryData {
 		public static int level = -1;
+	}
+	
+	public static class TouchDownData {
+		public static int unreadMailCount = -1;
 	}
 	
 	private static Monitors m = new Monitors(); // Static instance for new
@@ -380,7 +387,7 @@ public class Monitors {
 				WeatherData.forecast[i] = m.new Forecast();
 				WeatherData.forecast[i].day = null;
 				
-				WeatherData.forecast[i].icon = getIconGoogleWeather(wfc.getCondition());
+				WeatherData.forecast[i].icon = getIconGoogleWeather(wfc.getCondition().toLowerCase());
 				WeatherData.forecast[i].day = wfc.getDayofWeek();
 				
 				if (Preferences.weatherCelsius) {
@@ -390,11 +397,11 @@ public class Monitors {
 					WeatherData.forecast[i].tempHigh = 
 							  Integer.toString(WeatherUtils
 									.celsiusToFahrenheit(wfc
-											.getTempMaxCelsius()));
+											.getTempMaxCelsius()).intValue());
 					WeatherData.forecast[i].tempLow = 
 							  Integer.toString(WeatherUtils
 									.celsiusToFahrenheit(wfc
-											.getTempMinCelsius()));
+											.getTempMinCelsius()).intValue());
 				}
 			}
 			

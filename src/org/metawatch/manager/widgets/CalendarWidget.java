@@ -160,7 +160,7 @@ public class CalendarWidget implements InternalWidget {
 			iconFile = "idle_calendar_10.bmp";
 		}
 
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		widget.bitmap = Bitmap.createBitmap(widget.width, widget.height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(widget.bitmap);

@@ -21,6 +21,8 @@
     <string name="settings_Batterylow_desc">Displays a warning when the battery of this device is low.</string>
 	<string name="settings_Calendar">Calendar</string>
 	<string name="settings_Calendar_desc">Calendar notifications (requires Accessibility in Android settings)</string>
+	<string name="settings_NMA">Notify My Android</string>
+	<string name="settings_NMA_desc">Forward notifications from Notify My Android.</string>
 	<string name="settings_OtherNotification">Other Apps</string>
 	<string name="settings_OtherNotification_desc">Other notifications (requires Accessibility in Android settings)</string>
     <string name="settings_Device">Device</string>

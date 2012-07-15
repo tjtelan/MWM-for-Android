@@ -24,6 +24,10 @@ OLED:
 DIGITAL and OLED (from rm14 onwards)
   "text" - Displays text on the watch.
   "title" (optional) - Title for the notification when using "text"
+  "icon" (optional) - Icon for the notification. int[width*height]
+  "iconWidth" (optional) - Width for the "icon" extra
+  "iconHeight" (optional) - Height for the "icon" extra
+  "sticky" (optional) - Whether the notification should be sticky (default is true)
   
 -------------------------------------------------------------------------------
 

@@ -55,6 +55,9 @@ public class QuickDialAction extends ContainerAction {
 
 		Cursor people = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, projection, "starred=?", new String[] {"1"}, ContactsContract.Contacts.TIMES_CONTACTED + " DESC");
 		
+		if (people==null)
+			return;
+		
 		while (people.moveToNext()) {
 			int idFieldIndex = people.getColumnIndex(ContactsContract.Contacts._ID);
 			final String id = people.getString(idFieldIndex);
@@ -66,7 +69,9 @@ public class QuickDialAction extends ContainerAction {
 			if(Integer.parseInt(people.getString(hasNumberFieldIndex)) >0 ) {
 				
 				Cursor personNumbers = context.getContentResolver().query(Phone.CONTENT_URI, null, Phone.CONTACT_ID +"=?", new String[] {id}, null);
-
+				if (personNumbers==null)
+					continue;
+				
 				ContainerAction personContainer = null;
 				String prefix = contact + " ";
 				if (personNumbers.getCount()>1) {

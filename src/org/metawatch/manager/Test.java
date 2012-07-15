@@ -144,6 +144,14 @@ public class Test extends PreferenceActivity {
 		    	return true;
 			}
 		});
+		
+		preferenceScreen.findPreference("sms2").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
+			public boolean onPreferenceClick(Preference arg0) {
+		    	String smsText = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.";
+		    	NotificationBuilder.createSMS(context, "555-123-4567", smsText);
+		    	return true;
+			}
+		});
         
 		preferenceScreen.findPreference("mms").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
@@ -224,6 +232,16 @@ public class Test extends PreferenceActivity {
 		    	return true;
 			}
 		});
+		
+		preferenceScreen.findPreference("call_start2").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
+			public boolean onPreferenceClick(Preference arg0) {
+				final String incomingNumber = "unknown";
+				Call.inCall = true;
+				Call.phoneNumber = incomingNumber;
+		    	Call.startRinging(context, incomingNumber);
+		    	return true;
+			}
+		});
 
 		preferenceScreen.findPreference("call_stop").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
@@ -243,7 +261,10 @@ public class Test extends PreferenceActivity {
 
 		preferenceScreen.findPreference("set_rtc").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
-		    	Protocol.sendRtcNow(context);
+				// Query the time on the watch, which will trigger timing
+				// of the round trip, so we can try and correct for that
+				// when setting the time
+		    	Protocol.getRealTimeClock();
 		    	return true;
 			}
 		});
@@ -358,7 +379,7 @@ public class Test extends PreferenceActivity {
 		preferenceScreen.findPreference("time_24hr").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
 				Protocol.setTimeDateFormat(context);
-			   	NotificationBuilder.createOtherNotification(context, null, "Time and date", "Formats updated.");
+			   	NotificationBuilder.createOtherNotification(context, null, "Time and date", "Formats updated.", 1);
 		    	return true;
 			}
 		});

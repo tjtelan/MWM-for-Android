@@ -162,9 +162,11 @@ public class MetaWatchService extends Service {
 		public static boolean notifyBatterylow = true;
 		public static boolean notifyMusic = true;
 		public static boolean notifyCalendar = true;
+		public static boolean notifyNMA = true;
 		public static String watchMacAddress = "";
 		public static int packetWait = 10;
 		public static boolean skipSDP = false;
+		public static boolean insecureBtSocket = false;
 		public static boolean invertLCD = false;
 		public static boolean notificationCenter = false;
 		public static boolean notifyLight = false;
@@ -197,6 +199,7 @@ public class MetaWatchService extends Service {
 		public static int appLaunchMode = AppLaunchMode.POPUP;
 		public static boolean autoSpeakerphone = false;
 		public static boolean showActionsInCall = true;
+		public static String themeName = "";
 	}
 
 	public final class WatchType {
@@ -231,10 +234,14 @@ public class MetaWatchService extends Service {
 				Preferences.notifyMusic);
 		Preferences.notifyCalendar = sharedPreferences.getBoolean(
 				"NotifyCalendar", Preferences.notifyCalendar);
+		Preferences.notifyNMA = sharedPreferences.getBoolean("notifyNMA",
+				Preferences.notifyNMA);
 		Preferences.watchMacAddress = sharedPreferences.getString("MAC",
 				Preferences.watchMacAddress);
 		Preferences.skipSDP = sharedPreferences.getBoolean("SkipSDP",
 				Preferences.skipSDP);
+		Preferences.insecureBtSocket = sharedPreferences.getBoolean("InsecureBtSocket", 
+				Preferences.insecureBtSocket);
 		Preferences.invertLCD = sharedPreferences.getBoolean("InvertLCD",
 				Preferences.invertLCD);
 		Preferences.notificationCenter = sharedPreferences.getBoolean(
@@ -295,6 +302,8 @@ public class MetaWatchService extends Service {
 				Preferences.autoSpeakerphone);
 		Preferences.showActionsInCall = sharedPreferences.getBoolean("showActionsInCall",
 				Preferences.showActionsInCall);
+		Preferences.themeName = sharedPreferences.getString("ThemeName",
+				Preferences.themeName);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
@@ -319,6 +328,15 @@ public class MetaWatchService extends Service {
 		Editor editor = sharedPreferences.edit();
 
 		editor.putString("MAC", mac);
+		editor.commit();
+	}
+	
+	public static void saveTheme(Context context, String theme) {
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Editor editor = sharedPreferences.edit();
+
+		editor.putString("ThemeName", theme);
 		editor.commit();
 	}
 	
@@ -438,11 +456,12 @@ public class MetaWatchService extends Service {
 		powerManger = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		wakeLock = powerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				"MetaWatch");
-		
-		Idle.updateIdle(this, true);
-		
-		Monitors.start(this, telephonyManager);
 
+		Monitors.start(this, telephonyManager);
+		
+		// Initialise theme
+		BitmapCache.getBitmap(context, "");
+		
 		start();
 
 	}
@@ -516,8 +535,14 @@ public class MetaWatchService extends Service {
 				} else {
 					UUID uuid = UUID
 							.fromString("00001101-0000-1000-8000-00805F9B34FB");
-					bluetoothSocket = bluetoothDevice
-							.createRfcommSocketToServiceRecord(uuid);
+					if (Preferences.insecureBtSocket) {
+						bluetoothSocket = bluetoothDevice
+								.createInsecureRfcommSocketToServiceRecord(uuid);
+					} else {
+						bluetoothSocket = bluetoothDevice
+								.createRfcommSocketToServiceRecord(uuid);
+					}
+					
 				}
 
 				bluetoothSocket.connect();
@@ -530,7 +555,8 @@ public class MetaWatchService extends Service {
 
 			Protocol.startProtocolSender();
 			//Protocol.setNvalTime(context);
-			Protocol.sendRtcNow(context);
+			Protocol.getRealTimeClock();
+			//Protocol.sendRtcNow(context);
 			Protocol.getDeviceType();
 
 			Notification.startNotificationSender(this);
@@ -542,8 +568,10 @@ public class MetaWatchService extends Service {
 			boolean notifyOnConnect = sharedPreferences.getBoolean("NotifyWatchOnConnect", false);
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.connect(): notifyOnConnect=" + notifyOnConnect);
 			if (notifyOnConnect) {
-				NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected");
+				NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected", 1);
 			}
+			
+			Idle.updateIdle(this, true);
 			
 		} catch (IOException ioexception) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, ioexception.toString());
@@ -817,8 +845,8 @@ public class MetaWatchService extends Service {
 							.getDefaultSharedPreferences(this);
 					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
 					if (displaySplash) {
-						Protocol.sendOledBitmap(Utils.loadBitmapFromAssets(this, "splash_16_0.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 0);
-						Protocol.sendOledBitmap(Utils.loadBitmapFromAssets(this, "splash_16_1.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 1);
+						Protocol.sendOledBitmap(Utils.getBitmap(this, "splash_16_0.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 0);
+						Protocol.sendOledBitmap(Utils.getBitmap(this, "splash_16_1.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 1);
 					}
 
 				} else {
@@ -837,7 +865,7 @@ public class MetaWatchService extends Service {
 							.getDefaultSharedPreferences(this);
 					boolean displaySplash = sharedPreferences.getBoolean("DisplaySplashScreen", true);
 					if (displaySplash) {
-						Notification.addBitmapNotification(this, Utils.loadBitmapFromAssets(this, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000, "Splash");
+						Notification.addBitmapNotification(this, Utils.getBitmap(this, "splash.png"), new VibratePattern(false, 0, 0, 0), 10000, "Splash");
 					}
 					
 					Protocol.queryNvalTime();
@@ -879,7 +907,18 @@ public class MetaWatchService extends Service {
 						"MetaWatchService.readFromDevice(): received light sensor response."
 								+ " light_sense=" + lightSense
 								+ " light_average=" + lightAverage);
-			
+			} else if (bytes[2] == eMessageType.GetRealTimeClockResponse.msg) {
+				long timeNow = System.currentTimeMillis();
+				long roundTrip = timeNow - Monitors.getRTCTimestamp;
+				
+				if (Preferences.logging) Log.d(MetaWatch.TAG, 
+						"MetaWatchService.readFromDevice(): received rtc response."
+								+ " round trip= "+roundTrip );
+				
+				Monitors.rtcOffset = (int)(roundTrip/2000);
+				
+				Protocol.sendRtcNow(context);
+				
 			} else {
 				if (Preferences.logging) Log.d(MetaWatch.TAG,
 						"MetaWatchService.readFromDevice(): Unknown message : 0x"+Integer.toString((bytes[2] & 0xff) + 0x100, 16).substring(1) + ", ");

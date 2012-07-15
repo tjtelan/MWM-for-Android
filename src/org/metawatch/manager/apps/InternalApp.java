@@ -59,7 +59,7 @@ public abstract class InternalApp {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			SharedPreferences.Editor editor = prefs.edit();
 			editor.putBoolean(getInfo().pageSettingKey, value);
-			editor.apply();
+			editor.commit();
 		}
 		if (info.pageSettingAttribute != null) {
 			try {
@@ -77,20 +77,18 @@ public abstract class InternalApp {
 	
 	protected void drawDigitalAppSwitchIcon(Context context, Canvas canvas, boolean preview) {
 		if (appState == ACTIVE_IDLE || preview) { // if preview is true, it's for idle mode
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "switch_app.png"), 87, 0, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "switch_app.png"), 87, 0, null);
 			if (isToggleable()) {
-				Bitmap bmp = Utils.loadBitmapFromAssets(context, "app_to_standalone.bmp");
+				Bitmap bmp = Utils.getBitmap(context, "app_to_standalone.bmp");
 				canvas.drawBitmap(bmp, 79, 0, null);				
 			}
 		} else if (appState == ACTIVE_POPUP) {
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "exit_app.bmp"), 87, 0, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "exit_app.bmp"), 87, 0, null);
 			if (isToggleable()) {
-				Bitmap bmp = Utils.loadBitmapFromAssets(context, "app_to_idle.bmp");
+				Bitmap bmp = Utils.getBitmap(context, "app_to_idle.bmp");
 				canvas.drawBitmap(bmp, 79, 0, null);				
 			}
 		}
-		else
-			throw new IllegalStateException("Unknown app state.");
 	}
 	
 	public abstract Bitmap update(Context context, boolean preview, int watchType);

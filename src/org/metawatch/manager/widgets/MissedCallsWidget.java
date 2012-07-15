@@ -77,7 +77,7 @@ public class MissedCallsWidget implements InternalWidget {
 			iconFile = "idle_call_10.bmp";
 		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		int count = Utils.getMissedCallsCount(context);
 

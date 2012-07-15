@@ -61,6 +61,21 @@ public class Idle {
 	final static byte IDLE_OLED_DISPLAY = 61;
 	final static byte QUICK_BUTTON = 62;
 	
+	private static boolean busy = false;
+	private static Object busyObj = new Object();
+	
+	private static boolean isBusy() {
+		synchronized (busyObj) {
+			return busy;
+		}
+	}
+	
+	private static void setBusy(boolean isBusy) {
+		synchronized (busyObj) {
+			busy = isBusy;
+		}
+	}
+	
 	private interface IdlePage {
 		public void activate(Context context, int watchType);
 		public void deactivate(Context context, int watchType);
@@ -103,7 +118,7 @@ public class Idle {
 			boolean showClock = (pageIndex==0 || Preferences.clockOnEveryPage);
 			
 			if(watchType == WatchType.DIGITAL && preview && showClock) {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "dummy_clock.png"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "dummy_clock.png"), 0, 0, null);
 			} 
 			
 			int totalHeight = 0;
@@ -266,89 +281,97 @@ public class Idle {
 	private static ArrayList<IdlePage> idlePages = null;
 	private static Map<String,WidgetData> widgetData = null;
 	
-	public static synchronized void updateIdlePages(Context context, boolean refresh)
+	public static void updateIdlePages(Context context, boolean refresh)
 	{
-		if(!initialised) {
-			WidgetManager.initWidgets(context, null);
-			AppManager.initApps();
-			ActionManager.initActions(context);
-			initialised = true;
-		}
-		
-		ArrayList<IdlePage> prevList = idlePages;
-		
-		List<WidgetRow> rows = WidgetManager.getDesiredWidgetsFromPrefs(context);
-		
-		ArrayList<CharSequence> widgetsDesired = new ArrayList<CharSequence>();
-		for(WidgetRow row : rows) {
-			widgetsDesired.addAll(row.getIds());
-		}
-		
-		if (refresh)
-			widgetData = WidgetManager.refreshWidgets(context, widgetsDesired);
-		else
-			widgetData = WidgetManager.getCachedWidgets(context, widgetsDesired);
-		
-		for(WidgetRow row : rows) { 
-			row.doLayout(widgetData);
-		}
-		
-		int maxScreenSize = 0;
-		
-		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
-			maxScreenSize = 96;
-		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
-			maxScreenSize = 32;
-		
-		// Bucket rows into pages
-		ArrayList<IdlePage> screens = new ArrayList<IdlePage>();
-	
-		int screenSize = 0;
-		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-			screenSize = 32; // Initial screen has top part used by the fw clock
-		}
-		
-		ArrayList<WidgetRow> screenRow = new ArrayList<WidgetRow>();
-		for(WidgetRow row : rows) { 
-			if(screenSize+row.getHeight() > maxScreenSize) {
-				screens.add(new WidgetPage(screenRow, screens.size()));
-				screenRow = new ArrayList<WidgetRow>();
-				if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL &&
-						Preferences.clockOnEveryPage) {
-					screenSize = 32;
-				} else { 
-					screenSize = 0;
-				}
-			}
-			screenRow.add(row);
-			screenSize += row.getHeight();
-		}
-		screens.add(new WidgetPage(screenRow, screens.size()));
-		
-		if (prevList == null) {
-			// Initialize app pages.
-			// TODO: Implement a better method of configuring enabled apps
-			if(Preferences.idleActions) {
-				screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
-			}
-			if(Preferences.idleMusicControls) {
-				screens.add(new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
+		try {
+			setBusy(true);
+			
+			if(!initialised) {
+				WidgetManager.initWidgets(context, null);
+				AppManager.initApps();
+				ActionManager.initActions(context);
+				initialised = true;
 			}
 			
-		} else {
-			// Copy app pages from previous list.
-			for (IdlePage page : prevList) {
-				if (page instanceof AppPage) {
-					screens.add(page);
+			ArrayList<IdlePage> prevList = idlePages;
+			
+			List<WidgetRow> rows = WidgetManager.getDesiredWidgetsFromPrefs(context);
+			
+			ArrayList<CharSequence> widgetsDesired = new ArrayList<CharSequence>();
+			for(WidgetRow row : rows) {
+				widgetsDesired.addAll(row.getIds());
+			}
+			
+			if (refresh)
+				widgetData = WidgetManager.refreshWidgets(context, widgetsDesired);
+			else
+				widgetData = WidgetManager.getCachedWidgets(context, widgetsDesired);
+			
+			for(WidgetRow row : rows) { 
+				row.doLayout(widgetData);
+			}
+			
+			int maxScreenSize = 0;
+			
+			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
+				maxScreenSize = 96;
+			else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+				maxScreenSize = 32;
+			
+			// Bucket rows into pages
+			ArrayList<IdlePage> screens = new ArrayList<IdlePage>();
+		
+			int screenSize = 0;
+			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
+				screenSize = 32; // Initial screen has top part used by the fw clock
+			}
+			
+			ArrayList<WidgetRow> screenRow = new ArrayList<WidgetRow>();
+			for(WidgetRow row : rows) { 
+				if(screenSize+row.getHeight() > maxScreenSize) {
+					screens.add(new WidgetPage(screenRow, screens.size()));
+					screenRow = new ArrayList<WidgetRow>();
+					if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL &&
+							Preferences.clockOnEveryPage) {
+						screenSize = 32;
+					} else { 
+						screenSize = 0;
+					}
+				}
+				screenRow.add(row);
+				screenSize += row.getHeight();
+			}
+			screens.add(new WidgetPage(screenRow, screens.size()));
+			
+			if (prevList == null) {
+				// Initialize app pages.
+				// TODO: Implement a better method of configuring enabled apps
+				if(Preferences.idleActions) {
+					screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
+				}
+				if(Preferences.idleMusicControls) {
+					screens.add(new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
+				}
+				
+			} else {
+				// Copy app pages from previous list.
+				for (IdlePage page : prevList) {
+					if (page instanceof AppPage) {
+						screens.add(page);
+					}
 				}
 			}
+			
+			idlePages = screens;
+			
+			if (prevList == null) {
+				//First run of this function, activate buttons for initial screen.
+				toPage(context, currentPage);
+			}
+			
 		}
-		
-		idlePages = screens;
-		
-		if (prevList == null) {
-			//First run of this function, activate buttons for initial screen.
-			toPage(context, currentPage);
+		finally {
+			setBusy(false);
 		}
 	}
 
@@ -390,11 +413,18 @@ public class Idle {
 		return mode;
 	}
 	
-	private static synchronized void sendLcdIdle(Context context, boolean refresh) {
+	private static void sendLcdIdle(Context context, boolean refresh) {
 		if(MetaWatchService.watchState != MetaWatchService.WatchStates.IDLE) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as not in idle");
 			return;
 		}
+		
+		if (isBusy()) {
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Ignoring sendLcdIdle as Idle is busy");
+			return;
+		}
+		
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "sendLcdIdle start");
 		
 		final int mode = getScreenMode(MetaWatchService.WatchType.DIGITAL);
 		boolean showClock = false;
@@ -411,6 +441,8 @@ public class Idle {
 		if (mode == MetaWatchService.WatchBuffers.IDLE)
 			Protocol.configureIdleBufferSize(showClock);
 		Protocol.updateLcdDisplay(mode);
+		
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "sendLcdIdle end");
 	}
 	
 	public static boolean toIdle(Context context) {
@@ -418,8 +450,12 @@ public class Idle {
 		MetaWatchService.WatchModes.IDLE = true;
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
 		
-		if (idlePages != null)
+		if (idlePages != null) {
+			if (currentPage>=idlePages.size()) {
+				currentPage=0;
+			}
 			idlePages.get(currentPage).activate(context, MetaWatchService.watchType);
+		}
 		
 		if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
 			sendLcdIdle(context, true);
@@ -449,6 +485,9 @@ public class Idle {
 	}
 	
 	private static void updateOledIdle(Context context, boolean refresh) {	
+		if (isBusy())
+			return;
+		
 		final int mode = getScreenMode(MetaWatchService.WatchType.ANALOG);
 		
 		if(mode ==  MetaWatchService.WatchBuffers.IDLE)

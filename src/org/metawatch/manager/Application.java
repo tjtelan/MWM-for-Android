@@ -204,8 +204,6 @@ public class Application {
 				return;
 			}
 		}
-		
-		throw new IllegalStateException("Can't toggle app mode for an inactive app");
 	}
 	
 	public static void buttonPressed(Context context, byte button) {

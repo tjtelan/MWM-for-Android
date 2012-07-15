@@ -77,7 +77,7 @@ public class K9Widget implements InternalWidget {
 			iconFile = "idle_k9mail_10.bmp";
 		}
 		
-		Bitmap icon = Utils.loadBitmapFromAssets(context, iconFile);
+		Bitmap icon = Utils.getBitmap(context, iconFile);
 
 		int count = Utils.getUnreadK9Count(context);
 

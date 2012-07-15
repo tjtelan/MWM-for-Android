@@ -13,6 +13,7 @@ import org.metawatch.manager.Protocol;
 import org.metawatch.manager.Utils;
 import org.metawatch.manager.actions.Action;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -129,10 +130,10 @@ public class MediaPlayerApp extends InternalApp {
 			canvas.drawColor(Color.WHITE);	
 			
 			if(MediaControl.lastTrack=="") {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player_idle.png"), 0, 0, null);				
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player_idle.png"), 0, 0, null);				
 			}
 			else {	
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player.png"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player.png"), 0, 0, null);
 				
 				
 				TextPaint tp = null;
@@ -186,10 +187,10 @@ public class MediaPlayerApp extends InternalApp {
 			canvas.drawColor(Color.WHITE);	
 	
 			if(MediaControl.lastTrack=="") {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player_idle_oled.png"), 0, 0, null);				
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player_idle_oled.png"), 0, 0, null);				
 			}
 			else {	
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "media_player_oled.png"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "media_player_oled.png"), 0, 0, null);
 								
 				TextPaint tp = null;
 				if( paintLarge.measureText(MediaControl.lastTrack) < 75) {
@@ -265,9 +266,14 @@ public class MediaPlayerApp extends InternalApp {
 
 			@Override
 			public int performAction(Context context) {
-				Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
+				try {
+					Intent intent = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					context.startActivity(intent);
+				}
+				catch (ActivityNotFoundException e) {
+					return BUTTON_NOT_USED;
+				}
 				return BUTTON_USED;
 			}
 			

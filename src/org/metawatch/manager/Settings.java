@@ -69,11 +69,23 @@ public class Settings extends PreferenceActivity {
 			}
 		});
 		
-		
-		Preference appBlacklist = findPreference("appBlacklist");
-		appBlacklist.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		Preference theme = findPreference("Theme");
+		theme.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference arg0) {
-				startActivity(new Intent(Settings.this, AppBlacklist.class));
+				
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "theme click");
+				
+				startActivity(new Intent(Settings.this, ThemePicker.class));
+				
+				return false;
+			}
+		});
+		
+		
+		Preference otherAppsList = findPreference("otherAppsList");
+		otherAppsList.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			public boolean onPreferenceClick(Preference arg0) {
+				startActivity(new Intent(Settings.this, OtherAppsList.class));
 				return false;
 			}
 		});

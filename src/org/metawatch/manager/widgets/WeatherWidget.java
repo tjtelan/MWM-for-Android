@@ -42,6 +42,9 @@ public class WeatherWidget implements InternalWidget {
 	
 	public final static String id_6 = "weather_fc_80_16";
 	final static String desc_6 = "Weather Forecast (80x16)";
+
+	public final static String id_7 = "weather_48_32";
+	final static String desc_7 = "Current Weather (48x32)";
 	
 	private Context context = null;
 	private TextPaint paintSmall;
@@ -194,6 +197,21 @@ public class WeatherWidget implements InternalWidget {
 			
 			result.put(widget.id, widget);
 		}
+		
+
+		if(widgetIds == null || widgetIds.contains(id_7)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_7;
+			widget.description = desc_7;
+			widget.width = 48;
+			widget.height = 32;
+			
+			widget.bitmap = draw7();
+			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
 	}
 	
 	private int calcPriority()
@@ -209,10 +227,10 @@ public class WeatherWidget implements InternalWidget {
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.WHITE);
 		
-		if (WeatherData.received) {
+		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 			
 			// icon
-			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
 			canvas.drawBitmap(image, 0, 4, null);
 								
 			// temperatures
@@ -246,7 +264,7 @@ public class WeatherWidget implements InternalWidget {
 		if (WeatherData.received) {
 			
 			// icon
-			Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.icon);
+			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
 			if (Preferences.overlayWeatherText)
 				canvas.drawBitmap(image, 36, 5, null);
 			else
@@ -274,7 +292,7 @@ public class WeatherWidget implements InternalWidget {
 			}
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
-			if (WeatherData.forecast!=null) {
+			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 				canvas.drawText("High", 64, 23, paintSmall);
 				canvas.drawText("Low", 64, 31, paintSmall);
 				
@@ -313,14 +331,14 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (WeatherData.received && WeatherData.forecast.length>3) {
+		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>3) {
 			int weatherIndex = 0;
 			if(WeatherData.forecast.length>4)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
 
 			for (int i=0;i<4;++i) {
 				int x = i*24;
-				Bitmap image = Utils.loadBitmapFromAssets(context, WeatherData.forecast[weatherIndex].icon);
+				Bitmap image = Utils.getBitmap(context, WeatherData.forecast[weatherIndex].icon);
 				canvas.drawBitmap(image, x, 4, null);
 				Utils.drawOutlinedText(WeatherData.forecast[weatherIndex].day, canvas, x, 6, paintSmall, paintSmallOutline);
 				
@@ -363,7 +381,7 @@ public class WeatherWidget implements InternalWidget {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*24);
-			Bitmap image = shouldInvert ? Utils.loadBitmapFromAssets(context, "moon-inv.bmp") : Utils.loadBitmapFromAssets(context, "moon.bmp");
+			Bitmap image = shouldInvert ? Utils.getBitmap(context, "moon-inv.bmp") : Utils.getBitmap(context, "moon.bmp");
 			canvas.drawBitmap(image, x, 0, null);
 			
 			canvas.drawText(Integer.toString(WeatherData.moonPercentIlluminated)+"%", 12, 30, paintSmall);
@@ -385,7 +403,7 @@ public class WeatherWidget implements InternalWidget {
 			
 			// icon
 			String smallIcon = WeatherData.icon.replace(".bmp", "_12.bmp");
-			Bitmap image = Utils.loadBitmapFromAssets(context, smallIcon);	
+			Bitmap image = Utils.getBitmap(context, smallIcon);	
 			canvas.drawBitmap(image, 46, 2, null);
 			
 			// condition
@@ -407,7 +425,7 @@ public class WeatherWidget implements InternalWidget {
 			}
 			Utils.drawOutlinedText(string.toString(), canvas, 80, 5, paintSmall, paintSmallOutline);
 			
-			if (WeatherData.forecast!=null) {
+			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
 				string = new StringBuilder();
 				string.append(WeatherData.forecast[0].tempHigh);
 				string.append("/");
@@ -451,7 +469,7 @@ public class WeatherWidget implements InternalWidget {
 			int moonPhase = WeatherData.ageOfMoon;
 			int moonImage = phaseImage[moonPhase];
 			int x = 0-(moonImage*16);
-			Bitmap image = shouldInvert ? Utils.loadBitmapFromAssets(context, "moon-inv_10.bmp") : Utils.loadBitmapFromAssets(context, "moon_10.bmp");
+			Bitmap image = shouldInvert ? Utils.getBitmap(context, "moon-inv_10.bmp") : Utils.getBitmap(context, "moon_10.bmp");
 			canvas.drawBitmap(image, x, 0, null);
 		} else {
 			canvas.drawText("--", 8, 9, paintSmall);
@@ -469,7 +487,7 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (WeatherData.received && WeatherData.forecast.length>3) {
+		if (WeatherData.received && WeatherData.forecast!=null && WeatherData.forecast.length>3) {
 			int weatherIndex = 0;
 			if(WeatherData.forecast.length>3)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
@@ -477,7 +495,7 @@ public class WeatherWidget implements InternalWidget {
 			for (int i=0;i<3;++i) {
 				int x = i*26;
 				final String smallIcon = WeatherData.forecast[weatherIndex].icon.replace(".bmp", "_12.bmp");
-				Bitmap image = Utils.loadBitmapFromAssets(context, smallIcon);
+				Bitmap image = Utils.getBitmap(context, smallIcon);
 				canvas.drawBitmap(image, x+12, 0, null);
 				Utils.drawOutlinedText(WeatherData.forecast[weatherIndex].day.substring(0, 2), canvas, x+1, 6, paintSmall, paintSmallOutline);
 				
@@ -508,5 +526,65 @@ public class WeatherWidget implements InternalWidget {
 		
 		return bitmap;
 	}
+	
+
+	private Bitmap draw7() {
+		Bitmap bitmap = Bitmap.createBitmap(48, 32, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		if (WeatherData.received) {
+			
+			// icon
+			Bitmap image = Utils.getBitmap(context, WeatherData.icon);
+			
+			canvas.drawBitmap(image, 0, 0, null);
+			
+			// temperatures
+			paintLarge.setTextAlign(Paint.Align.RIGHT);
+			paintLargeOutline.setTextAlign(Paint.Align.RIGHT);
+			Utils.drawOutlinedText(WeatherData.temp, canvas, 43, 13, paintLarge, paintLargeOutline);
+			if (WeatherData.celsius) {
+				canvas.drawText("C", 43, 7, paintSmall);
+			}
+			else {
+				canvas.drawText("F", 43, 7, paintSmall);
+			}
+			paintLarge.setTextAlign(Paint.Align.LEFT);
+						
+			if (WeatherData.forecast!=null && WeatherData.forecast.length>0) {
+				
+				StringBuilder builder = new StringBuilder();
+				builder.append(WeatherData.forecast[0].tempHigh);
+				builder.append("/");
+				builder.append(WeatherData.forecast[0].tempLow);
+				
+				paintSmall.setTextAlign(Paint.Align.RIGHT);
+				canvas.drawText(builder.toString(), 47, 21, paintSmall);
+				paintSmall.setTextAlign(Paint.Align.LEFT);
+			}
+
+			Utils.drawOutlinedText((String) TextUtils.ellipsize(WeatherData.locationName, paintSmall, 48, TruncateAt.END), canvas, 0, 30, paintSmall, paintSmallOutline);
+						
+		} else {
+			paintSmall.setTextAlign(Paint.Align.CENTER);
+			if (Preferences.weatherGeolocation) {
+				canvas.drawText("Awaiting", 24, 15, paintSmall);
+				if( !LocationData.received ) {
+					canvas.drawText("location", 24, 21, paintSmall);
+				}
+				else {
+					canvas.drawText("weather", 24, 21, paintSmall);
+				}
+			}
+			else {
+				canvas.drawText("No data", 24, 18, paintSmall);
+			}
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
+		
+		return bitmap;
+	}
+
 
 }

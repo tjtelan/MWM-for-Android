@@ -89,7 +89,7 @@ public class Call {
 				centre = (96+iconSize)/2;
 			}
 			else {
-				canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "phone.bmp"), 0, 0, null);
+				canvas.drawBitmap(Utils.getBitmap(context, "phone.bmp"), 0, 0, null);
 			}
 					
 			String displayText;
@@ -112,15 +112,15 @@ public class Call {
 			canvas.restore();
 			
 			// Draw icons			
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_up.bmp"), 87, -2, null);
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "action_reject.bmp"), 87, 43, null);
-			canvas.drawBitmap(Utils.loadBitmapFromAssets(context, "menu.bmp"), 87, 87, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_up.bmp"), 87, -2, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "action_reject.bmp"), 87, 43, null);
+			canvas.drawBitmap(Utils.getBitmap(context, "menu.bmp"), 87, 87, null);
 			
 			
 			Protocol.sendLcdBitmap(bitmap, MetaWatchService.WatchBuffers.NOTIFICATION);		
 			Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.NOTIFICATION);
 		} else {
-			Bitmap icon = Utils.loadBitmapFromAssets(context, "phone.bmp");
+			Bitmap icon = Utils.getBitmap(context, "phone.bmp");
 			Notification
 					.addOledNotification(context, Protocol.createOled1line(
 							context, icon, "Call from"), Protocol
