@@ -546,7 +546,13 @@
 		    android:summary="Display what's in the notification queue on the status screen."
 		    android:defaultValue="false"
 		    />
-			
+		    
+		<CheckBoxPreference
+			android:title="Dump watch screenshots"
+			android:key="DumpWatchScreenshots"
+			android:summary="Save screenshots of the watch display to your SD Card.  WARNING - this will slow down everything, and could fill up your SD Card - only really of use for obtaining screenshots for themes."
+			android:defaultValue="false"
+		    />			
 	</PreferenceScreen>	
 	
 	<PreferenceScreen

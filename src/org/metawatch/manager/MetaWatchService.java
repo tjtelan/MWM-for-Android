@@ -193,6 +193,7 @@ public class MetaWatchService extends Service {
 		public static boolean clockOnEveryPage = false;
 		public static boolean appBufferForClocklessPages = true;
 		public static boolean showNotificationQueue = false;
+		public static boolean dumpWatchScreenshots = false;
 		public static int appLaunchMode = AppLaunchMode.POPUP;
 		public static boolean autoSpeakerphone = false;
 		public static boolean showActionsInCall = true;
@@ -286,6 +287,8 @@ public class MetaWatchService extends Service {
 				Preferences.appBufferForClocklessPages);
 		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
 				Preferences.showNotificationQueue);
+		Preferences.dumpWatchScreenshots = sharedPreferences.getBoolean("DumpWatchScreenshots",
+				Preferences.dumpWatchScreenshots);
 		Preferences.idleActions = sharedPreferences.getBoolean("IdleActions",
 				Preferences.idleActions);
 		Preferences.autoSpeakerphone = sharedPreferences.getBoolean("autoSpeakerphone",
