@@ -52,7 +52,7 @@ public class WunderWeatherEngine extends AbstractWeatherEngine {
 			return "weather_cloudy.bmp";
 	}
 
-	public WeatherData update(Context context, WeatherData weatherData) {
+	public synchronized WeatherData update(Context context, WeatherData weatherData) {
 		try {
 			if (isUpdateRequired(weatherData)) {
 
