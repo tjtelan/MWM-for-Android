@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.metawatch.manager"
+      package="org.metawatch.communityedition"
       android:versionCode="1"
-      android:installLocation="internalOnly" android:versionName="0.2.4.rm16">
+      android:installLocation="internalOnly" android:versionName="1.17.0.0">
       
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="10"/>
     <supports-screens android:resizeable="true" android:normalScreens="true" android:anyDensity="true" 
@@ -43,7 +43,7 @@
 	
 
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
-        <activity android:name=".MetaWatch"
+        <activity android:name="org.metawatch.manager.MetaWatch"
                   android:configChanges="keyboardHidden|orientation"
                   android:launchMode="singleTask">
             <intent-filter>
@@ -53,7 +53,7 @@
         </activity>
 		<activity
 			android:label="Send to Watch"
-			android:name=".ImageViewer"
+			android:name="org.metawatch.manager.ImageViewer"
 			android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTask">
 			<intent-filter>
@@ -69,7 +69,7 @@
 		</activity>
 		<activity 
 			android:label="Send to Watch"
-			android:name=".SendTextReceiver"
+			android:name="org.metawatch.manager.SendTextReceiver"
         	android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.SEND" />
@@ -79,17 +79,17 @@
        	</activity>
 		<activity
 			android:label="Device Selection"
-			android:name=".DeviceSelection"
+			android:name="org.metawatch.manager.DeviceSelection"
 			android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTask">
 		</activity>
 		<activity
 			android:label="Other Apps"
-			android:name=".OtherAppsList"
+			android:name="org.metawatch.manager.OtherAppsList"
 			android:configChanges="keyboardHidden|orientation"
 			android:launchMode="singleTask">
 		</activity>
-        <receiver android:name=".IntentReceiver" android:exported="true">
+        <receiver android:name="org.metawatch.manager.IntentReceiver" android:exported="true">
             <intent-filter>
             	<action android:name="android.intent.action.BATTERY_LOW"/>
             	<action android:name="android.intent.action.NEW_OUTGOING_CALL" /> 
@@ -142,13 +142,13 @@
 				<data android:mimeType="application/vnd.wap.mms-message" />
 			</intent-filter>
         </receiver> 
-        <receiver android:name=".BootCompletedReceiver" android:exported="true">
+        <receiver android:name="org.metawatch.manager.BootCompletedReceiver" android:exported="true">
             <intent-filter>
             	<action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
             	
-        <receiver android:name=".ApiIntentReceiver"> 
+        <receiver android:name="org.metawatch.manager.ApiIntentReceiver"> 
             <intent-filter>
             	<action android:name="org.metawatch.manager.APPLICATION_UPDATE" />  
             	<action android:name="org.metawatch.manager.WIDGET_UPDATE" />
@@ -161,25 +161,25 @@
         </receiver> 
         <receiver android:name="org.metawatch.manager.AlarmReceiver"></receiver>
         <service android:name="org.metawatch.manager.MetaWatchService"></service>
-	    <service android:name=".MetaWatchAccessibilityService">
+	    <service android:name="org.metawatch.manager.MetaWatchAccessibilityService">
 			<intent-filter>
 				<action android:name="android.accessibilityservice.AccessibilityService" />
 			</intent-filter>
 		</service>      
-		<activity android:name=".MetaWatchStatus" 
+		<activity android:name="org.metawatch.manager.MetaWatchStatus" 
                   android:launchMode="standard">
         </activity>  
-        <activity android:name="Settings" 
+        <activity android:name="org.metawatch.manager.Settings" 
         		  android:launchMode="singleTask">
         </activity>
-        <activity android:name="WidgetSetup"
+        <activity android:name="org.metawatch.manager.WidgetSetup"
         		  android:configChanges="keyboardHidden|orientation" 
         		  android:launchMode="standard">
         </activity>
-        <activity android:name="WidgetPicker" 
+        <activity android:name="org.metawatch.manager.WidgetPicker" 
         		  android:launchMode="standard">
         </activity>        
-        <activity android:name="ThemePicker" 
+        <activity android:name="org.metawatch.manager.ThemePicker" 
         		  android:launchMode="standard">
         </activity>  
         <activity android:name="org.metawatch.manager.Test" 

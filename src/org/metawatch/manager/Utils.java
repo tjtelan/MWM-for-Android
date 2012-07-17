@@ -684,7 +684,7 @@ public class Utils {
 	
     public static boolean isAccessibilityEnabled(Context context) {
 	    int accessibilityEnabled = 0;
-	    final String ACCESSIBILITY_SERVICE_NAME = "org.metawatch.manager/org.metawatch.manager.MetaWatchAccessibilityService";
+	    final String ACCESSIBILITY_SERVICE_NAME = context.getPackageName()+"/org.metawatch.manager.MetaWatchAccessibilityService";
 	
 	    try {
 	        accessibilityEnabled = android.provider.Settings.Secure.getInt(context.getContentResolver(),android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);

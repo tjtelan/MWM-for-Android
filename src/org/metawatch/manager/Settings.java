@@ -32,6 +32,7 @@
 
 package org.metawatch.manager;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.widgets.WidgetManager;
 

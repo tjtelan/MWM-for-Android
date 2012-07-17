@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.InternalApp;

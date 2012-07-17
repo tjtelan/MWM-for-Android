@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.app.Activity;

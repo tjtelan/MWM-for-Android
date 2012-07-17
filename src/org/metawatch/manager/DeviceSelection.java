@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.app.Activity;

@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
 
 import android.app.Activity;

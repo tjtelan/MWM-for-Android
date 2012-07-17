@@ -32,6 +32,8 @@
 
 package org.metawatch.manager;
 
+import org.metawatch.communityedition.R;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;

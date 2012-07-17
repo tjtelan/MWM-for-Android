@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
 import org.metawatch.manager.widgets.WidgetManager;
