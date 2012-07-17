@@ -1,8 +1,16 @@
 package org.metawatch.manager.weather;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import org.metawatch.manager.MetaWatch;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.Monitors.LocationData;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
 public abstract class AbstractWeatherEngine implements WeatherEngine {
@@ -33,5 +41,45 @@ public abstract class AbstractWeatherEngine implements WeatherEngine {
 
 		return true;
 	}
+	
+	protected boolean isGeolocationDataUsed() {
+		return Preferences.weatherGeolocation && LocationData.received;
+	}
 
+	protected GoogleGeoCoderLocationData reverseLookupGeoLocation(Context context,
+			double latitude, double longitude) throws IOException {
+		GoogleGeoCoderLocationData locationData = new GoogleGeoCoderLocationData();
+		Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+		List<Address> addresses = geocoder.getFromLocation(latitude, longitude,
+				1);
+
+		for (Address address : addresses) {
+			if (address.getPostalCode() != null) {
+				String s = address.getPostalCode().trim();
+				if (!s.equals(""))
+					locationData.postalcode = s;
+			}
+
+			if (address.getLocality() != null) {
+				String s = address.getLocality().trim();
+				if (!s.equals(""))
+					locationData.locality = s;
+			}
+		}
+
+		return locationData;
+	}
+
+	class GoogleGeoCoderLocationData {
+		String locality;
+		String postalcode;
+
+		public String getLocationName() {
+			if (locality != null)
+				return locality;
+			if (postalcode != null)
+				return postalcode;
+			return Preferences.weatherCity;
+		}
+	}
 }

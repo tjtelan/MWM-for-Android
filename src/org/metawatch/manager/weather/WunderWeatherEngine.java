@@ -60,126 +60,132 @@ public class WunderWeatherEngine extends AbstractWeatherEngine {
 					Log.d(MetaWatch.TAG,
 							"Monitors.updateWeatherDataWunderground(): start");
 
-				if ((LocationData.received || (Preferences.weatherGeolocation == false))
-						&& Preferences.wundergroundKey != "") {
-
-					String weatherLocation = Double
-							.toString(LocationData.latitude)
-							+ ","
-							+ Double.toString(LocationData.longitude);
-					if (Preferences.weatherGeolocation == false)
-						weatherLocation = Preferences.weatherCity.replace(",",
-								"").replace(" ", "%20");
-
-					String forecastQuery = "";
-					boolean hasForecast = false;
-
-					long diff = System.currentTimeMillis()
-							- weatherData.forecastTimeStamp;
-					if (weatherData.forecast == null
-							|| (diff > 3 * 60 * 60 * 1000)) {
-						// Only update forecast every three hours
-						forecastQuery = "forecast10day/astronomy/";
-						hasForecast = true;
-					}
-
-					String requestUrl = "http://api.wunderground.com/api/"
-							+ Preferences.wundergroundKey
-							+ "/geolookup/conditions/" + forecastQuery + "q/"
-							+ weatherLocation + ".json";
-
-					if (Preferences.logging)
-						Log.d(MetaWatch.TAG, "Request: " + requestUrl);
-
-					JSONObject json = getJSONfromURL(requestUrl);
-
-					JSONObject location = json.getJSONObject("location");
-					JSONObject current = json
-							.getJSONObject("current_observation");
-
-					if (hasForecast) {
-						JSONObject moon = json.getJSONObject("moon_phase");
-						JSONObject sunrise = moon.getJSONObject("sunrise");
-						weatherData.sunriseH = sunrise.getInt("hour");
-						weatherData.sunriseM = sunrise.getInt("minute");
-						JSONObject sunset = moon.getJSONObject("sunset");
-						weatherData.sunsetH = sunset.getInt("hour");
-						weatherData.sunsetM = sunset.getInt("minute");
-
-						weatherData.moonPercentIlluminated = moon
-								.getInt("percentIlluminated");
-						weatherData.ageOfMoon = moon.getInt("ageOfMoon");
-					}
-
-					boolean isDay = true;
-
-					Date dt = new Date();
-					int hours = dt.getHours();
-					int minutes = dt.getMinutes();
-
-					if ((hours < weatherData.sunriseH)
-							|| (hours == weatherData.sunriseH && minutes < weatherData.sunriseM)
-							|| (hours > weatherData.sunsetH)
-							|| (hours == weatherData.sunsetH && minutes > weatherData.sunsetM)) {
-						isDay = false;
-					}
-
-					weatherData.locationName = location.getString("city");
-					weatherData.condition = current.getString("weather");
-					weatherData.icon = getIcon(current.getString("icon"), isDay);
-
-					if (Preferences.weatherCelsius) {
-						weatherData.temp = current.getString("temp_c");
-					} else {
-						weatherData.temp = current.getString("temp_f");
-					}
-
-					if (hasForecast) {
-						JSONObject forecast = json.getJSONObject("forecast");
-						JSONArray forecastday = forecast.getJSONObject(
-								"simpleforecast").getJSONArray("forecastday");
-
-						int days = forecastday.length();
-						weatherData.forecast = new Forecast[days];
-
-						for (int i = 0; i < days; ++i) {
-							weatherData.forecast[i] = new Forecast();
-							JSONObject day = forecastday.getJSONObject(i);
-							JSONObject date = day.getJSONObject("date");
-
-							weatherData.forecast[i].setIcon(getIcon(
-									day.getString("icon"), true));
-							weatherData.forecast[i].setDay(date
-									.getString("weekday_short"));
-							if (Preferences.weatherCelsius) {
-								weatherData.forecast[i].setTempLow(day
-										.getJSONObject("low").getString(
-												"celsius"));
-								weatherData.forecast[i].setTempHigh(day
-										.getJSONObject("high").getString(
-												"celsius"));
-							} else {
-								weatherData.forecast[i].setTempLow(day
-										.getJSONObject("low").getString(
-												"fahrenheit"));
-								weatherData.forecast[i].setTempHigh(day
-										.getJSONObject("high").getString(
-												"fahrenheit"));
-							}
-						}
-
-						weatherData.forecastTimeStamp = System
-								.currentTimeMillis();
-					}
-
-					weatherData.celsius = Preferences.weatherCelsius;
-
-					weatherData.received = true;
-					weatherData.timeStamp = System.currentTimeMillis();
-
-					Idle.updateIdle(context, true);
-					MetaWatchService.notifyClients();
+				if (Preferences.wundergroundKey.equals("")) {
+					Log.e(MetaWatch.TAG,
+							"Weather Wunderground requires a personal key to be configured!");
+					return weatherData;
 				}
+
+				String weatherLocation;
+				if (isGeolocationDataUsed()) {
+					GoogleGeoCoderLocationData locationData = reverseLookupGeoLocation(
+							context, LocationData.latitude,
+							LocationData.longitude);
+					weatherData.locationName = locationData.getLocationName();
+					weatherLocation = Double.toString(LocationData.latitude)
+							+ "," + Double.toString(LocationData.longitude);
+				} else {
+					weatherData.locationName = Preferences.weatherCity;
+					weatherLocation = Preferences.weatherCity.replace(",", "")
+							.replace(" ", "%20");
+				}
+
+				String forecastQuery = "";
+				boolean hasForecast = false;
+
+				long diff = System.currentTimeMillis()
+						- weatherData.forecastTimeStamp;
+				if (weatherData.forecast == null || (diff > 3 * 60 * 60 * 1000)) {
+					// Only update forecast every three hours
+					forecastQuery = "forecast10day/astronomy/";
+					hasForecast = true;
+				}
+
+				String requestUrl = "http://api.wunderground.com/api/"
+						+ Preferences.wundergroundKey
+						+ "/geolookup/conditions/" + forecastQuery + "q/"
+						+ weatherLocation + ".json";
+
+				if (Preferences.logging)
+					Log.d(MetaWatch.TAG, "Request: " + requestUrl);
+
+				JSONObject json = getJSONfromURL(requestUrl);
+
+				JSONObject current = json.getJSONObject("current_observation");
+
+				if (hasForecast) {
+					JSONObject moon = json.getJSONObject("moon_phase");
+					JSONObject sunrise = moon.getJSONObject("sunrise");
+					weatherData.sunriseH = sunrise.getInt("hour");
+					weatherData.sunriseM = sunrise.getInt("minute");
+					JSONObject sunset = moon.getJSONObject("sunset");
+					weatherData.sunsetH = sunset.getInt("hour");
+					weatherData.sunsetM = sunset.getInt("minute");
+
+					weatherData.moonPercentIlluminated = moon
+							.getInt("percentIlluminated");
+					weatherData.ageOfMoon = moon.getInt("ageOfMoon");
+				}
+
+				boolean isDay = true;
+
+				Date dt = new Date();
+				int hours = dt.getHours();
+				int minutes = dt.getMinutes();
+
+				if ((hours < weatherData.sunriseH)
+						|| (hours == weatherData.sunriseH && minutes < weatherData.sunriseM)
+						|| (hours > weatherData.sunsetH)
+						|| (hours == weatherData.sunsetH && minutes > weatherData.sunsetM)) {
+					isDay = false;
+				}
+
+				// FIXME: We could make this configurable if the user wants to
+				// see the weather station locality.
+				// JSONObject location = json.getJSONObject("location");
+				// weatherData.locationName = location.getString("city");
+				weatherData.condition = current.getString("weather");
+				weatherData.icon = getIcon(current.getString("icon"), isDay);
+
+				if (Preferences.weatherCelsius) {
+					weatherData.temp = current.getString("temp_c");
+				} else {
+					weatherData.temp = current.getString("temp_f");
+				}
+
+				if (hasForecast) {
+					JSONObject forecast = json.getJSONObject("forecast");
+					JSONArray forecastday = forecast.getJSONObject(
+							"simpleforecast").getJSONArray("forecastday");
+
+					int days = forecastday.length();
+					weatherData.forecast = new Forecast[days];
+
+					for (int i = 0; i < days; ++i) {
+						weatherData.forecast[i] = new Forecast();
+						JSONObject day = forecastday.getJSONObject(i);
+						JSONObject date = day.getJSONObject("date");
+
+						weatherData.forecast[i].setIcon(getIcon(
+								day.getString("icon"), true));
+						weatherData.forecast[i].setDay(date
+								.getString("weekday_short"));
+						if (Preferences.weatherCelsius) {
+							weatherData.forecast[i].setTempLow(day
+									.getJSONObject("low").getString("celsius"));
+							weatherData.forecast[i]
+									.setTempHigh(day.getJSONObject("high")
+											.getString("celsius"));
+						} else {
+							weatherData.forecast[i].setTempLow(day
+									.getJSONObject("low").getString(
+											"fahrenheit"));
+							weatherData.forecast[i].setTempHigh(day
+									.getJSONObject("high").getString(
+											"fahrenheit"));
+						}
+					}
+
+					weatherData.forecastTimeStamp = System.currentTimeMillis();
+				}
+
+				weatherData.celsius = Preferences.weatherCelsius;
+
+				weatherData.received = true;
+				weatherData.timeStamp = System.currentTimeMillis();
+
+				Idle.updateIdle(context, true);
+				MetaWatchService.notifyClients();
 
 			}
 

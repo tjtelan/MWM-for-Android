@@ -1,10 +1,7 @@
 package org.metawatch.manager.weather;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -29,8 +26,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.util.Log;
 
 public class GoogleWeatherEngine extends AbstractWeatherEngine {
@@ -69,46 +64,9 @@ public class GoogleWeatherEngine extends AbstractWeatherEngine {
 							"Monitors.updateWeatherDataGoogle(): start");
 				
 				String queryString;
-				if (Preferences.weatherGeolocation && LocationData.received) {
-					Geocoder geocoder;
-					String locality = "";
-					String PostalCode = "";
-
-					try {
-						geocoder = new Geocoder(context, Locale.getDefault());
-						List<Address> addresses = geocoder.getFromLocation(
-								LocationData.latitude, LocationData.longitude,
-								1);
-
-						for (Address address : addresses) {
-							if (!address.getPostalCode().equalsIgnoreCase("")) {
-								PostalCode = address.getPostalCode();
-								locality = address.getLocality();
-								if (locality.equals("")) {
-									locality = PostalCode;
-								} else {
-									PostalCode = locality + ", " + PostalCode;
-								}
-
-							}
-						}
-					} catch (IOException e) {
-						if (Preferences.logging)
-							Log.e(MetaWatch.TAG,
-									"Exception while retreiving postalcode", e);
-						PostalCode = "";
-						locality = "UNKNOWN";
-					}
-
-					if (PostalCode.equals("")) {
-						PostalCode = Preferences.weatherCity;
-					}
-					if (locality.equals("")) {
-						weatherData.locationName = PostalCode;
-					} else {
-						weatherData.locationName = locality;
-					}
-
+				if (isGeolocationDataUsed()) {
+					GoogleGeoCoderLocationData locationData = reverseLookupGeoLocation(context, LocationData.latitude, LocationData.longitude);
+					weatherData.locationName = locationData.getLocationName();
 					long lat = (long) (LocationData.latitude * 1000000);
 					long lon = (long) (LocationData.longitude * 1000000);
 					queryString = "http://www.google.com/ig/api?weather=,,,"
@@ -214,4 +172,6 @@ public class GoogleWeatherEngine extends AbstractWeatherEngine {
 
 		return weatherData;
 	}
+
+	
 }

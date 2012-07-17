@@ -146,7 +146,7 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 				String arguments = "&count=1&gflags=R";
 
 				String placeFinderUrl = null;
-				if (Preferences.weatherGeolocation && LocationData.received) {
+				if (isGeolocationDataUsed()) {
 					placeFinderUrl = "http://where.yahooapis.com/geocode?q="
 							+ LocationData.latitude + ","
 							+ LocationData.longitude + arguments;
@@ -207,8 +207,8 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 				// weatherData.locationName = Preferences.weatherCity;
 
 				// DEBUG - WILL BE REMOVED AFTER SOME TEST PERIOD
-				String tt = new SimpleDateFormat("hh:mm").format(new Date());
-				weatherData.locationName = tt + " " + city;
+				// String tt = new SimpleDateFormat("hh:mm").format(new Date());
+				// weatherData.locationName = tt + " " + city;
 				// DEBUG
 
 				if (Preferences.logging)
