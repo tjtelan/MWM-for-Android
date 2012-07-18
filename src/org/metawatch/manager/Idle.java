@@ -65,14 +65,18 @@ public class Idle {
 	private static Object busyObj = new Object();
 	
 	private static boolean isBusy() {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.isBusy()");
 		synchronized (busyObj) {
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.busy="+busy);
 			return busy;
 		}
 	}
 	
 	private static void setBusy(boolean isBusy) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.setBusy()");
 		synchronized (busyObj) {
 			busy = isBusy;
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.setBusy("+isBusy+")");
 		}
 	}
 	
@@ -283,6 +287,7 @@ public class Idle {
 	
 	public static void updateIdlePages(Context context, boolean refresh)
 	{
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.updateIdlePages start");
 		try {
 			setBusy(true);
 			
@@ -373,6 +378,8 @@ public class Idle {
 		finally {
 			setBusy(false);
 		}
+		
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.updateIdlePages end");
 	}
 
 	static Bitmap createIdle(Context context) {
@@ -446,6 +453,7 @@ public class Idle {
 	}
 	
 	public static boolean toIdle(Context context) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.toIdle()");
 		
 		MetaWatchService.WatchModes.IDLE = true;
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
@@ -477,6 +485,8 @@ public class Idle {
 	}
 	
 	public static void updateIdle(Context context, boolean refresh) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.updateIdle()");
+		
 		if (MetaWatchService.watchState == MetaWatchService.WatchStates.IDLE )
 			if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL)
 				sendLcdIdle(context, refresh);
@@ -534,12 +544,14 @@ public class Idle {
 	}
 
 	public static void activateButtons(final Context context) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.activateButtons()");
 		if(idlePages != null && idlePages.size()>currentPage) {
 			idlePages.get(currentPage).activate(context, MetaWatchService.watchType);
 		}
 	}
 
 	public static void deactivateButtons(final Context context) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.deactivateButtons()");
 		if(idlePages != null && idlePages.size()>currentPage) {
 			idlePages.get(currentPage).deactivate(context, MetaWatchService.watchType);
 		}
