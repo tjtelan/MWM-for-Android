@@ -1,6 +1,6 @@
 h1. MetaWatch Community Edition
 
-This is the source of the customised, community built Android manager app for MetaWatch (previously known as "benjymous' fork" or "MetaWatchManager 'rm'".
+This is the source of the customised, community built Android manager app for MetaWatch (previously known as "benjymous' fork" or "MetaWatchManager 'rm'".)
 
 It was originally based on the official MetaWatch manager (see README.orig)
 
