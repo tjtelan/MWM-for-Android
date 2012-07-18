@@ -38,7 +38,6 @@ import org.damazio.notifier.event.receivers.mms.EncodedStringValue;
 import org.damazio.notifier.event.receivers.mms.PduHeaders;
 import org.damazio.notifier.event.receivers.mms.PduParser;
 import org.metawatch.manager.MetaWatchService.Preferences;
-import org.metawatch.manager.Monitors.WeatherData;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -366,16 +365,7 @@ public class IntentReceiver extends BroadcastReceiver {
 			else {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "IntentReceiver.onReceive(): Data connectivity available.");
 				
-				long currentTime = System.currentTimeMillis();
-				long diff = currentTime - WeatherData.timeStamp;
-				
-				if (diff < 30 * 60*1000) {
-					if (Preferences.logging) Log.d(MetaWatch.TAG,
-							"Skipping weather update - updated less than 30m ago");
-				}
-				else {			
-					Monitors.updateWeatherData(context);
-				}
+				Monitors.updateWeatherData(context);
 			}		
 		}
 		else if (intent.getAction().equals("com.usk.app.notifymyandroid.NEW_NOTIFICATION")) {
@@ -390,9 +380,7 @@ public class IntentReceiver extends BroadcastReceiver {
 			final String url = intent.getStringExtra("url");
 			
 			NotificationBuilder.createNMA(context, app, event, desc, prio, url);
-		}
-		
+		}	
 	}
-
 }
 

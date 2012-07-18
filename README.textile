@@ -1,0 +1,16 @@
+h1. MetaWatch Community Edition
+
+This is the source of the customised, community built Android manager app for MetaWatch (previously known as "benjymous' fork" or "MetaWatchManager 'rm'".)
+
+It was originally based on the official MetaWatch manager (see README.orig)
+
+For more details about the many new features, see:
+http://blog.grapefruitopia.com/mwm-overview
+
+Disclaimer: This is development code; it may contain bugs, cause your phone / watch to reset, or any other of a host of unpleasant things. You use it AT YOUR OWN RISK, and I offer NO WARRANTY for anything it may do to you, your phone, your watch, or anything else.
+
+Latest binary download can be found on the "downloads" page on my github:
+https://github.com/benjymous/MWM-for-Android/downloads/
+
+and on the Google Play Store:
+https://play.google.com/store/apps/details?id=org.metawatch.communityedition

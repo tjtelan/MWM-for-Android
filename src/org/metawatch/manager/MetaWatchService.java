@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.InternalApp;
@@ -129,6 +130,7 @@ public class MetaWatchService extends Service {
 		public static final int DISABLED = 0;
 		public static final int GOOGLE = 1;
 		public static final int WUNDERGROUND = 2;
+		public static final int YAHOO = 3;
 	}
 
 	final static class WatchModes {
@@ -174,7 +176,7 @@ public class MetaWatchService extends Service {
 		public static int weatherProvider = WeatherProvider.GOOGLE;
 		public static String weatherCity = "Dallas,US";
 		public static boolean weatherCelsius = false;
-		public static boolean weatherGeolocation = false;
+		public static boolean weatherGeolocation = true;
 		public static String wundergroundKey = "";
 		public static int fontSize = 2;
 		public static int smsLoopInterval = 15;
@@ -195,6 +197,7 @@ public class MetaWatchService extends Service {
 		public static boolean clockOnEveryPage = false;
 		public static boolean appBufferForClocklessPages = true;
 		public static boolean showNotificationQueue = false;
+		public static boolean dumpWatchScreenshots = false;
 		public static int appLaunchMode = AppLaunchMode.POPUP;
 		public static boolean autoSpeakerphone = false;
 		public static boolean showActionsInCall = true;
@@ -214,7 +217,7 @@ public class MetaWatchService extends Service {
 	public static void loadPreferences(Context context) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-
+		
 		Preferences.logging = sharedPreferences.getBoolean("logging",
 				Preferences.logging);
 		Preferences.notifyCall = sharedPreferences.getBoolean("NotifyCall",
@@ -293,6 +296,8 @@ public class MetaWatchService extends Service {
 				Preferences.appBufferForClocklessPages);
 		Preferences.showNotificationQueue = sharedPreferences.getBoolean("ShowNotificationQueue",
 				Preferences.showNotificationQueue);
+		Preferences.dumpWatchScreenshots = sharedPreferences.getBoolean("DumpWatchScreenshots",
+				Preferences.dumpWatchScreenshots);
 		Preferences.idleActions = sharedPreferences.getBoolean("IdleActions",
 				Preferences.idleActions);
 		Preferences.autoSpeakerphone = sharedPreferences.getBoolean("autoSpeakerphone",

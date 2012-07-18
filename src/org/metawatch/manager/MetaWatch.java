@@ -36,17 +36,15 @@ package org.metawatch.manager;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Monitors.LocationData;
-import org.metawatch.manager.Monitors.WeatherData;
-
-import com.bugsense.trace.BugSenseHandler;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.app.TabActivity;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -70,6 +68,8 @@ import android.webkit.WebView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.bugsense.trace.BugSenseHandler;
 
 public class MetaWatch extends TabActivity {
    
@@ -244,6 +244,7 @@ public class MetaWatch extends TabActivity {
     	WebView webView = new WebView(this);
 		String html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>About</title></head><body><center>" + 
 						"<h1>MetaWatch</h1>" +
+						"<h3>Community Edition</h3>"+
 						"<img src=\"splash.png\">" +
 						"<p>Version " + Utils.getVersion(this) + ".</p>" +
 						"<p>Modified by Dobie Wollert, Chris Sewell, Prash D, Craig Oliver, Richard Munn, Matthias Gruenewald, Kyle Schroeder, Garth Bushell, Joakim Andersson and Chris Boyle.</p>" +
@@ -276,7 +277,7 @@ public class MetaWatch extends TabActivity {
     }
     
     private void displayStatus() {
-    	textView.setText("MetaWatch Manager\n\n");
+    	textView.setText("MetaWatch Manager - Community Edition\n\n");
     	
     	switch (MetaWatchService.connectionState) {
 	    	case MetaWatchService.ConnectionState.DISCONNECTED:
@@ -295,12 +296,12 @@ public class MetaWatch extends TabActivity {
     	
     	if (Preferences.weatherProvider != WeatherProvider.DISABLED) {
     		textView.append("\n");
-    		if (WeatherData.received) {
+    		if (Monitors.weatherData.received) {
     			textView.append("Weather last updated:\n");
     			textView.append("  Forecast:\n    ");
-    			printDate(WeatherData.forecastTimeStamp);
+    			printDate(Monitors.weatherData.forecastTimeStamp);
     			textView.append("  Current Observation:\n    ");
-    			printDate(WeatherData.timeStamp);
+    			printDate(Monitors.weatherData.timeStamp);
     		}
     		else {
     			textView.append("Waiting for weather data.\n");

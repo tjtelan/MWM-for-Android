@@ -155,6 +155,9 @@ public class Protocol {
 		if (bitmap==null) 
 			return false;
 		
+		if (Preferences.dumpWatchScreenshots)
+			Utils.dumpBitmapToSdCard(bitmap, "/sdcard/MWM_"+System.currentTimeMillis()+".png");
+		
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.sendLcdBitmap()");
 		int pixelArray[] = new int[96 * 96];
 		bitmap.getPixels(pixelArray, 0, 96, 0, 0, 96, 96);
