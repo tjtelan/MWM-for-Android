@@ -12,4 +12,5 @@ Disclaimer: This is development code; it may contain bugs, cause your phone / wa
 Latest binary download can be found on the "downloads" page on my github:
 https://github.com/benjymous/MWM-for-Android/downloads/
 
-and soon on the Google Play Store
+and on the Google Play Store:
+https://play.google.com/store/apps/details?id=org.metawatch.communityedition
