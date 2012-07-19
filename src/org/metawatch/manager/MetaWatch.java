@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.metawatch.communityedition.R;
+import org.metawatch.manager.MetaWatchService.GeolocationMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Monitors.LocationData;
@@ -308,7 +309,7 @@ public class MetaWatch extends TabActivity {
     		}
     	}
     	
-    	if (Preferences.weatherGeolocation) {
+    	if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
     		textView.append("\n");
     		if (LocationData.received) {
     			textView.append("Location last updated:\n  ");

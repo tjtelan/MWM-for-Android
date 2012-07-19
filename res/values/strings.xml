@@ -116,6 +116,18 @@
 	<item>2</item>
 	<item>3</item>
 	</string-array>
+	
+    <string-array name="settings_geolocation_names">
+	<item>Use Manually entered location</item>
+    <item>Use Weather Provider</item>
+    <item>Always use Google</item>
+    </string-array>
+    
+    <string-array name="settings_geolocation_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	</string-array>
     
     <string-array name="settings_app_launch_mode_name"> 
    	<item>Popup</item>

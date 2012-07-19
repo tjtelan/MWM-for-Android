@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.metawatch.manager.FontCache;
 import org.metawatch.manager.MetaWatchService;
+import org.metawatch.manager.MetaWatchService.GeolocationMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Monitors;
 import org.metawatch.manager.Monitors.LocationData;
@@ -306,7 +307,7 @@ public class WeatherWidget implements InternalWidget {
 						
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
-			if (Preferences.weatherGeolocation) {
+			if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
 				if( !LocationData.received ) {
 					canvas.drawText("Awaiting location", 48, 18, paintSmall);
 				}
@@ -349,7 +350,7 @@ public class WeatherWidget implements InternalWidget {
 			}
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
-			if (Preferences.weatherGeolocation) {
+			if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
 				if( !LocationData.received ) {
 					canvas.drawText("Awaiting location", 48, 18, paintSmall);
 				}
@@ -440,7 +441,7 @@ public class WeatherWidget implements InternalWidget {
 						
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
-			if (Preferences.weatherGeolocation) {
+			if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
 				if( !LocationData.received ) {
 					canvas.drawText("Awaiting location", 40, 9, paintSmall);
 				}
@@ -510,7 +511,7 @@ public class WeatherWidget implements InternalWidget {
 			}
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
-			if (Preferences.weatherGeolocation) {
+			if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
 				if( !LocationData.received ) {
 					canvas.drawText("Awaiting location", 40, 8, paintSmall);
 				}
@@ -568,7 +569,7 @@ public class WeatherWidget implements InternalWidget {
 						
 		} else {
 			paintSmall.setTextAlign(Paint.Align.CENTER);
-			if (Preferences.weatherGeolocation) {
+			if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
 				canvas.drawText("Awaiting", 24, 15, paintSmall);
 				if( !LocationData.received ) {
 					canvas.drawText("location", 24, 21, paintSmall);
