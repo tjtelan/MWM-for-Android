@@ -125,7 +125,12 @@ public class Settings extends PreferenceActivity {
 			}
 		});
 		
-
+		// InsecureBtSocket requires API10 or higher
+		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentapiVersion < android.os.Build.VERSION_CODES.GINGERBREAD_MR1) {
+			findPreference("InsecureBtSocket").setEnabled(false);	
+		}
+		
 		super.onStart();
 	}
 	

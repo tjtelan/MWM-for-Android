@@ -544,7 +544,10 @@ public class MetaWatchService extends Service {
 				} else {
 					UUID uuid = UUID
 							.fromString("00001101-0000-1000-8000-00805F9B34FB");
-					if (Preferences.insecureBtSocket) {
+					
+					int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+					
+					if (Preferences.insecureBtSocket && currentapiVersion >= android.os.Build.VERSION_CODES.GINGERBREAD_MR1) {
 						bluetoothSocket = bluetoothDevice
 								.createInsecureRfcommSocketToServiceRecord(uuid);
 					} else {
