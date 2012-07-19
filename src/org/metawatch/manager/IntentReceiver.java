@@ -213,8 +213,8 @@ public class IntentReceiver extends BroadcastReceiver {
 		}
 		else if (action.equals("windroid.SMART_DEVICE_UPDATE_EMAILS")) {
 			// Nitrodesk TouchDown new email
+			Bundle bundle = intent.getExtras();	
 			if (MetaWatchService.Preferences.notifyTD) {				
-				Bundle bundle = intent.getExtras();	
 				
 				String title = null;
 				if (bundle.containsKey("windroid.extra.SMARTWATCH_TITLE")) 
@@ -224,13 +224,13 @@ public class IntentReceiver extends BroadcastReceiver {
 				if (bundle.containsKey("windroid.extra.SMARTWATCH_TICKER")) 
 					ticker = bundle.getString("windroid.extra.SMARTWATCH_TICKER");
 				
-				if (bundle.containsKey("windroid.extra.SMARTWATCH_COUNT")) {
-					Monitors.TouchDownData.unreadMailCount = bundle.getInt("windroid.extra.SMARTWATCH_COUNT");
-					Idle.updateIdle(context, true);
-				}
-				
 				if(title!=null && ticker!=null)
 					NotificationBuilder.createTouchdownMail(context, title, ticker);
+			}
+			
+			if (bundle.containsKey("windroid.extra.SMARTWATCH_COUNT")) {
+				Monitors.TouchDownData.unreadMailCount = bundle.getInt("windroid.extra.SMARTWATCH_COUNT");
+				Idle.updateIdle(context, true);
 			}
 			
 			return;
