@@ -564,7 +564,7 @@
         <CheckBoxPreference
 			android:title="Restart if stalled"
 			android:key="AutoRestart"
-			android:summary="Automatically restart the service if it becommes stalled."
+			android:summary="Automatically restart the service if it becomes stalled."
 			android:defaultValue="false"
 			/>	
 		<CheckBoxPreference
