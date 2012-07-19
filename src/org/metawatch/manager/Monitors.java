@@ -34,6 +34,7 @@ package org.metawatch.manager;
 
 import java.util.Hashtable;
 
+import org.metawatch.manager.MetaWatchService.GeolocationMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.weather.WeatherData;
 import org.metawatch.manager.weather.WeatherEngineFactory;
@@ -144,7 +145,7 @@ public class Monitors {
 		
 		createBatteryLevelReciever(context);
 				
-		if (Preferences.weatherGeolocation) {
+		if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
 					"Initialising Geolocation");
 			
@@ -229,7 +230,7 @@ public class Monitors {
 				"Monitors.stop()");
 		
 		contentResolverMessages.unregisterContentObserver(contentObserverMessages);
-		if (Preferences.weatherGeolocation & locationManager!=null) {
+		if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL & locationManager!=null) {
 			if (locationManager!=null) {
 				locationManager.removeUpdates(networkLocationListener);
 			}

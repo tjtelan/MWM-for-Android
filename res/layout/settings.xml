@@ -372,10 +372,20 @@
 	 			android:defaultValue="1"
 	 			android:summary="Choose or disable weather data source"
 	 			/>	
+	 		<ListPreference
+	 		    android:entries="@array/settings_geolocation_names" 
+				android:entryValues="@array/settings_geolocation_values" 
+				android:title="Weather Geolocation Mode"
+				android:key="WeatherGeolocationMode"
+				android:summary="Geolocation method"
+				android:negativeButtonText="Cancel" 
+	 			android:enabled="true" 
+	 			android:defaultValue="1"
+				/>
 		    <EditTextPreference
 				android:title="Weather Location"
 				android:key="WeatherCity"
-				android:summary="Default city for weather data when geolocation is disabled or not available"
+				android:summary="Default city for weather data when geolocation mode is set to manual"
 				android:defaultValue="Dallas,US"
 				/>
 			<CheckBoxPreference
@@ -384,12 +394,7 @@
 				android:summary="Display temperature in Celsius instead of Fahrenheit"
 				android:defaultValue="false"
 				/>
-			<CheckBoxPreference
-				android:title="Weather Geolocation"
-				android:key="WeatherGeolocation"
-				android:summary="Use Geolocation for weather"
-				android:defaultValue="true"
-				/>
+
 			<EditTextPreference
 				android:title="API Key"
 				android:key="WundergroundKey"

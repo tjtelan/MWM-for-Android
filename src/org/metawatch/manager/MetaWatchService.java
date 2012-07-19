@@ -132,6 +132,12 @@ public class MetaWatchService extends Service {
 		public static final int WUNDERGROUND = 2;
 		public static final int YAHOO = 3;
 	}
+	
+	public final static class GeolocationMode {
+		public static final int MANUAL = 0;
+		public static final int USEPROVIDER = 1;
+		public static final int ALWAYSGOOGLE = 2;
+	}
 
 	final static class WatchModes {
 		public static volatile boolean IDLE = false;
@@ -176,7 +182,7 @@ public class MetaWatchService extends Service {
 		public static int weatherProvider = WeatherProvider.GOOGLE;
 		public static String weatherCity = "Dallas,US";
 		public static boolean weatherCelsius = false;
-		public static boolean weatherGeolocation = true;
+		public static int weatherGeolocationMode = GeolocationMode.USEPROVIDER;
 		public static String wundergroundKey = "";
 		public static int fontSize = 2;
 		public static int smsLoopInterval = 15;
@@ -259,8 +265,9 @@ public class MetaWatchService extends Service {
 				Integer.toString(Preferences.weatherProvider)));
 		Preferences.weatherCelsius = sharedPreferences.getBoolean(
 				"WeatherCelsius", Preferences.weatherCelsius);
-		Preferences.weatherGeolocation = sharedPreferences.getBoolean(
-				"WeatherGeolocation", Preferences.weatherGeolocation);
+		Preferences.weatherGeolocationMode = Integer.parseInt(
+				sharedPreferences.getString("WeatherGeolocationMode", 
+				Integer.toString(Preferences.weatherGeolocationMode)));
 		Preferences.wundergroundKey = sharedPreferences.getString(
 				"WundergroundKey", Preferences.wundergroundKey);
 		Preferences.idleMusicControls = sharedPreferences.getBoolean(

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.metawatch.manager.MetaWatch;
+import org.metawatch.manager.MetaWatchService.GeolocationMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Monitors.LocationData;
 
@@ -37,13 +38,16 @@ public abstract class AbstractWeatherEngine implements WeatherEngine {
 
 				return false;
 			}
+		} else if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL && LocationData.received == false) {
+			// Don't refresh the weather if the user has enabled geolocation, but we don't have a location yet
+			return false;
 		}
 
 		return true;
 	}
 	
 	protected boolean isGeolocationDataUsed() {
-		return Preferences.weatherGeolocation && LocationData.received;
+		return Preferences.weatherGeolocationMode != GeolocationMode.MANUAL && LocationData.received;
 	}
 
 	protected GoogleGeoCoderLocationData reverseLookupGeoLocation(Context context,
