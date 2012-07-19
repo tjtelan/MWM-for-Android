@@ -50,7 +50,7 @@ class CallStateListener extends PhoneStateListener {
 		super();
 		context = ctx;
 	}
-
+	
 	@Override
 	public void onCallStateChanged(int state, String incomingNumber) {
 		super.onCallStateChanged(state, incomingNumber);
@@ -70,21 +70,25 @@ class CallStateListener extends PhoneStateListener {
 				Call.startRinging(context, incomingNumber);
 				break;
 			case TelephonyManager.CALL_STATE_IDLE: 
-				Call.inCall = false;
+				
 				Call.phoneNumber = null;
 				Call.endRinging(context);
 				
-				if (Preferences.autoSpeakerphone) {
-					MediaControl.setSpeakerphone(context, Call.previousSpeakerphoneState);
+				if (Call.inCall) {
+					if (Preferences.autoSpeakerphone) {
+						MediaControl.setSpeakerphone(context, Call.previousSpeakerphoneState);
+					}
+					if (Preferences.showActionsInCall) {
+						Idle.toPage(context, 0);
+					}
+					if (Call.previousRingerMode!=-1) {
+						AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+						as.setRingerMode(Call.previousRingerMode);
+						Call.previousRingerMode = -1;
+					}
 				}
-				if (Preferences.showActionsInCall) {
-					Idle.toPage(context, 0);
-				}
-				if (Call.previousRingerMode!=-1) {
-					AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-					as.setRingerMode(Call.previousRingerMode);
-					Call.previousRingerMode = -1;
-				}
+				
+				Call.inCall = false;
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK: 
 				Call.endRinging(context);
