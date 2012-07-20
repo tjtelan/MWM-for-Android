@@ -180,7 +180,7 @@ public class MetaWatchService extends Service {
 		public static boolean notifyLight = false;
 		public static boolean stickyNotifications = true;
 		public static int weatherProvider = WeatherProvider.GOOGLE;
-		public static String weatherCity = "Dallas,US";
+		public static String weatherCity = "Dallas TX";
 		public static boolean weatherCelsius = false;
 		public static int weatherGeolocationMode = GeolocationMode.USEPROVIDER;
 		public static String wundergroundKey = "";
