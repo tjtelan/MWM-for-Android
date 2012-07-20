@@ -24,8 +24,7 @@ public class WeatherEngineFactory {
 			return new YahooWeatherEngine();
 
 		default:
-			throw new IllegalArgumentException("Unknown weather engineId: "
-					+ engineId);
+			return new DummyWeatherEngine();
 		}
 	}
 
