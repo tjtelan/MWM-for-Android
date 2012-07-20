@@ -84,8 +84,8 @@ public class WunderWeatherEngine extends AbstractWeatherEngine {
 				
 				case GeolocationMode.MANUAL: {
 					weatherData.locationName = Preferences.weatherCity;
-					String weatherLocation = Preferences.weatherCity.replace(",", "")
-							.replace(" ", "%20");
+					String weatherLocation = Preferences.weatherCity.replace(",", " ")
+							.replace("  ", " ").replace(" ", "%20");
 					
 					requestUrl = "http://api.wunderground.com/api/"
 							+ Preferences.wundergroundKey
