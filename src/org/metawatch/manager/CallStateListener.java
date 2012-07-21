@@ -99,4 +99,16 @@ class CallStateListener extends PhoneStateListener {
 		}
 
 	}
+	
+	@Override
+	public void onMessageWaitingIndicatorChanged(boolean messageWaiting) {
+		Call.voicemailWaiting = messageWaiting;
+		
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "onMessageWaitingIndicatorChanged "+messageWaiting);
+		
+		if (messageWaiting) {
+			NotificationBuilder.createNewVoicemail(context);
+		}
+		Idle.updateIdle(context, true);
+	}
 }

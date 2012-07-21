@@ -313,6 +313,24 @@ public class NotificationBuilder {
 			Notification.addOledNotification(context, Protocol.createOled1line(context, icon, appName), Protocol.createOled2lines(context, event, desc), scroll, len, vibratePattern, appName+": "+event);
 		}
 	}
+
+	public static void createNewVoicemail(Context context) {
+		VibratePattern vibratePattern = createVibratePatternFromPreference(
+				context, "settingsVoicemailNumberBuzzes");
+		String description = "New Voicemail";
+		Bitmap icon = Utils.getBitmap(context, "voicemail.bmp");
+		if (MetaWatchService.watchType == WatchType.DIGITAL) {
+			Bitmap bitmap = smartLines(context, icon,
+					"Voicemail", new String[] { "You have", "new voicemail" });
+			Notification.addBitmapNotification(context, bitmap, vibratePattern,
+					Notification.getDefaultNotificationTimeout(context), description);
+		} else {
+			Notification.addOledNotification(context, Protocol.createOled1line(
+					context, icon, "Voicemail"), Protocol
+					.createOled2lines(context, "You have", "new voicemail"), null, 0,
+					vibratePattern, description);
+		}
+	}	
 	
 	static Bitmap smartLines(Context context, Bitmap icon, String header, String[] lines) {
 		return smartLines(context, icon, header, lines, FontCache.FontSize.AUTO);

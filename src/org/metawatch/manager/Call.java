@@ -51,6 +51,7 @@ public class Call {
 	public static String phoneNumber = null;
 	public static boolean previousSpeakerphoneState = false;
 	public static int previousRingerMode = -1;
+	public static boolean voicemailWaiting = false;
 	
 	final static byte CALL_ANSWER = 90;
 	final static byte CALL_DISMISS = 91;

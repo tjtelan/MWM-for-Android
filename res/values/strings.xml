@@ -19,6 +19,8 @@
     <string name="settings_Timezonechange_desc">Notify that the phone has changed timezones.</string>
     <string name="settings_Batterylow">Low battery</string>
     <string name="settings_Batterylow_desc">Displays a warning when the battery of this device is low.</string>
+    <string name="settings_NewVoicemail">New voicemail</string>
+    <string name="settings_NewVoicemail_desc">Display a notification when you receive new voicemail.</string>
 	<string name="settings_Calendar">Calendar</string>
 	<string name="settings_Calendar_desc">Calendar notifications (requires Accessibility in Android settings)</string>
 	<string name="settings_NMA">Notify My Android</string>

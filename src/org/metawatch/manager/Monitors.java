@@ -171,7 +171,7 @@ public class Monitors {
 		CallStateListener phoneListener = new CallStateListener(context);
 		
 		telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-		int phoneEvents = PhoneStateListener.LISTEN_CALL_STATE;
+		int phoneEvents = PhoneStateListener.LISTEN_CALL_STATE | PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR;
 		telephonyManager.listen(phoneListener, phoneEvents);
 		
 		gmailMonitor = Utils.getGmailMonitor(context);
