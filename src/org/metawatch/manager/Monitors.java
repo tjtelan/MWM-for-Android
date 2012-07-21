@@ -245,6 +245,10 @@ public class Monitors {
 	
 
 	public static void updateWeatherData(final Context context) {
+		// Ask the location manager for the most recent location
+		// as often it seems to know, without actually notifying us!
+		RefreshLocation();
+		
 		Thread thread = new Thread("WeatherUpdater") {
 
 			@Override
