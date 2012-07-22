@@ -47,6 +47,15 @@ public class WeatherWidget implements InternalWidget {
 	public final static String id_7 = "weather_48_32";
 	final static String desc_7 = "Current Weather (48x32)";
 	
+	public final static String id_8 = "weather_ic_12_12";
+	final static String desc_8 = "Weather Icon (12x12)";
+
+	public final static String id_9 = "weather_ic_24_24";
+	final static String desc_9 = "Weather Icon (24x24)";
+	
+	public final static String id_10 = "weather_24_16";
+	final static String desc_10 = "Current Weather (24x16)";
+	
 	private Context context = null;
 	private TextPaint paintSmall;
 	private TextPaint paintSmallOutline;
@@ -209,6 +218,48 @@ public class WeatherWidget implements InternalWidget {
 			widget.height = 32;
 			
 			widget.bitmap = draw7();
+			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
+		
+		if(widgetIds == null || widgetIds.contains(id_8)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_8;
+			widget.description = desc_8;
+			widget.width = 12;
+			widget.height = 12;
+			
+			widget.bitmap = draw8();
+			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
+		
+		if(widgetIds == null || widgetIds.contains(id_9)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_9;
+			widget.description = desc_9;
+			widget.width = 24;
+			widget.height = 24;
+			
+			widget.bitmap = draw9();
+			widget.priority = calcPriority();
+			
+			result.put(widget.id, widget);
+		}
+		
+		if(widgetIds == null || widgetIds.contains(id_10)) {
+			InternalWidget.WidgetData widget = new InternalWidget.WidgetData();
+			
+			widget.id = id_10;
+			widget.description = desc_10;
+			widget.width = 24;
+			widget.height = 16;
+			
+			widget.bitmap = draw10();
 			widget.priority = calcPriority();
 			
 			result.put(widget.id, widget);
@@ -586,6 +637,80 @@ public class WeatherWidget implements InternalWidget {
 		
 		return bitmap;
 	}
+	
+	private Bitmap draw8() {
+		Bitmap bitmap = Bitmap.createBitmap(12, 12, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {			
+			// icon
+			final String icon = Monitors.weatherData.icon.replace(".bmp", "_12.bmp");
+			Bitmap image = Utils.getBitmap(context, icon);
+			canvas.drawBitmap(image, 0, 0, null);
+		} else {
+			paintSmall.setTextAlign(Paint.Align.CENTER);
 
+			canvas.drawText("--", 6, 8, paintSmall);
+
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
+		
+		return bitmap;
+	}
+
+	private Bitmap draw9() {
+		Bitmap bitmap = Bitmap.createBitmap(24, 24, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {			
+			// icon
+			Bitmap image = Utils.getBitmap(context, Monitors.weatherData.icon);
+			canvas.drawBitmap(image, 0, 0, null);
+		} else {
+			paintSmall.setTextAlign(Paint.Align.CENTER);
+
+			canvas.drawText("Wait", 6, 8, paintSmall);
+
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
+		
+		return bitmap;
+	}
+	
+	private Bitmap draw10() {
+		Bitmap bitmap = Bitmap.createBitmap(24, 16, Bitmap.Config.RGB_565);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		
+		paintSmall.setTextAlign(Align.LEFT);
+		paintSmallOutline.setTextAlign(Align.LEFT);
+		
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {			
+
+			final String smallIcon = Monitors.weatherData.icon.replace(".bmp", "_12.bmp");
+			Bitmap image = Utils.getBitmap(context, smallIcon);
+			canvas.drawBitmap(image, 12, 0, null);
+			
+			Utils.drawOutlinedText(Monitors.weatherData.temp, canvas, 1, 7, paintSmallNumerals, paintSmallNumeralsOutline);
+			
+			StringBuilder hilow = new StringBuilder();
+			hilow.append(Monitors.weatherData.forecast[0].getTempHigh());
+			hilow.append("/");
+			hilow.append(Monitors.weatherData.forecast[0].getTempLow());
+			
+			Utils.drawOutlinedText(hilow.toString(), canvas, 1, 16, paintSmallNumerals, paintSmallNumeralsOutline);
+
+		} else {
+			paintSmall.setTextAlign(Paint.Align.CENTER);
+
+			canvas.drawText("Wait", 12, 8, paintSmall);
+
+			paintSmall.setTextAlign(Paint.Align.LEFT);
+		}
+		
+		return bitmap;
+	}
 
 }
