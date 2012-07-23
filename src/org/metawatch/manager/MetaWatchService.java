@@ -573,16 +573,6 @@ public class MetaWatchService extends Service {
 
 			Notification.startNotificationSender(this);
 			
-			SharedPreferences sharedPreferences = PreferenceManager
-					.getDefaultSharedPreferences(context);
-			
-			/* Notify watch on connection if requested. */
-			boolean notifyOnConnect = sharedPreferences.getBoolean("NotifyWatchOnConnect", false);
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.connect(): notifyOnConnect=" + notifyOnConnect);
-			if (notifyOnConnect) {
-				NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected", 1);
-			}
-			
 			Idle.updateIdle(this, true);
 			
 		} catch (IOException ioexception) {
@@ -860,7 +850,7 @@ public class MetaWatchService extends Service {
 						Protocol.sendOledBitmap(Utils.getBitmap(this, "splash_16_0.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 0);
 						Protocol.sendOledBitmap(Utils.getBitmap(this, "splash_16_1.bmp"), MetaWatchService.WatchBuffers.NOTIFICATION, 1);
 					}
-
+					
 				} else {
 					watchType = WatchType.DIGITAL;
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
@@ -881,6 +871,16 @@ public class MetaWatchService extends Service {
 					}
 					
 					Protocol.queryNvalTime();
+				}
+				
+				SharedPreferences sharedPreferences = PreferenceManager
+						.getDefaultSharedPreferences(context);
+				
+				/* Notify watch on connection if requested. */
+				boolean notifyOnConnect = sharedPreferences.getBoolean("NotifyWatchOnConnect", false);
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.connect(): notifyOnConnect=" + notifyOnConnect);
+				if (notifyOnConnect) {
+					NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected", 1);
 				}
 				
 				Idle.activateButtons(this);
