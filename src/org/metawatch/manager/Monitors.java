@@ -137,7 +137,7 @@ public class Monitors {
 		return count;
 	}
 	
-	public static void start(Context context, TelephonyManager telephonyManager) {
+	public static void start(Context context/*, TelephonyManager telephonyManager*/) {
 		// start weather updater
 		
 		if (Preferences.logging) Log.d(MetaWatch.TAG,
@@ -170,7 +170,7 @@ public class Monitors {
 		
 		CallStateListener phoneListener = new CallStateListener(context);
 		
-		telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 		int phoneEvents = PhoneStateListener.LISTEN_CALL_STATE | PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR;
 		telephonyManager.listen(phoneListener, phoneEvents);
 		
@@ -241,6 +241,11 @@ public class Monitors {
 			context.unregisterReceiver(batteryLevelReceiver);
 			batteryLevelReceiver=null;
 		}
+	}
+	
+	public static void restart(final Context context) {
+		stop(context);
+		start(context);
 	}
 	
 

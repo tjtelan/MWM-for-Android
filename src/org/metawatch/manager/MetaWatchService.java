@@ -59,6 +59,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -82,7 +83,7 @@ public class MetaWatchService extends Service {
 	static InputStream inputStream;
 	static OutputStream outputStream;
 
-	TelephonyManager telephonyManager;
+	//TelephonyManager telephonyManager;
 	NotificationManager notificationManager;
 	android.app.Notification notification;
 
@@ -220,6 +221,26 @@ public class MetaWatchService extends Service {
 		return mMessenger.getBinder();
 	}
 
+	private static OnSharedPreferenceChangeListener prefChangeListener = 
+			new OnSharedPreferenceChangeListener() {
+		public void onSharedPreferenceChanged(
+				SharedPreferences sharedPreferences, String key) {
+			
+			if (Preferences.logging) Log.d(MetaWatch.TAG, 
+					"onSharedPreferenceChanged "+key);
+			
+			MetaWatchService.loadPreferences(context);
+			
+			if (key.contains("Weather")) {
+				Monitors.restart(context);
+			}
+			
+			if (key.contains("Idle")) {
+				Idle.updateIdle(context, false);
+			}
+		}
+	};
+	
 	public static void loadPreferences(Context context) {
 		SharedPreferences sharedPreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -453,6 +474,8 @@ public class MetaWatchService extends Service {
 		if (!Preferences.loaded)
 			loadPreferences(this);
 		
+		PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(prefChangeListener);
+		
 		createNotification();
 
 		connectionState = ConnectionState.CONNECTING;
@@ -466,7 +489,7 @@ public class MetaWatchService extends Service {
 		wakeLock = powerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				"MetaWatch");
 
-		Monitors.start(this, telephonyManager);
+		Monitors.start(this/*, telephonyManager*/);
 		
 		// Initialise theme
 		BitmapCache.getBitmap(context, "");
@@ -497,6 +520,8 @@ public class MetaWatchService extends Service {
 		if (Preferences.logging) Log.d(MetaWatch.TAG,
 				"MetaWatchService.onDestroy()");
 
+		PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(prefChangeListener);
+		
 		Monitors.stop(this);
 		removeNotification();
 		notifyClients();
