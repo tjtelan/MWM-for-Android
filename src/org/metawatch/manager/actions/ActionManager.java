@@ -132,7 +132,8 @@ public class ActionManager {
 			
 			addAction(new InternalActions.PingAction());
 			addAction(new InternalActions.WeatherRefreshAction());
-			addAction(new InternalActions.ClickerAction());
+			//addAction(new InternalActions.ClickerAction());
+			addAction(new InternalActions.VoiceSearchAction());
 			
 			
 		}
@@ -185,6 +186,8 @@ public class ActionManager {
 		
 		if (Preferences.weatherProvider!=WeatherProvider.DISABLED)
 			result.add(getAction(InternalActions.WeatherRefreshAction.id));
+		
+		result.add(getAction(InternalActions.VoiceSearchAction.id));
 		
 		//result.add(getAction(InternalActions.MapsAction.id);
 		//result.add(getAction(InternalActions.WoodchuckAction.id);

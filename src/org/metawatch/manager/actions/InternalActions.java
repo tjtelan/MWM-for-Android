@@ -5,6 +5,7 @@ import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.Monitors;
 import org.metawatch.manager.apps.InternalApp;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -262,7 +263,32 @@ public class InternalActions {
 		}
 	}
 	
-	public static class MapsAction extends Action {
+	public static abstract class AndroidAppAction extends Action {
+		
+		protected abstract String getPackage();
+		
+		public String bulletIcon() {
+			return "bullet_square.bmp";
+		}
+		
+		public int performAction(Context context) {	
+			try {
+				Intent intent = context.getPackageManager().getLaunchIntentForPackage(getPackage());
+				context.startActivity(intent);
+			}
+			catch (ActivityNotFoundException e) {
+				return InternalApp.BUTTON_NOT_USED;
+			}
+			return InternalApp.BUTTON_USED;
+		}	
+		
+	}
+	
+	public static class MapsAction extends AndroidAppAction {
+		
+		protected String getPackage() {
+			return "com.google.android.apps.maps";
+		}
 		
 		public static String id = "testMaps";
 		public String getId() {
@@ -273,16 +299,25 @@ public class InternalActions {
 			return "Launch Google Maps on phone";
 		}
 		
-		public String bulletIcon() {
-			return "bullet_square.bmp";
-		}
-
-		public int performAction(Context context) {					
-			Intent mapsIntent = context.getPackageManager().getLaunchIntentForPackage("com.google.android.apps.maps");
-			context.startActivity(mapsIntent);
-			return InternalApp.BUTTON_USED;
-		}
 	}
+
+	public static class VoiceSearchAction extends AndroidAppAction {
+		
+		protected String getPackage() {
+			return "com.google.android.voicesearch";
+		}
+		
+		public static String id = "voiceSearch";
+		public String getId() {
+			return id;
+		}
+		
+		public String getName() {
+			return "Voice Search";
+		}
+		
+	}
+
 	
 	public static class PhoneSettingsAction extends ContainerAction {
 		
