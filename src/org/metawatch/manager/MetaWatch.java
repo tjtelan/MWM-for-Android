@@ -244,9 +244,7 @@ public class MetaWatch extends TabActivity {
     	
     	WebView webView = new WebView(this);
 		String html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>About</title></head><body><center>" + 
-						"<h1>MetaWatch</h1>" +
-						"<h3>Community Edition</h3>"+
-						"<img src=\"splash.png\">" +
+						"<img src=\"banner.jpg\" width=\"100%\">" +
 						"<p>Version " + Utils.getVersion(this) + ".</p>" +
 						"<p>Modified by Dobie Wollert, Chris Sewell, Prash D, Craig Oliver, Richard Munn, Matthias Gruenewald, Kyle Schroeder, Garth Bushell, Joakim Andersson, Chris Boyle and Didi Pfeifle.</p>" +
 						"<p>&copy; Copyright 2011-2012 Meta Watch Ltd.</p>" +
