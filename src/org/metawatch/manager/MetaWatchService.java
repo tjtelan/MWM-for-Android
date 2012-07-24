@@ -235,8 +235,8 @@ public class MetaWatchService extends Service {
 			}
 			
 			if (key.contains("Idle")) {
-				Idle.updateIdle(context, false);
-			}
+				Idle.reset(context);
+			}			
 		}
 	};
 	

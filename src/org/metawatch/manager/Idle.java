@@ -285,8 +285,14 @@ public class Idle {
 	private static ArrayList<IdlePage> idlePages = null;
 	private static Map<String,WidgetData> widgetData = null;
 	
-	public static void updateIdlePages(Context context, boolean refresh)
-	{
+	public static void reset(Context context) {
+		toPage(context, 0);
+		if (idlePages != null)
+			idlePages.clear();
+		idlePages = null;
+	}
+	
+	public static void updateIdlePages(Context context, boolean refresh) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.updateIdlePages start");
 		try {
 			setBusy(true);
