@@ -7,22 +7,22 @@
 		android:title="@string/settings_Device"
 		>
 		<Preference
-			android:title="Select Watch"
+			android:title="@string/settings_Select_Watch"
 			android:key="Discovery"
-			android:summary="Discover and select watch"
+			android:summary="@string/settings_Select_Watch_desc"
 			/>
         
 		<EditTextPreference
 			android:title="@string/settings_Mac"
 			android:key="MAC"
-			android:summary="Enter watch MAC address manually"
+			android:summary="@string/settings_Mac_desc"
 			android:defaultValue=""
 			/>
 							
 		<CheckBoxPreference
-			android:title="Show fake watches"
+			android:title="@string/settings_Show_fake_watches"
 			android:key="ShowFakeWatches"
-			android:summary="Show fake watch entries in the discovery screen, to emulate connection to an analog or digital watch, without actually connecting."
+			android:summary="@string/settings_Show_fake_watches_desc"
 			android:defaultValue="false"
 			/>	
 	</PreferenceScreen>
@@ -45,26 +45,26 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsSMSNumberBuzzes" 
-			android:title="SMS Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_SMS_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>
 		<CheckBoxPreference
-			android:title="Gmail"
+			android:title="@string/settings_Gmail"
 			android:key="NotifyGmail"
-			android:summary="New E-mail notification (Gmail)"
+			android:summary="@string/settings_Gmail_desc"
 			android:defaultValue="true"
 			/>
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsGmailNumberBuzzes" 
-			android:title="Gmail Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Gmail_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>			
@@ -77,10 +77,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsK9NumberBuzzes" 
-			android:title="K9 Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_K9_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>			
@@ -93,10 +93,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsTDNumberBuzzes" 
-			android:title="TouchDown Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_TD_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>			
@@ -109,10 +109,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsAlarmNumberBuzzes" 
-			android:title="Alarm Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Alarm_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="5"
  			/>			
@@ -125,10 +125,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsMusicNumberBuzzes" 
-			android:title="Music Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Music_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="1"
  			/>			
@@ -141,10 +141,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsCalendarNumberBuzzes" 
-			android:title="Calendar Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Calendar_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>			
@@ -157,10 +157,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsBatteryNumberBuzzes" 
-			android:title="Battery Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Battery_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>			
@@ -173,10 +173,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsVoicemailNumberBuzzes" 
-			android:title="New Voicemail Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_NewVoicemail_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>	
@@ -189,10 +189,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsTimezoneNumberBuzzes" 
-			android:title="Timezone Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Timezonechange_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="2"
  			/>			
@@ -205,10 +205,10 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsNMANumberBuzzes" 
-			android:title="NMA Vibrate Pattern" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_NMA_Vibrate_Pattern" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="3"
  			/>	
@@ -221,48 +221,48 @@
 		<ListPreference 
 			android:entries="@array/settings_number_buzzes_names" 
 			android:entryValues="@array/settings_number_buzzes_values" 
-			android:dialogTitle="Number of Buzzes" 
+			android:dialogTitle="@string/settings_Number_of_buzzes_dialogtitle" 
 			android:key="settingsOtherNotificationNumberBuzzes" 
-			android:title="Other Apps Vibrate Pattern"
-			android:summary="Default vibrate pattern for other apps"
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_OtherNotification_Vibrate_Pattern"
+			android:summary="@string/settings_OtherNotification_Vibrate_Pattern_desc"
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="1"
  			/>				
 		<Preference
-			android:title="Other Apps Settings"
+			android:title="@string/settings_OtherApps"
 			android:key="otherAppsList"
-			android:summary="Set individual vibrate patterns and which apps to include notifications from"
+			android:summary="@string/settings_OtherApps_desc"
 			/>
 
 		<ListPreference 
 			android:entries="@array/settings_font_size_name" 
 			android:entryValues="@array/settings_font_size_value" 
-			android:dialogTitle="Font Size" 
+			android:dialogTitle="@string/settings_Font_Size" 
 			android:key="FontSize" 
-			android:title="Font Size" 
-			android:negativeButtonText="Cancel" 
+			android:title="@string/settings_Font_Size" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="2"
  			/>
 		<CheckBoxPreference
-			android:title="Center Notification Text"
+			android:title="@string/settings_center_notification"
 			android:key="notificationCenter"
-			android:summary="Display notification text centered"
+			android:summary="@string/settings_center_notification_desc"
 			android:defaultValue="false"
 			/>
 			
 		<CheckBoxPreference
-			android:title="Auto light on notify"
+			android:title="@string/settings_auto_light"
 			android:key="notifyLight"
-			android:summary="Enable the light when a notification or incoming call is displayed"
+			android:summary="@string/settings_auto_light_desc"
 			android:defaultValue="false"
 			/>
 		
 		<EditTextPreference
-			android:title="Notification Timeout"
+			android:title="@string/settings_notification_timeout"
 			android:key="notificationTimeout"
-			android:summary="Default time non-sticky notifications wait before returning to idle screen (seconds)"
+			android:summary="@string/settings_notification_timeout_desc"
 			android:numeric="integer"
 			android:defaultValue="5"
 			/>
@@ -312,7 +312,7 @@
 			android:key="QuickButton" 
 			android:title="Quick Button Action"
 			android:summary="Action for Right Middle Button on non-app idle pages"
-			android:negativeButtonText="Cancel"
+			android:negativeButtonText="@string/settings_CancelButton"
  			android:defaultValue="0"
  			/>
 		
@@ -383,7 +383,7 @@
 				android:dialogTitle="Weather Provider" 
 				android:key="WeatherProvider" 
 				android:title="Weather Provider" 
-				android:negativeButtonText="Cancel" 
+				android:negativeButtonText="@string/settings_CancelButton" 
 	 			android:enabled="true" 
 	 			android:defaultValue="1"
 	 			android:summary="Choose or disable weather data source"
@@ -394,7 +394,7 @@
 				android:title="Weather Geolocation Mode"
 				android:key="WeatherGeolocationMode"
 				android:summary="Geolocation method"
-				android:negativeButtonText="Cancel" 
+				android:negativeButtonText="@string/settings_CancelButton" 
 	 			android:enabled="true" 
 	 			android:defaultValue="1"
 				/>
@@ -468,7 +468,7 @@
 			android:dialogTitle="App Launch Mode" 
 			android:key="AppLaunchMode" 
 			android:title="App Launch Mode" 
-			android:negativeButtonText="Cancel" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="0"
  			/>
@@ -485,7 +485,7 @@
 			android:dialogTitle="Media Control Method" 
 			android:key="IdleMusicControlMethod" 
 			android:title="Media Control Method" 
-			android:negativeButtonText="Cancel" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="0"
  			/>	
@@ -559,7 +559,7 @@
 			android:key="collectWatchVoltage" 
 			android:title="Collect Watch Voltage" 
 			android:summary="Collect voltage reports from watch and write to SD card (requires restart)"
-			android:negativeButtonText="Cancel" 
+			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="0"
             />

@@ -7,30 +7,63 @@
 	<string name="settings_Call_desc">Incoming call notification</string>
     <string name="settings_SMS">SMS/MMS</string>
     <string name="settings_SMS_desc">New text/multimedia message notification</string>
+    <string name="settings_SMS_Vibrate_Pattern">SMS Vibrate Pattern</string>
+    <string name="settings_Gmail">Gmail</string>
+    <string name="settings_Gmail_desc">New E-mail notification (Gmail)</string>
+    <string name="settings_Gmail_Vibrate_Pattern">Gmail Vibrate Pattern</string>
 	<string name="settings_K9">K9 mail</string>
 	<string name="settings_K9_desc">New E-mail notification (K-9 mail)</string>
+	<string name="settings_K9_Vibrate_Pattern">K9 Vibrate Pattern</string>
 	<string name="settings_TD">TouchDown mail</string>
 	<string name="settings_TD_desc">New E-mail notification (TouchDown)</string>
+	<string name="settings_TD_Vibrate_Pattern">TouchDown Vibrate Pattern</string>
 	<string name="settings_Alarm">Alarm</string>
 	<string name="settings_Alarm_desc">Alarm clock alert</string>
+	<string name="settings_Alarm_Vibrate_Pattern">Alarm Vibrate Pattern</string>
 	<string name="settings_Music">Music</string>
 	<string name="settings_Music_desc">Music track/artist info</string>
+    <string name="settings_Music_Vibrate_Pattern">Music Vibrate Pattern</string>
     <string name="settings_Timezonechange">Timezone change</string>
     <string name="settings_Timezonechange_desc">Notify that the phone has changed timezones.</string>
+    <string name="settings_Timezonechange_Vibrate_Pattern">Timezone Vibrate Pattern</string>
     <string name="settings_Batterylow">Low battery</string>
     <string name="settings_Batterylow_desc">Displays a warning when the battery of this device is low.</string>
+    <string name="settings_Battery_Vibrate_Pattern">Battery Vibrate Pattern</string>
     <string name="settings_NewVoicemail">New voicemail</string>
     <string name="settings_NewVoicemail_desc">Display a notification when you receive new voicemail.</string>
+    <string name="settings_NewVoicemail_Vibrate_Pattern">New Voicemail Vibrate Pattern</string>
 	<string name="settings_Calendar">Calendar</string>
 	<string name="settings_Calendar_desc">Calendar notifications (requires Accessibility in Android settings)</string>
+    <string name="settings_Calendar_Vibrate_Pattern">Calendar Vibrate Pattern</string>
 	<string name="settings_NMA">Notify My Android</string>
 	<string name="settings_NMA_desc">Forward notifications from Notify My Android.</string>
+    <string name="settings_NMA_Vibrate_Pattern">NMA Vibrate Pattern</string>
 	<string name="settings_OtherNotification">Other Apps</string>
 	<string name="settings_OtherNotification_desc">Other notifications (requires Accessibility in Android settings)</string>
+    <string name="settings_OtherNotification_Vibrate_Pattern">Other Apps Vibrate Pattern</string>
+	<string name="settings_OtherNotification_Vibrate_Pattern_desc">Default vibrate pattern for other apps</string>
+
+	<string name="settings_OtherApps">Other Apps Settings</string>
+	<string name="settings_OtherApps_desc">Set individual vibrate patterns and which apps to include notifications from</string>
+
+	<string name="settings_CancelButton">Cancel</string>
+
+	<string name="settings_Font_Size">Font Size</string>
+	
+	<string name="settings_center_notification">Center Notification Text</string>
+	<string name="settings_center_notification_desc">Display notification text centered</string>
+
+	<string name="settings_auto_light">Auto light on notify</string>
+	<string name="settings_auto_light_desc">Enable the light when a notification or incoming call is displayed</string>
+
+	<string name="settings_notification_timeout">Notification Timeout</string>
+	<string name="settings_notification_timeout_desc">Default time non-sticky notifications wait before returning to idle screen (seconds)</string>
+
     <string name="settings_Device">Device</string>
     <string name="settings_Mac">MAC</string>
-    <string name="settings_Mac_desc">Watch Bluetooth MAC address</string>
-    <string name="settings_Read_calendar_during_meeting">Read calender during ongoing meetings</string>
+    <string name="settings_Mac_desc">Enter watch MAC address manually</string>
+
+    <string name="settings_Read_calendar_during_meeting">Read calendar during ongoing meetings</string>
     <string name="settings_Read_calendar_during_meeting_desc">Update calendar information while a meeting is ongoing (untick to keep the calendar widget information after the meeting has started)</string>
     <string name="settings_Read_calendar_min_duration_to_meeting_end">Minimum duration to meeting end</string>
     <string name="settings_Read_calendar_min_duration_to_meeting_end_desc">Duration in minutes to the end of an ongoing meeting before calendar read is allowed</string>
@@ -38,10 +71,13 @@
     <string name="settings_Display_location_in_small_calendar_widget_desc">Displays the location instead of the date in the 24x32 next calendar appointment widget if there is enough space</string>
     <string name="settings_Event_date_in_calendar_widget">Event date in calendar widget</string>
     <string name="settings_Event_date_in_calendar_widget_desc">Displays the event date instead of today\'s date in the *x32 calendar widgets (when showing an event)</string>
+
     <string name="settings_Display_widget_row_separator">Display separator line</string>
     <string name="settings_Display_widget_row_separator_desc">Draws a separator line between widget rows</string>
+
     <string name="settings_Overlay_weather_text">Overlay text in weather widget</string>
     <string name="settings_Overlay_weather_text_desc">Draws the text (condition and location) over the weather icon</string>
+
     <string name="settings_phoneCalls">Phonecalls</string>
         
     <string-array name="settings_font_size_name"> 
@@ -55,6 +91,8 @@
    	<item>2</item>
    	<item>3</item>  
 	</string-array>
+	
+	<string name="settings_Number_of_buzzes_dialogtitle">Number of Buzzes</string>
     
 	<string-array name="settings_number_buzzes_names">
 	<item>No Vibrate</item> 
@@ -157,5 +195,10 @@
     <string name="settings_Analog">Analog Watch</string>
     <string name="settings_Other">Other</string>
     
+    <string name="settings_Select_Watch">Select Watch</string>
+    <string name="settings_Select_Watch_desc">Discover and select watch</string>
+    <string name="settings_Show_fake_watches">Show fake watches</string>
+    <string name="settings_Show_fake_watches_desc">Show fake watch entries in the discovery screen, to emulate connection to an analog or digital watch, without actually connecting.</string>
+
     
 </resources>
