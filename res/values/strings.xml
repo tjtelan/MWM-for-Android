@@ -80,6 +80,32 @@
 
     <string name="settings_phoneCalls">Phonecalls</string>
         
+    <string name="settings_call_actions">Show actions in call</string>
+    <string name="settings_call_actions_desc">Automatically display the Call Actions menu when in a call.</string>
+   	<string name="settings_auto_speakerphone">Auto Speakerphone</string>
+   	<string name="settings_auto_speakerphone_desc">Automatically enable speakerphone when a call is answered from the watch.</string>     
+       
+    <string name="settings_analog_pause_scroll">Pause Before Scrolling</string>
+    <string name="settings_analog_pause_scroll_desc">Pause a few seconds before scrolling long messages on the analog watch</string>
+        
+    <string name="settings_quick_button_action">Quick Button Action</string>
+    <string name="settings_quick_button_action_desc">Action for Right Middle Button on non-app idle pages</string>    
+        
+    <string name="settings_sticky_notifications">Sticky Notifications</string>  
+    <string name="settings_sticky_notifications_desc">Use sticky notifications (that stay on screen until manually dismissed)</string>   
+        
+    <string name="settings_sticky_notification_timeout">Sticky Notification Timeout</string>
+    <string name="settings_sticky_notification_timeout_desc">Default time sticky notifications wait before returning to idle screen (seconds)</string>    
+        
+    <string name="settings_invert_lcd">Invert LCD</string>    
+    <string name="settings_invert_lcd_desc">Invert watch displays where appropriate</string>
+        
+    <string name="settings_clock_every_page">Clock on Every Page</string>
+    <string name="settings_clock_every_page_desc">Show the clock on all widget pages</string>    
+        
+    <string name="settings_idle_app_buffer">Use App Buffer for Clock-less Widget Pages</string>
+    <string name="settings_idle_app_buffer_desc">Makes the clock and status icon visible when the watch connection is lost, but loses built-in button actions on affected pages.</string>    
+        
     <string-array name="settings_font_size_name"> 
    	<item>Small</item>
    	<item>Medium</item>
@@ -200,5 +226,83 @@
     <string name="settings_Show_fake_watches">Show fake watches</string>
     <string name="settings_Show_fake_watches_desc">Show fake watch entries in the discovery screen, to emulate connection to an analog or digital watch, without actually connecting.</string>
 
+    <string name="settings_watch_widgets">Watch Widgets</string>
+    <string name="settings_weather_widgets">Weather Widgets</string>
+    <string name="settings_calendar_widgets">Calendar Widgets</string>
+    <string name="settings_watch_apps">Watch Apps</string>
+    
+    <string name="settings_reset_widgets">Reset Widgets</string>
+    <string name="settings_reset_widgets_desc">Reset widgets to default layout</string>
+    
+    <string name="settings_weather_provider">Weather Provider</string>
+    <string name="settings_weather_provider_desc">Choose or disable weather data source</string>
+    
+    <string name="settings_weather_geolocation">Weather Geolocation Mode</string>
+    <string name="settings_weather_geolocation_desc">Geolocation method</string>
+    
+    <string name="settings_weather_location">Weather Location</string>
+    <string name="settings_weather_location_desc">Display temperature in Celsius instead of Fahrenheit</string>
+    
+    <string name="settings_wunderground_key">API Key</string>
+    <string name="settings_wunderground_key_desc">API Key for Weather Underground - Required if using the Weather Underground weather provider</string>
+    
+    <string name="settings_app_launch_mode">App Launch Mode</string>
+    
+    <string name="settings_music_app">Music Controls</string>
+    <string name="settings_music_app_desc">Music controls as an app page</string>
+    
+    <string name="settings_media_control_method">Media Control Method</string>
+    
+    <string name="settings_actions_app">Actions</string>
+    <string name="settings_actions_app_desc">Actions screen as an app page (view recent notifications, launch apps, and much more)</string>
+    
+    <string name="settings_choose_theme">Choose Theme</string>
+    <string name="settings_choose_theme_desc">Select a graphical theme for your watch</string>
+    
+    <string name="settings_packet_wait">Packet Wait</string>
+    <string name="settings_packet_wait_desc">Time between packet sends (ms)</string>
+    
+    <string name="settings_hide_notification_icon">Hide Notification Icon</string>
+    <string name="settings_hide_notification_icon_desc">Hide the ongoing notification icon in the status bar (requires restart)</string>
+    
+    <string name="settings_skip_sdp">Skip SDP lookup</string>
+    <string name="settings_skip_sdp_desc">Connect directly to port 1</string>
+    
+    <string name="settings_insecure_bluetooth">Use Insecure BT socket</string>
+    <string name="settings_insecure_bluetooth_desc">Enable if you have problems with your phone constantly requesting the PIN when bluetooth connects</string>
+    
+    <string name="settings_debug_logging">Debug logging</string>
+    <string name="settings_debug_logging_desc">Log events to the debug log - Disable to improve performance - please turn this on and use logcat if reporting problems</string>
+    
+    <string name="settings_log_packets">Log packet details</string>
+    <string name="settings_log_packets_desc">Log details of Bluetooth packets</string>
+    
+    <string name="settings_sms_freq">Test SMS loop interval</string>
+    <string name="settings_sms_freq_desc">Time between test SMS notifications (in s)</string>
+    
+    <string name="settings_watch_voltage">Collect Watch Voltage</string>
+    <string name="settings_watch_voltage_desc">Collect voltage reports from watch and write to SD card (requires restart)</string>
+    <string name="settings_watch_voltage_freq">Collection Frequency</string>
+    
+    <string name="settings_auto_connect">Auto Connect on Startup</string>
+    <string name="settings_auto_connect_desc">Automatically attempt to connect on app startup.</string>
+    
+    <string name="settings_notify_on_connect">Notify Watch on Connect</string>
+    <string name="settings_notify_on_connect_desc">Send a notification to the watch after connecting to it</string>
+    
+    <string name="settings_display_splash">Display splash screen</string>
+    <string name="settings_display_splash_desc">Display MWM splash screen on watch</string>
+    
+    <string name="settings_restart_if_stalled">Restart if stalled</string>
+    <string name="settings_restart_if_stalled_desc">Automatically restart the service if it becomes stalled.</string>
+    
+    <string name="settings_haptic_feedback">Haptic Feedback</string>
+    <string name="settings_haptic_feedback_desc">Vibrate watch on button presses.</string>
+    
+    <string name="settings_notification_queue">Show notification queue</string>
+    <string name="settings_notification_queue_desc">Display what\'s in the notification queue on the status screen.</string>
+    
+    <string name="settings_screenshots">Dump watch screenshots</string>
+    <string name="settings_screenshots_desc">Save screenshots of the watch display to your SD Card.  WARNING - this will slow down everything, and could fill up your SD Card - only really of use for obtaining screenshots for themes.</string>
     
 </resources>

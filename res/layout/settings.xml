@@ -274,16 +274,16 @@
 	    >
 	    
 	    <CheckBoxPreference
-			android:title="Show actions in call"
+			android:title="@string/settings_call_actions"
 			android:key="showActionsInCall"
-			android:summary="Automatically display the Call Actions menu when in a call."
+			android:summary="@string/settings_call_actions_desc"
 			android:defaultValue="true"
 			/>	    
 	    
 	    <CheckBoxPreference
-			android:title="Auto Speakerphone"
+			android:title="@string/settings_auto_speakerphone"
 			android:key="autoSpeakerphone"
-			android:summary="Automatically enable speakerphone when a call is answered from the watch."
+			android:summary="@string/settings_auto_speakerphone_desc"
 			android:defaultValue="false"
 			/>
 	    
@@ -294,9 +294,9 @@
  		android:title="@string/settings_Analog"
  		>
  		<CheckBoxPreference
-			android:title="Pause Before Scrolling"
+			android:title="@string/settings_analog_pause_scroll"
 			android:key="pauseBeforeScrolling"
-			android:summary="Pause a few seconds before scrolling long messages on the analog watch"
+			android:summary="@string/settings_analog_pause_scroll_desc"
  			android:defaultValue="false"
  			/>
  	</PreferenceScreen>	
@@ -308,33 +308,33 @@
 		<ListPreference 
 			android:entries="@array/settings_quick_button_name" 
 			android:entryValues="@array/settings_quick_button_value" 
-			android:dialogTitle="Quick Button Action" 
+			android:dialogTitle="@string/settings_quick_button_action" 
 			android:key="QuickButton" 
-			android:title="Quick Button Action"
-			android:summary="Action for Right Middle Button on non-app idle pages"
+			android:title="@string/settings_quick_button_action"
+			android:summary="@string/settings_quick_button_action_desc"
 			android:negativeButtonText="@string/settings_CancelButton"
  			android:defaultValue="0"
  			/>
 		
 		<CheckBoxPreference
-			android:title="Sticky Notifications"
+			android:title="@string/settings_sticky_notifications"
 			android:key="stickyNotifications"
-			android:summary="Use sticky notifications (that stay on screen until manually dismissed)"
+			android:summary="@string/settings_sticky_notifications_desc"
 			android:defaultValue="true"
 			/>
 			
 		<EditTextPreference
-			android:title="Sticky Notification Timeout"
+			android:title="@string/settings_sticky_notification_timeout"
 			android:key="stickyNotificationTimeout"
-			android:summary="Default time sticky notifications wait before returning to idle screen (seconds)"
+			android:summary="@string/settings_sticky_notification_timeout_desc"
 			android:numeric="integer"
 			android:defaultValue="120"
 			/>
 
 		<CheckBoxPreference
-			android:title="Invert LCD"
+			android:title="@string/settings_invert_lcd"
 			android:key="InvertLCD"
-			android:summary="Switch black/white bit"
+			android:summary="@string/settings_invert_lcd_desc"
 			android:defaultValue="false"
 			/>
 
@@ -346,17 +346,17 @@
 			/>
 
 		<CheckBoxPreference
-			android:title="Clock on Every Page"
+			android:title="@string/settings_clock_every_page"
 			android:key="ClockOnEveryPage"
-			android:summary="Show the clock on all widget pages"
+			android:summary="@string/settings_clock_every_page_desc"
 			android:defaultValue="false"
 			android:disableDependentsState="true"
 			/>
 
 		<CheckBoxPreference
-			android:title="Use App Buffer for Clock-less Widget Pages"
+			android:title="@string/settings_idle_app_buffer"
 			android:key="AppBufferForClocklessPages"
-			android:summary="Makes the clock and status icon visible when the watch connection is lost, but loses built-in button actions on affected pages."
+			android:summary="@string/settings_idle_app_buffer_desc"
 			android:defaultValue="true"
 			android:dependency="ClockOnEveryPage"
 			/>
@@ -364,36 +364,36 @@
 	</PreferenceScreen>	
 	
 	<PreferenceScreen
-	    android:title="Watch Widgets"
+	    android:title="@string/settings_watch_widgets"
 	    >
 	    
 	    <Preference
-			android:title="Reset Widgets"
+			android:title="@string/settings_reset_widgets"
 			android:key="ResetWidgets"
-			android:summary="Reset widgets to default layout"
+			android:summary="@string/settings_reset_widgets_desc"
 			/>
 		
 		<PreferenceScreen
-		    android:title="Weather Widgets"
+		    android:title="@string/settings_weather_widgets"
 		    >
 	
 			<ListPreference 
 				android:entries="@array/settings_weather_provider_names" 
 				android:entryValues="@array/settings_weather_provider_values" 
-				android:dialogTitle="Weather Provider" 
+				android:dialogTitle="@string/settings_weather_provider" 
 				android:key="WeatherProvider" 
-				android:title="Weather Provider" 
+				android:title="@string/settings_weather_provider" 
 				android:negativeButtonText="@string/settings_CancelButton" 
 	 			android:enabled="true" 
 	 			android:defaultValue="1"
-	 			android:summary="Choose or disable weather data source"
+	 			android:summary="@string/settings_weather_provider_desc"
 	 			/>	
 	 		<ListPreference
 	 		    android:entries="@array/settings_geolocation_names" 
 				android:entryValues="@array/settings_geolocation_values" 
-				android:title="Weather Geolocation Mode"
+				android:title="@string/settings_weather_geolocation"
 				android:key="WeatherGeolocationMode"
-				android:summary="Geolocation method"
+				android:summary="@string/settings_weather_geolocation_desc"
 				android:negativeButtonText="@string/settings_CancelButton" 
 	 			android:enabled="true" 
 	 			android:defaultValue="1"
@@ -405,16 +405,16 @@
 				android:defaultValue="Dallas TX"
 				/>
 			<CheckBoxPreference
-				android:title="Weather Celsius"
+				android:title="@string/settings_weather_location"
 				android:key="WeatherCelsius"
-				android:summary="Display temperature in Celsius instead of Fahrenheit"
+				android:summary="@string/settings_weather_location_desc"
 				android:defaultValue="false"
 				/>
 
 			<EditTextPreference
-				android:title="API Key"
+				android:title="@string/settings_wunderground_key"
 				android:key="WundergroundKey"
-				android:summary="API Key for Weather Underground - Required if using the Weather Underground weather provider"
+				android:summary="@string/settings_wunderground_key_desc"
 				android:defaultValue=""
 				/>
 			<CheckBoxPreference
@@ -427,7 +427,7 @@
 		</PreferenceScreen>
 
 		<PreferenceScreen
-		    android:title="Calendar Widgets"
+		    android:title="@string/settings_calendar_widgets"
 		    >	    
 			<CheckBoxPreference
 				android:title="@string/settings_Read_calendar_during_meeting"
@@ -459,49 +459,49 @@
 	</PreferenceScreen>
 	
 	<PreferenceScreen
-	    android:title="Watch Apps"
+	    android:title="@string/settings_watch_apps"
 	    >
 	    
 	    <ListPreference 
 			android:entries="@array/settings_app_launch_mode_name" 
 			android:entryValues="@array/settings_app_launch_mode_value" 
-			android:dialogTitle="App Launch Mode" 
+			android:dialogTitle="@string/settings_app_launch_mode" 
 			android:key="AppLaunchMode" 
-			android:title="App Launch Mode" 
+			android:title="@string/settings_app_launch_mode" 
 			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="0"
  			/>
 
 		<CheckBoxPreference
-			android:title="Music Controls"
+			android:title="@string/settings_music_app"
 			android:key="IdleMusicControls"
-			android:summary="Music controls as an app page"
+			android:summary="@string/settings_music_app_desc"
 			android:defaultValue="false"
 			/>
 		<ListPreference 
 			android:entries="@array/settings_media_control_method_names" 
 			android:entryValues="@array/settings_media_control_method_values" 
-			android:dialogTitle="Media Control Method" 
+			android:dialogTitle="@string/settings_media_control_method" 
 			android:key="IdleMusicControlMethod" 
-			android:title="Media Control Method" 
+			android:title="@string/settings_media_control_method" 
 			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="0"
  			/>	
 		<CheckBoxPreference
-		    android:title="Actions"
+		    android:title="@string/settings_actions_app"
 		    android:key="IdleActions"
-		    android:summary="Actions screen as an app page (view recent notifications, launch apps, and much more)"
+		    android:summary="@string/settings_actions_app_desc"
 		    android:defaultValue="false"
 		    />
 	    			    
 	</PreferenceScreen>
 	
 	<Preference
-		android:title="Choose Theme"
+		android:title="@string/settings_choose_theme"
 		android:key="Theme"
-		android:summary="Select a graphical theme for your watch"
+		android:summary="@string/settings_choose_theme_desc"
 		/>
 	
 	<PreferenceScreen
@@ -509,102 +509,102 @@
 		>
 		
 		<EditTextPreference
-			android:title="Packet Wait"
+			android:title="@string/settings_packet_wait"
 			android:key="PacketWait"
-			android:summary="Time between packet sends (ms)"
+			android:summary="@string/settings_packet_wait_desc"
 			android:numeric="integer"
 			android:defaultValue="10"
 			/>
 		<CheckBoxPreference
-			android:title="Hide Notification Icon"
+			android:title="@string/settings_hide_notification_icon"
 			android:key="HideNotificationIcon"
-			android:summary="Hide the ongoing notification icon in the status bar (requires restart)"
+			android:summary="@string/settings_hide_notification_icon_desc"
 			android:defaultValue="false"
 			/>
 		<CheckBoxPreference
-			android:title="Skip SDP lookup"
+			android:title="@string/settings_skip_sdp"
 			android:key="SkipSDP"
-			android:summary="Connect directly to port 1"
+			android:summary="@string/settings_skip_sdp_desc"
 			android:defaultValue="false"
 			/>
 		<CheckBoxPreference
-		    android:title="Use Insecure BT socket"
+		    android:title="@string/settings_insecure_bluetooth"
 		    android:key="InsecureBtSocket"
-		    android:summary="Enable if you have problems with your phone constantly requesting the PIN when bluetooth connects"
+		    android:summary="@string/settings_insecure_bluetooth_desc"
 		    android:defaultValue="false"
 		    />
 		<CheckBoxPreference
-			android:title="Debug logging"
+			android:title="@string/settings_debug_logging"
 			android:key="logging"
-			android:summary="Log events to the debug log - Disable to improve performance - please turn this on and use logcat if reporting problems"
+			android:summary="@string/settings_debug_logging_desc"
 			android:defaultValue="true"
 			/>
 		<CheckBoxPreference
-			android:title="Log packet details"
+			android:title="@string/settings_log_packets"
 			android:key="logPacketDetails"
-			android:summary="Log details of Bluetooth packets"
+			android:summary="@string/settings_log_packets_desc"
 			android:defaultValue="false"
 			/>
 		<EditTextPreference
-			android:title="Test SMS loop interval"
+			android:title="@string/settings_sms_freq"
 			android:key="SmsLoopInterval"
-			android:summary="Time between test SMS notifications (in s)"
+			android:summary="@string/settings_sms_freq_desc"
 			android:numeric="integer"
 			android:defaultValue="15"
 			/>
 		<ListPreference 
 			android:entries="@array/settings_collect_voltage_names" 
 			android:entryValues="@array/settings_collect_voltage_values" 
-			android:dialogTitle="Collection Frequency" 
+			android:dialogTitle="@string/settings_watch_voltage_freq" 
 			android:key="collectWatchVoltage" 
-			android:title="Collect Watch Voltage" 
-			android:summary="Collect voltage reports from watch and write to SD card (requires restart)"
+			android:title="@string/settings_watch_voltage" 
+			android:summary="@string/settings_watch_voltage_desc"
 			android:negativeButtonText="@string/settings_CancelButton" 
  			android:enabled="true" 
  			android:defaultValue="0"
             />
  		<CheckBoxPreference
-			android:title="Auto Connect on Startup"
+			android:title="@string/settings_auto_connect"
 			android:key="AutoConnect"
-			android:summary="Automatically attempt to connect on app startup."
+			android:summary="@string/settings_auto_connect_desc"
 			android:defaultValue="false"
 			/>					
         <CheckBoxPreference
-            android:title="Notify Watch on Connect"
+            android:title="@string/settings_notify_on_connect"
             android:key="NotifyWatchOnConnect"
-            android:summary="Send a notification to the watch after connecting to it"
+            android:summary="@string/settings_notify_on_connect_desc"
             android:defaultValue="false"
             />
         <CheckBoxPreference
-            android:title="Display splash screen"
+            android:title="@string/settings_display_splash"
             android:key="DisplaySplashScreen"
-            android:summary="Display MWM splash screen on watch"
+            android:summary="@string/settings_display_splash_desc"
             android:defaultValue="true"
             />
         <CheckBoxPreference
-			android:title="Restart if stalled"
+			android:title="@string/settings_restart_if_stalled"
 			android:key="AutoRestart"
-			android:summary="Automatically restart the service if it becomes stalled."
+			android:summary="@string/settings_restart_if_stalled_desc"
 			android:defaultValue="false"
 			/>	
 		<CheckBoxPreference
-			android:title="Haptic feedback"
+			android:title="@string/settings_haptic_feedback"
 			android:key="HapticFeedback"
-			android:summary="Vibrate watch on button presses."
+			android:summary="@string/settings_haptic_feedback_desc"
 			android:defaultValue="false"
 			/>	
 			
 		<CheckBoxPreference
-		    android:title="Show notification queue"
+		    android:title="@string/settings_notification_queue"
 		    android:key="ShowNotificationQueue"
-		    android:summary="Display what's in the notification queue on the status screen."
+		    android:summary="@string/settings_notification_queue_desc"
 		    android:defaultValue="false"
 		    />
 		    
 		<CheckBoxPreference
-			android:title="Dump watch screenshots"
+			android:title="@string/settings_screenshots"
 			android:key="DumpWatchScreenshots"
-			android:summary="Save screenshots of the watch display to your SD Card.  WARNING - this will slow down everything, and could fill up your SD Card - only really of use for obtaining screenshots for themes."
+			android:summary="@string/settings_screenshots_desc"
 			android:defaultValue="false"
 		    />			
 	</PreferenceScreen>	
