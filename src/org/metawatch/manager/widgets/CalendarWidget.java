@@ -178,22 +178,24 @@ public class CalendarWidget implements InternalWidget {
 			widget.description = desc_4;
 			widget.width = 48;
 			widget.height = 32;
+			iconFile = null;
 		}
 		else if (widget_id.equals(id_5)) {
 			widget.id = id_5;
 			widget.description = desc_5;
 			widget.width = 40;
 			widget.height = 16;
-			iconFile = "idle_calendar_10.bmp";
+			iconFile = null;
 		}
 
-		Bitmap icon = Utils.getBitmap(context, iconFile);
+		Bitmap icon = iconFile == null ? null : Utils.getBitmap(context, iconFile);
 
 		widget.bitmap = Bitmap.createBitmap(widget.width, widget.height, Bitmap.Config.RGB_565);
 		Canvas canvas = new Canvas(widget.bitmap);
 		canvas.drawColor(Color.WHITE);
 
-		if (widget.height == 16) {
+		if (widget.height == 16 && icon != null) {
+			if (icon != null)
 			canvas.drawBitmap(icon, widget.width == 16 ? 2 : 0, 0, null);
 			if(meetingTime.equals("None"))
 				canvas.drawText("-", widget.width == 16 ? 8 : 6, 15, paintSmallNumerals);
@@ -211,7 +213,7 @@ public class CalendarWidget implements InternalWidget {
 				}
 			}
 		}
-		else {
+		else if (icon!=null){
 			canvas.drawBitmap(icon, 0, 3, null);
 
 			if ((Preferences.displayLocationInSmallCalendarWidget)&&
@@ -239,22 +241,32 @@ public class CalendarWidget implements InternalWidget {
 			}
 			canvas.drawText(meetingTime, 12, 30, paintSmall);
 		}
+
+		String text = "";
+		if (iconFile==null)
+			text = meetingTime;
+		if ((meetingTitle!=null)) {
+			if (text.length()>0)
+				text += " : ";
+			text += meetingTitle;
+		}
+		if ((meetingLocation !=null) && (meetingLocation.length()>0))
+			text += " - " + meetingLocation;
 		
 		if (widget_id.equals(id_1) || widget_id.equals(id_4)) {
+			
 			paintSmall.setTextAlign(Align.LEFT);
 
-			String text = meetingTitle != null ? meetingTitle : "";
-			if ((meetingLocation !=null) && (meetingLocation.length()>0))
-				text += " - " + meetingLocation;
-
+			int iconSpace = iconFile == null ? 0 : 25;
+			
 			canvas.save();			
-			StaticLayout layout = new StaticLayout(text, paintSmall, widget.width-25, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
+			StaticLayout layout = new StaticLayout(text, paintSmall, widget.width-iconSpace, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
 			int height = layout.getHeight();
 			int textY = 16 - (height/2);
 			if(textY<0) {
 				textY=0;
 			}
-			canvas.translate(25, textY); //position the text
+			canvas.translate(iconSpace, textY); //position the text
 			layout.draw(canvas);
 			canvas.restore();	
 
@@ -263,18 +275,16 @@ public class CalendarWidget implements InternalWidget {
 		else if (widget_id.equals(id_3) || widget_id.equals(id_5)) {
 			paintSmall.setTextAlign(Align.LEFT);
 
-			String text = meetingTitle;
-			if ((meetingLocation !=null) && (meetingLocation.length()>0))
-				text += " - " + meetingLocation;
+			int iconSpace = iconFile == null ? 0 : 11;
 
 			canvas.save();			
-			StaticLayout layout = new StaticLayout(text, paintSmall, widget.width-11, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
+			StaticLayout layout = new StaticLayout(text, paintSmall, widget.width-iconSpace, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
 			int height = layout.getHeight();
 			int textY = 8 - (height/2);
 			if(textY<0) {
 				textY=0;
 			}
-			canvas.translate(10, textY); //position the text
+			canvas.translate(iconSpace, textY); //position the text
 			layout.draw(canvas);
 			canvas.restore();	
 
