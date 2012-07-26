@@ -276,20 +276,22 @@ public class MetaWatch extends TabActivity {
     }
     
     private void displayStatus() {
-    	textView.setText("MetaWatch Manager - Community Edition\n\n");
+    	Resources res = getResources();
+    	textView.setText(res.getString(R.string.app_name_long));
+    	textView.append("\n\n");
     	
     	switch (MetaWatchService.connectionState) {
 	    	case MetaWatchService.ConnectionState.DISCONNECTED:
-	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_disconnected).toUpperCase(), Color.RED);
+	    		Utils.appendColoredText(textView, res.getString(R.string.connection_disconnected).toUpperCase(), Color.RED);
 	    		break;
 	    	case MetaWatchService.ConnectionState.CONNECTING:
-	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_connecting).toUpperCase(), Color.YELLOW);
+	    		Utils.appendColoredText(textView, res.getString(R.string.connection_connecting).toUpperCase(), Color.YELLOW);
 	    		break;
 	    	case MetaWatchService.ConnectionState.CONNECTED:
-	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_connected).toUpperCase(), Color.GREEN);
+	    		Utils.appendColoredText(textView, res.getString(R.string.connection_connected).toUpperCase(), Color.GREEN);
 	    		break;
 	    	case MetaWatchService.ConnectionState.DISCONNECTING:
-	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_disconnecting).toUpperCase(), Color.YELLOW);
+	    		Utils.appendColoredText(textView, res.getString(R.string.connection_disconnecting).toUpperCase(), Color.YELLOW);
 	    		break;
     	}
     	textView.append("\n");
@@ -297,47 +299,55 @@ public class MetaWatch extends TabActivity {
     	if (Preferences.weatherProvider != WeatherProvider.DISABLED) {
     		textView.append("\n");
     		if (Monitors.weatherData.received) {
-    			textView.append("Weather last updated:\n");
-    			textView.append("  Forecast:\n    ");
+    			textView.append(res.getString(R.string.status_weather_last_updated));
+    			textView.append("\n  ");
+    			textView.append(res.getString(R.string.status_weather_forecast));
+    			textView.append("\n    ");
     			printDate(Monitors.weatherData.forecastTimeStamp);
-    			textView.append("  Current Observation:\n    ");
+    			textView.append("  ");
+    			textView.append(res.getString(R.string.status_weather_observation));
+    			textView.append("\n    ");
     			printDate(Monitors.weatherData.timeStamp);
     		}
     		else {
-    			textView.append("Waiting for weather data.\n");
+    			textView.append(res.getString(R.string.status_weather_waiting));
     		}
     	}
     	
     	if (Preferences.weatherGeolocationMode != GeolocationMode.MANUAL) {
     		textView.append("\n");
     		if (LocationData.received) {
-    			textView.append("Location last updated:\n  ");
+    			textView.append(res.getString(R.string.status_location_updated));
+    			textView.append("\n  ");
     			printDate(LocationData.timeStamp);
     		}
     		else {
-    			textView.append("Waiting for location data.\n");
+    			textView.append(res.getString(R.string.status_location_waiting));
+    			textView.append("\n");
     		}
     	}
     	
-    	if (Utils.isAccessibilityEnabled(this)) {
+    	textView.append("\n");
+    	if (Utils.isAccessibilityEnabled(this)) {    		
 	    	if (MetaWatchAccessibilityService.accessibilityReceived) {
-	    		Utils.appendColoredText(textView, "\nAccessibility enabled and working\n", Color.GREEN);
+	    		Utils.appendColoredText(textView, res.getString(R.string.status_accessibility_working), Color.GREEN);
 	    	}
 	    	else {
 	    		if(startupTime==0 || System.currentTimeMillis()-startupTime<60*1000) {
-	    			textView.append("\nAccessibility enabled - waiting for notifications\n");
+	    			textView.append(res.getString(R.string.status_accessibility_waiting));
 	    		}
 	    		else {
-	    			Utils.appendColoredText(textView, "\nAccessibility not working - disable and renable Accessibility in the system settings\n", Color.RED);
+	    			Utils.appendColoredText(textView, res.getString(R.string.status_accessibility_failed), Color.RED);
 	    		}
 	    	}
 	    }
     	else {
-    		textView.append("\nAccessibility disabled\n");
+    		textView.append(res.getString(R.string.status_accessibility_disabled));
     	}
+    	textView.append("\n");
     
-    	textView.append("\nMessage Queue Length: " + Protocol.getQueueLength());
-    	textView.append("\nNotification Queue Length: " + Notification.getQueueLength() + "\n");
+    	textView.append("\n"+res.getString(R.string.status_message_queue)+" " + Protocol.getQueueLength());
+    	textView.append("\n"+res.getString(R.string.status_notification_queue)+" " + Notification.getQueueLength() + "\n");
     	
     	if(Preferences.showNotificationQueue) {
     		textView.append(Notification.dumpQueue());
@@ -346,7 +356,7 @@ public class MetaWatch extends TabActivity {
     
     private void printDate(long ticks) {
     	if(ticks==0) {
-    		textView.append("...loading...");
+    		textView.append(getResources().getString(R.string.status_loading));
     	}
     	else {
 	    	textView.append(Utils.ticksToText(this, ticks));
