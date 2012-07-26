@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MetaWatch</string>
+    
+    <string name="settings_Notifications">Notificações</string>
+	<string name="settings_Call">Chamada</string>
+	<string name="settings_Call_desc">Notificação de chamada</string>
+    <string name="settings_SMS">SMS/MMS</string>
+    <string name="settings_SMS_desc">Notificação de nova mensagem de texto/multimédia</string>
+    <string name="settings_SMS_Vibrate_Pattern">Padrão de Vibração de SMS</string>
+    <string name="settings_Gmail">Gmail</string>
+    <string name="settings_Gmail_desc"> Notificação de novo e-mail (Gmail)</string>
+    <string name="settings_Gmail_Vibrate_Pattern">Padrão de Vibração Gmail</string>
+	<string name="settings_K9">K9 mail</string>
+	<string name="settings_K9_desc">Notificação de novo e-mail (K-9)</string>
+	<string name="settings_K9_Vibrate_Pattern">Padrão de Vibração K9</string>
+	<string name="settings_TD">TouchDown mail</string>
+	<string name="settings_TD_desc">Notificação de novo e-mail (TouchDown)</string>
+	<string name="settings_TD_Vibrate_Pattern">Padrão de Vibração TouchDown</string>
+	<string name="settings_Alarm">Despertador</string>
+	<string name="settings_Alarm_desc">Alerta de despertador</string>
+	<string name="settings_Alarm_Vibrate_Pattern">Padrão de Vibração do Despertador</string>
+	<string name="settings_Music">Música</string>
+	<string name="settings_Music_desc">Informação de faixa/artista</string>
+    <string name="settings_Music_Vibrate_Pattern">Padrão de Vibração da Música</string>
+    <string name="settings_Timezonechange">Mudança de fuso horário</string>
+    <string name="settings_Timezonechange_desc">Notificar quando o telemóvel muda de fuso horário</string>
+    <string name="settings_Timezonechange_Vibrate_Pattern">Padrão de Vibração de Fuso Horário</string>
+    <string name="settings_Batterylow">Bateria fraca</string>
+    <string name="settings_Batterylow_desc">Mostra um aviso quando a bateria do dispositivo está fraca</string>
+    <string name="settings_Battery_Vibrate_Pattern">Padrão de Vibração da Bateria</string>
+    <string name="settings_NewVoicemail">Novo correio de voz</string>
+    <string name="settings_NewVoicemail_desc">Mostra uma notificação quando é recebida uma mensagem de correio de voz</string>
+    <string name="settings_NewVoicemail_Vibrate_Pattern">Padrão de Vibração de Novo Correio de Voz</string>
+	<string name="settings_Calendar">Calendário</string>
+	<string name="settings_Calendar_desc">Notificações de calendário (requer Acessibilidade nas definições Android)</string>
+    <string name="settings_Calendar_Vibrate_Pattern">Padrão de Vibração do Calendário</string>
+	<string name="settings_NMA">Notify My Android</string>
+	<string name="settings_NMA_desc">Encaminhar notificações de Notify My Android</string>
+    <string name="settings_NMA_Vibrate_Pattern">Padrão de Vibração do NMA</string>
+	<string name="settings_OtherNotification">Outras Aplicações</string>
+	<string name="settings_OtherNotification_desc">Outras notificações (requer Acessibilidade nas definições Android)</string>
+    <string name="settings_OtherNotification_Vibrate_Pattern">Padrão de Vibração de Outras Aplicações</string>
+	<string name="settings_OtherNotification_Vibrate_Pattern_desc">Padrão de Vibração por defeito para outras aplicações</string>
+
+	<string name="settings_OtherApps">Definições de Outras Aplicações</string>
+	<string name="settings_OtherApps_desc">Escolher padrões de vibração personalizados e que aplicações geram notificações</string>
+
+	<string name="settings_CancelButton">Cancelar</string>
+
+	<string name="settings_Font_Size">Tamanho da Letra</string>
+	
+	<string name="settings_center_notification">Centrar Texto das Notificações</string>
+	<string name="settings_center_notification_desc">Desenhar o texto das notificações centrado</string>
+
+	<string name="settings_auto_light">Ligar luz automaticamente nas notificações</string>
+	<string name="settings_auto_light_desc">Liga a luz quando uma notificação é mostrada</string>
+
+	<string name="settings_notification_timeout">Timeout das Notificações</string>
+	<string name="settings_notification_timeout_desc">Tempo padrão que as notificações esperam antes de voltar ao ecrã idle (em segundos)</string>
+
+    <string name="settings_Device">Dispositivo</string>
+    <string name="settings_Mac">MAC</string>
+    <string name="settings_Mac_desc">Endereço MAC do relógio</string>
+
+    <string name="settings_Read_calendar_during_meeting">Monitorizar calendário enquanto decorre uma reunião</string>
+    <string name="settings_Read_calendar_during_meeting_desc">Actualizar informação de calendário enquanto decorre uma reunião (tirar visto para manter a antiga informação de calendário no widget após o começo da reunião)</string>
+    <string name="settings_Read_calendar_min_duration_to_meeting_end">Duração mínima de final da reunião</string>
+    <string name="settings_Read_calendar_min_duration_to_meeting_end_desc">Duração em minutos desde o fim da reunião até a leitura do calendário ser permitida</string>
+    <string name="settings_Display_location_in_small_calendar_widget">Mostrar local na widget pequena de calendário</string>
+    <string name="settings_Display_location_in_small_calendar_widget_desc">Mostrar local em vez da data na widget 24x32 de próximo acontecimento de calendário se houver espaço</string>
+    <string name="settings_Event_date_in_calendar_widget">Data do acontecimento na widget de calendário </string>
+    <string name="settings_Event_date_in_calendar_widget_desc">Mostra a data do acontecimento em vez do dia de hoje nas widgets *x32 de calendário (enquanto mostra um acontecimento)</string>
+
+    <string name="settings_Display_widget_row_separator">Mostrar linha separadora</string>
+    <string name="settings_Display_widget_row_separator_desc">Desenha uma linha separadora entre filas de widgets</string>
+
+    <string name="settings_Overlay_weather_text">Texto sobreposto na widget de clima</string>
+    <string name="settings_Overlay_weather_text_desc">Desenha o texto (condição e local) sobre o ícone de clima</string>
+
+    <string name="settings_phoneCalls">Chamadas</string>
+        
+    <string name="settings_call_actions">Mostrar ações durante a chamada</string>
+    <string name="settings_call_actions_desc">Mostrar automaticamente as ações de chamada durante uma chamada</string>
+   	<string name="settings_auto_speakerphone">Altifalante automático</string>
+   	<string name="settings_auto_speakerphone_desc">Ligar automaticamente o altifalante quando uma chamada é atendida usando o relógio</string>     
+       
+    <string name="settings_analog_pause_scroll">Esperar antes de fazer scroll à mensagem </string>
+    <string name="settings_analog_pause_scroll_desc">Esperar uns segundos antes de rodar mensagens longas no relógio analógico</string>
+        
+    <string name="settings_quick_button_action">Botão de Ação Rápida</string>
+    <string name="settings_quick_button_action_desc">Ação para o Botão do Meio Direito em páginas idle sem ser de aplicação</string>    
+        
+    <string name="settings_sticky_notifications">Notificações Sticky</string>  
+    <string name="settings_sticky_notifications_desc">Usar notificações sticky (mantêm-se no ecrã até serem apagadas manualmente)</string>   
+        
+    <string name="settings_sticky_notification_timeout">Timeout das Notificações Sticky</string>
+    <string name="settings_sticky_notification_timeout_desc">Tempo padrão que as notificações sticky esperam antes de voltar ao ecrã idle (em segundos)</string>    
+        
+    <string name="settings_invert_lcd">Inverter LCD</string>    
+    <string name="settings_invert_lcd_desc">Inverter os mostradores do relógio quando apropriado</string>
+        
+    <string name="settings_clock_every_page">Relógio em todas as páginas</string>
+    <string name="settings_clock_every_page_desc">Mostrar o relógio em todas as páginas de widgets</string>    
+        
+    <string name="settings_idle_app_buffer">Usar o Buffer de Aplicações nas páginas de widgets sem relógio</string>
+    <string name="settings_idle_app_buffer_desc">Torna o relógio e ícone de estado visíveis quando a conecção ao relógio cai, mas perde as ações dos botões nas páginas afetadas</string>    
+        
+    <string-array name="settings_font_size_name"> 
+   	<item>Pequena</item>
+   	<item>Média</item>
+   	<item>Grande</item>     
+	</string-array> 
+
+	<string-array name="settings_font_size_value"> 
+	<item>1</item>
+   	<item>2</item>
+   	<item>3</item>  
+	</string-array>
+	
+	<string name="settings_Number_of_buzzes_dialogtitle">Número de Buzzes</string>
+    
+	<string-array name="settings_number_buzzes_names">
+	<item>Sem Vibração</item> 
+	<item>Um Buzz</item>
+   	<item>Dois Buzzes</item>
+   	<item>Três Buzzes</item>  
+   	<item>Quatro Buzzes</item>  
+   	<item>Cinco Buzzes</item>  
+	</string-array>
+
+	<string-array name="settings_number_buzzes_values"> 
+	<item>0</item>
+	<item>1</item>
+   	<item>2</item>
+   	<item>3</item>  
+   	<item>4</item>  
+   	<item>5</item>  
+	</string-array>
+    
+	<string-array name="settings_collect_voltage_names">
+	<item>Nunca</item> 
+	<item>1 Minuto</item>
+	<item>5 Minutos</item>
+   	<item>10 Minutos</item>
+   	<item>15 Minutos</item>  
+   	<item>30 Minutos</item>  
+   	<item>60 Minutos</item>  
+	</string-array>
+
+	<string-array name="settings_collect_voltage_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>5</item>
+   	<item>10</item>
+   	<item>15</item>  
+   	<item>30</item>  
+   	<item>60</item>  
+	</string-array>
+        
+    <string-array name="settings_media_control_method_names">
+    <item>Mensagens do MusicServiceCommand (leitor de música padrão)</item>
+    <item>Emular botões do auricular (Winamp e outros leitores)</item>
+    </string-array>
+    
+    <string-array name="settings_media_control_method_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	</string-array>
+	
+	<string-array name="settings_weather_provider_names">
+	<item>Desativado</item>
+    <item>Google Weather</item>
+    <item>Weather Underground</item>
+    <item>Yahoo Weather</item>
+    </string-array>
+    
+    <string-array name="settings_weather_provider_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	<item>3</item>
+	</string-array>
+	
+    <string-array name="settings_geolocation_names">
+	<item>Usar localização introduzida manualmente</item>
+    <item>Usar serviço de clima</item>
+    <item>Usar sempre o Google</item>
+    </string-array>
+    
+    <string-array name="settings_geolocation_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	</string-array>
+    
+    <string-array name="settings_app_launch_mode_name"> 
+   	<item>Popup</item>
+   	<item>Página de Aplicação</item>    
+	</string-array> 
+
+	<string-array name="settings_app_launch_mode_value"> 
+	<item>0</item>
+   	<item>1</item> 
+	</string-array>
+    
+    <string-array name="settings_quick_button_name"> 
+   	<item>Desativado (mostrar/esconder segundos)</item>
+   	<item>Mostrar última notificação</item>
+   	<item>Abrir/Ir para a aplicação de ações</item>   
+	</string-array> 
+
+	<string-array name="settings_quick_button_value"> 
+	<item>0</item>
+   	<item>1</item>
+   	<item>2</item>
+	</string-array>
+    
+    <string name="settings_Digital">Relógio Digital</string>
+    <string name="settings_Analog">Relógio Analógico</string>
+    <string name="settings_Other">Outros</string>
+    
+    <string name="settings_Select_Watch">Selecionar Relógio</string>
+    <string name="settings_Select_Watch_desc">Descobrir e selecionar relógio</string>
+    <string name="settings_Show_fake_watches">Mostrar relógios falsos</string>
+    <string name="settings_Show_fake_watches_desc">Mostrar entradas falsas no ecrã de procura, para emular conecções a um relógio analógico ou digital</string>
+
+    <string name="settings_watch_widgets">Widgets do Relógio</string>
+    <string name="settings_weather_widgets">Widgets de Clima</string>
+    <string name="settings_calendar_widgets">Widgets de Calendário</string>
+    <string name="settings_watch_apps">Aplicações do Relógio</string>
+    
+    <string name="settings_reset_widgets">Repôr Widgets Originais</string>
+    <string name="settings_reset_widgets_desc">Repõe as widgets ao padrão inicial</string>
+    
+    <string name="settings_weather_provider">Serviço de Clima</string>
+    <string name="settings_weather_provider_desc">Escolher ou desativar fonte de informação de clima</string>
+    
+    <string name="settings_weather_geolocation">Modo de Geolocalização de Clima</string>
+    <string name="settings_weather_geolocation_desc">Modo de Geolocalização</string>
+    
+    <string name="settings_weather_location">Local do Clima</string>
+    <string name="settings_weather_location_desc">Mostrar temperatura em Celsius em vez de Fahrenheit</string>
+    
+    <string name="settings_wunderground_key">Chave API</string>
+    <string name="settings_wunderground_key_desc">Chave API para Weather Underground - Necessária ao utilizar Weather Underground como serviço de clima</string>
+    
+    <string name="settings_app_launch_mode">Modo de Lançamento de Aplicações</string>
+    
+    <string name="settings_music_app">Controlos de Música</string>
+    <string name="settings_music_app_desc">Controlos de Música como Página de Aplicação</string>
+    
+    <string name="settings_media_control_method">Método de Controlo Multimédia</string>
+    
+    <string name="settings_actions_app">Ações</string>
+    <string name="settings_actions_app_desc">Ecrã de Ações como Página de Aplicação (ver notificações recentes, lançar aplicações, e muito mais)</string>
+    
+    <string name="settings_choose_theme">Escolher Tema</string>
+    <string name="settings_choose_theme_desc">Escolher um tema gráfico para o relógio</string>
+    
+    <string name="settings_packet_wait">Tempo de espera de pacotes</string>
+    <string name="settings_packet_wait_desc">Tempo entre envios sucessivos de pacotes (ms)</string>
+    
+    <string name="settings_hide_notification_icon">Esconder Ícone de Notificação</string>
+    <string name="settings_hide_notification_icon_desc">Esconder o ícone de notificação da barra de estado (requer restart)</string>
+    
+    <string name="settings_skip_sdp">Saltar pesquisa SDP</string>
+    <string name="settings_skip_sdp_desc">Ligar directamente à porta 1</string>
+    
+    <string name="settings_insecure_bluetooth">Usar socket BT inseguros</string>
+    <string name="settings_insecure_bluetooth_desc">Activar se o telemóvel pedir constantemente o PIN em cada ligação</string>
+    
+    <string name="settings_debug_logging">Fazer Logs de debug</string>
+    <string name="settings_debug_logging_desc">Gravar execução para o log de debug - Desactivar para melhorar a performance - Por favor active isto e utilize o logcat antes de reportar problemas</string>
+    
+    <string name="settings_log_packets">Registar detalhes dos pacotes no log</string>
+    <string name="settings_log_packets_desc">Registar detalhes dos pacotes Bluetooth</string>
+    
+    <string name="settings_sms_freq">Intervalo do ciclo de SMS de teste</string>
+    <string name="settings_sms_freq_desc">Tempo entre SMS de teste (em segundos)</string>
+    
+    <string name="settings_watch_voltage">Registar Voltagem do Relógio</string>
+    <string name="settings_watch_voltage_desc">Monitorizar a voltagem do relógio e registá-la no cartão SD</string>
+    <string name="settings_watch_voltage_freq">Frequência do Registo</string>
+    
+    <string name="settings_auto_connect">Conecção Automática quando a Aplicação Inicia</string>
+    <string name="settings_auto_connect_desc">Tentar estabelecer automaticamente a ligação ao relógio quando a aplicação inicia</string>
+    
+    <string name="settings_notify_on_connect">Notificar Relógio Quando Conecta</string>
+    <string name="settings_notify_on_connect_desc">Enviar uma notificação para o relógio depois de efectuar a ligação</string>
+    
+    <string name="settings_display_splash">Mostrar splash screen</string>
+    <string name="settings_display_splash_desc">Mostrar o ecrã de início do MWM no relógio</string>
+    
+    <string name="settings_restart_if_stalled">Reiniciar se bloqueado</string>
+    <string name="settings_restart_if_stalled_desc">Reiniciar o serviço automaticamente se este se encontra bloqueado</string>
+    
+    <string name="settings_haptic_feedback">Reação Tátil</string>
+    <string name="settings_haptic_feedback_desc">Fazer vibrar o relógio quando um botão é pressionado</string>
+    
+    <string name="settings_notification_queue">Mostrar fila de notificações</string>
+    <string name="settings_notification_queue_desc">Mostrar o conteúdo da fila de notificações no ecrã de estado</string>
+    
+    <string name="settings_screenshots">Gravar capturas de ecrã do relógio</string>
+    <string name="settings_screenshots_desc">Gravar capturas de ecrã do relógio no cartão SD. AVISO - isto irá atrasar tudo e poderá encher o cartão SD - apenas útil para obter capturas de ecrã dos temas</string>
+    
+    <string name="settings_backup">Definições de Cópia de Segurança</string>
+    <string name="settings_backup_backup">Fazer Cópia de Segurança</string>
+    <string name="settings_backup_backup_desc">Fazer uma cópia de segurança das definições para o armazenamento externo</string>
+    <string name="settings_backup_restore">Restaurar Cópia de Segurança</string>
+    <string name="settings_backup_restore_desc">Restaurar definições a partir do armazenamento externo</string>
+   
+    
+    <string name="main_service_toggle_on">Serviço em execução. Toque para parar.</string>
+    <string name="main_service_toggle_off">Serviço parado. Toque para começar.</string>
+
+  
+  	<string name="ui_tab_status">Estado</string>
+  	<string name="ui_tab_preferences">Definições</string>
+  	<string name="ui_tab_widgets">Widgets</string>
+  	<string name="ui_tab_tests">Testes</string>
+  	  
+    
+    <string name="device_selection_search_button">Procurar por dispositivos</string>
+    
+    
+    <string name="other_apps_app_enable">Incluir</string>
+    <string name="other_apps_vibrate_label">Buzzes</string>
+    <string name="other_apps_vibration_set_button">Def.</string>
+    
+   
+    
+</resources>
