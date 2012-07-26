@@ -340,7 +340,7 @@
 	<string name="connection_disconnecting">Disconnecting</string>
 	
 	
-	<string name="error_bluetooth_not_supported">Can't connect to Watch, Bluetooth is not supported.</string>
-	<string name="error_bluetooth_not_enabled">"an't connect to Watch, Bluetooth is disabled.  Enable Bluetooth and try again.</string>
+	<string name="error_bluetooth_not_supported">Can\'t connect to Watch, Bluetooth is not supported.</string>
+	<string name="error_bluetooth_not_enabled">Can\'t connect to Watch, Bluetooth is disabled.  Enable Bluetooth and try again.</string>
     
 </resources>
