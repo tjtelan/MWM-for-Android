@@ -439,13 +439,13 @@ public class MetaWatchService extends Service {
 		case ConnectionState.CONNECTED:
 			notification.icon = (hideNotificationIcon ? R.drawable.transparent_square
 					: R.drawable.connected);
-			notification.setLatestEventInfo(this, "MetaWatch Manager", "Connected", createNotificationPendingIntent());
+			notification.setLatestEventInfo(this, getResources().getString(R.string.app_name), getResources().getString(R.string.connection_connected), createNotificationPendingIntent());
 			broadcastConnection(true);
 			break;
 		default:
 			notification.icon = (hideNotificationIcon ? R.drawable.transparent_square
 					: R.drawable.disconnected);
-			notification.setLatestEventInfo(this, "MetaWatch Manager", "Disconnected", createNotificationPendingIntent());
+			notification.setLatestEventInfo(this, getResources().getString(R.string.app_name), getResources().getString(R.string.connection_disconnected), createNotificationPendingIntent());
 			broadcastConnection(false);
 			break;
 		}
@@ -549,11 +549,10 @@ public class MetaWatchService extends Service {
 			if (!MetaWatchService.fakeWatch) {
 	
 				if (bluetoothAdapter == null) {
-					sendToast("Can't connect to Watch, Bluetooth is not supported.");
+					sendToast(getResources().getString(R.string.error_bluetooth_not_supported));
 					return;
 				} else if (!bluetoothAdapter.isEnabled()) {
-					sendToast("Can't connect to Watch, Bluetooth is disabled. " +
-							"Enable Bluetooth and try again.");
+					sendToast(getResources().getString(R.string.error_bluetooth_not_enabled));
 					return;
 				}
 				
@@ -904,7 +903,7 @@ public class MetaWatchService extends Service {
 				boolean notifyOnConnect = sharedPreferences.getBoolean("NotifyWatchOnConnect", false);
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.connect(): notifyOnConnect=" + notifyOnConnect);
 				if (notifyOnConnect) {
-					NotificationBuilder.createOtherNotification(context, null, "MetaWatch", "Connected", 1);
+					NotificationBuilder.createOtherNotification(context, null, "MetaWatch", getResources().getString(R.string.connection_connected), 1);
 				}
 				
 				Idle.activateButtons(this);

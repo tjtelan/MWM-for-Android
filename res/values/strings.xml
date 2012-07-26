@@ -333,6 +333,14 @@
     
     <string name="other_apps_use_default">Use default value</string>
     
-   
+
+	<string name="connection_disconnected">Disconnected</string>  
+	<string name="connection_connecting">Connecting</string> 
+	<string name="connection_connected">Connected</string> 
+	<string name="connection_disconnecting">Disconnecting</string>
+	
+	
+	<string name="error_bluetooth_not_supported">Can't connect to Watch, Bluetooth is not supported.</string>
+	<string name="error_bluetooth_not_enabled">"an't connect to Watch, Bluetooth is disabled.  Enable Bluetooth and try again.</string>
     
 </resources>

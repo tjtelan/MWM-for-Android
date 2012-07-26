@@ -280,18 +280,19 @@ public class MetaWatch extends TabActivity {
     	
     	switch (MetaWatchService.connectionState) {
 	    	case MetaWatchService.ConnectionState.DISCONNECTED:
-	    		Utils.appendColoredText(textView, "DISCONNECTED\n", Color.RED);
+	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_disconnected).toUpperCase(), Color.RED);
 	    		break;
 	    	case MetaWatchService.ConnectionState.CONNECTING:
-	    		Utils.appendColoredText(textView, "CONNECTING\n", Color.YELLOW);
+	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_connecting).toUpperCase(), Color.YELLOW);
 	    		break;
 	    	case MetaWatchService.ConnectionState.CONNECTED:
-	    		Utils.appendColoredText(textView, "CONNECTED\n", Color.GREEN);
+	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_connected).toUpperCase(), Color.GREEN);
 	    		break;
 	    	case MetaWatchService.ConnectionState.DISCONNECTING:
-	    		Utils.appendColoredText(textView, "DISCONNECTING\n", Color.YELLOW);
+	    		Utils.appendColoredText(textView, getResources().getString(R.string.connection_disconnecting).toUpperCase(), Color.YELLOW);
 	    		break;
     	}
+    	textView.append("\n");
     	
     	if (Preferences.weatherProvider != WeatherProvider.DISABLED) {
     		textView.append("\n");
