@@ -194,13 +194,21 @@ public class CalendarWidget implements InternalWidget {
 		canvas.drawColor(Color.WHITE);
 
 		if (widget.height == 16) {
-			canvas.drawBitmap(icon, 2, 0, null);
+			canvas.drawBitmap(icon, widget.width == 16 ? 2 : 0, 0, null);
 			if(meetingTime.equals("None"))
-				canvas.drawText("-", 8, 15, paintSmallNumerals);
+				canvas.drawText("-", widget.width == 16 ? 8 : 6, 15, paintSmallNumerals);
 			else {
 				// Strip out colon to make it fit;
 				String time = meetingTime.replace(":", "");
-				canvas.drawText(time, 8, 15, paintSmallNumerals);
+
+				if (widget.width==16) {
+					canvas.drawText(time, 8, 15, paintSmallNumerals);
+				}
+				else {
+					paintSmallNumerals.setTextAlign(Align.LEFT);
+					canvas.drawText(time, 0, 15, paintSmallNumerals);
+					paintSmallNumerals.setTextAlign(Align.CENTER);
+				}
 			}
 		}
 		else {
@@ -260,13 +268,13 @@ public class CalendarWidget implements InternalWidget {
 				text += " - " + meetingLocation;
 
 			canvas.save();			
-			StaticLayout layout = new StaticLayout(text, paintSmall, widget.width-16, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
+			StaticLayout layout = new StaticLayout(text, paintSmall, widget.width-11, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
 			int height = layout.getHeight();
 			int textY = 8 - (height/2);
 			if(textY<0) {
 				textY=0;
 			}
-			canvas.translate(16, textY); //position the text
+			canvas.translate(10, textY); //position the text
 			layout.draw(canvas);
 			canvas.restore();	
 
