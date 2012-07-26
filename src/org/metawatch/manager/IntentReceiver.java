@@ -316,7 +316,7 @@ public class IntentReceiver extends BroadcastReceiver {
 			if (intent.hasExtra("playing")) {
 				boolean playing = intent.getBooleanExtra("playing", false);
 				if (playing == false) {
-					/* Ignore stop events. */
+					MediaControl.stopPlaying(context);
 					return;
 				}
 			}

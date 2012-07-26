@@ -121,7 +121,7 @@ public class MediaPlayerApp extends InternalApp {
 		paintLargeOutline.setTextSize(FontCache.instance(context).Large.size);
 		paintLargeOutline.setTypeface(FontCache.instance(context).Large.face);
 		
-
+		MediaControl.TrackInfo lastTrack = MediaControl.getLastTrack();
 		
 		if (watchType == WatchType.DIGITAL) {
 			
@@ -129,7 +129,7 @@ public class MediaPlayerApp extends InternalApp {
 			Canvas canvas = new Canvas(bitmap);
 			canvas.drawColor(Color.WHITE);	
 			
-			if(MediaControl.lastTrack=="") {
+			if(lastTrack.track=="") {
 				canvas.drawBitmap(Utils.getBitmap(context, "media_player_idle.png"), 0, 0, null);				
 			}
 			else {	
@@ -137,7 +137,7 @@ public class MediaPlayerApp extends InternalApp {
 				
 				
 				TextPaint tp = null;
-				if( paintLarge.measureText(MediaControl.lastTrack) < 170) {
+				if( paintLarge.measureText(lastTrack.track) < 170) {
 					tp = paintLarge;
 				}
 				else {
@@ -145,7 +145,7 @@ public class MediaPlayerApp extends InternalApp {
 				}
 				
 				canvas.save();			
-				StaticLayout layout = new StaticLayout(MediaControl.lastTrack, tp, 96, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
+				StaticLayout layout = new StaticLayout(lastTrack.track, tp, 96, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
 				int height = layout.getHeight();
 				int textY = 26 - (height/2);
 				if(textY<8) {
@@ -158,13 +158,13 @@ public class MediaPlayerApp extends InternalApp {
 				
 				canvas.save();			
 				StringBuilder lowerText = new StringBuilder();
-				if(!MediaControl.lastArtist.equals("")) {
-					lowerText.append(MediaControl.lastArtist);
+				if(!lastTrack.artist.equals("")) {
+					lowerText.append(lastTrack.artist);
 				}
-				if(!MediaControl.lastAlbum.equals("")) {
+				if(!lastTrack.album.equals("")) {
 					if(lowerText.length()>0)
 						lowerText.append("\n\n");
-					lowerText.append(MediaControl.lastAlbum);
+					lowerText.append(lastTrack.album);
 				}
 				layout = new StaticLayout(lowerText.toString(), paintSmall, 96, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
 				height = layout.getHeight();
@@ -186,14 +186,14 @@ public class MediaPlayerApp extends InternalApp {
 			Canvas canvas = new Canvas(bitmap);
 			canvas.drawColor(Color.WHITE);	
 	
-			if(MediaControl.lastTrack=="") {
+			if(lastTrack.track=="") {
 				canvas.drawBitmap(Utils.getBitmap(context, "media_player_idle_oled.png"), 0, 0, null);				
 			}
 			else {	
 				canvas.drawBitmap(Utils.getBitmap(context, "media_player_oled.png"), 0, 0, null);
 								
 				TextPaint tp = null;
-				if( paintLarge.measureText(MediaControl.lastTrack) < 75) {
+				if( paintLarge.measureText(lastTrack.track) < 75) {
 					tp = paintLarge;
 				}
 				else {
@@ -201,7 +201,7 @@ public class MediaPlayerApp extends InternalApp {
 				}
 				
 				canvas.save();			
-				StaticLayout layout = new StaticLayout(MediaControl.lastTrack, tp, 75, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
+				StaticLayout layout = new StaticLayout(lastTrack.track, tp, 75, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
 				int height = layout.getHeight();
 				int textY = 8 - (height/2);
 				if(textY<0) {
@@ -214,13 +214,13 @@ public class MediaPlayerApp extends InternalApp {
 				
 				canvas.save();			
 				StringBuilder lowerText = new StringBuilder();
-				if(!MediaControl.lastArtist.equals("")) {
-					lowerText.append(MediaControl.lastArtist);
+				if(!lastTrack.artist.equals("")) {
+					lowerText.append(lastTrack.artist);
 				}
-				if(!MediaControl.lastAlbum.equals("")) {
+				if(!lastTrack.album.equals("")) {
 					if(lowerText.length()>0)
 						lowerText.append("\n\n");
-					lowerText.append(MediaControl.lastAlbum);
+					lowerText.append(lastTrack.album);
 				}
 				
 				if( paintLarge.measureText(lowerText.toString()) < 75) {

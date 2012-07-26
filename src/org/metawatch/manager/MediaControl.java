@@ -51,9 +51,39 @@ public class MediaControl {
 	final static int MUSICSERVICECOMMAND = 0;
 	final static int EMULATE_HEADSET = 1;
 	
-	public static String lastArtist = "";
-	public static String lastAlbum = "";
-	public static String lastTrack = "";
+	private final static int TIME_TEN_MINUTES = 10 * 60 * 1000;
+	
+	public static class TrackInfo {
+		public String artist = "";
+		public String album = "";
+		public String track = "";
+		
+		public boolean isEmpty() {
+			return artist.equals("") && album.equals("") && track.equals("");
+		}
+		
+		public TrackInfo() {
+			artist = "";
+			album = "";
+			track = "";
+		}
+		
+		public TrackInfo(String newArtist, String newAlbum, String newTrack) {
+			artist = newArtist;
+			album = newAlbum;
+			track = newTrack;
+		}
+	}
+	
+	private static TrackInfo lastTrack = new TrackInfo();
+	private static long lastTimeUpdate = 0;
+	
+	public static TrackInfo getLastTrack() { 
+		if (!lastTrack.isEmpty() && System.currentTimeMillis() - lastTimeUpdate > TIME_TEN_MINUTES)
+			lastTrack = new TrackInfo();
+		return lastTrack; 
+	}
+	
 	
 	public static void next(Context context) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "MediaControl.next()");
@@ -166,13 +196,13 @@ public class MediaControl {
 	public static void updateNowPlaying(Context context, String artist, String album, String track, String sender) {
 
 		/* Ignore if track info hasn't changed. */
-		if (artist.equals(MediaControl.lastArtist) && track.equals(MediaControl.lastTrack) && album.equals(MediaControl.lastAlbum)) {
+		if (artist.equals(lastTrack.artist) && track.equals(lastTrack.track) && album.equals(lastTrack.album)) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "updateNowPlaying(): Track info hasn't changed, ignoring");
 			return;
 		}
-		MediaControl.lastArtist = artist;
-		MediaControl.lastTrack = track;
-		MediaControl.lastAlbum = album;
+		
+		lastTrack = new TrackInfo(artist, album, track);
+		lastTimeUpdate = System.currentTimeMillis();
 		
 		int mediaPlayerState = AppManager.getAppState(MediaPlayerApp.APP_ID);
 		if (mediaPlayerState == InternalApp.ACTIVE_IDLE)
@@ -211,5 +241,12 @@ public class MediaControl {
 			}
 		}
 
+	}
+	
+	public static void stopPlaying(Context context) {
+		lastTrack = new TrackInfo();
+		lastTimeUpdate = System.currentTimeMillis();
+		
+		Idle.updateIdle(context, true);
 	}
 }
