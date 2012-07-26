@@ -11,9 +11,9 @@
     <string name="settings_Gmail">Gmail</string>
     <string name="settings_Gmail_desc">New E-mail notification (Gmail)</string>
     <string name="settings_Gmail_Vibrate_Pattern">Gmail Vibrate Pattern</string>
-	<string name="settings_K9">K9 mail</string>
+	<string name="settings_K9">K-9 mail</string>
 	<string name="settings_K9_desc">New E-mail notification (K-9 mail)</string>
-	<string name="settings_K9_Vibrate_Pattern">K9 Vibrate Pattern</string>
+	<string name="settings_K9_Vibrate_Pattern">K-9 Vibrate Pattern</string>
 	<string name="settings_TD">TouchDown mail</string>
 	<string name="settings_TD_desc">New E-mail notification (TouchDown)</string>
 	<string name="settings_TD_Vibrate_Pattern">TouchDown Vibrate Pattern</string>
@@ -327,7 +327,11 @@
     
     <string name="other_apps_app_enable">Include</string>
     <string name="other_apps_vibrate_label">Buzzes</string>
-    <string name="other_apps_vibration_set_button">Set</string>
+    
+    <string name="other_apps_vibration_default_abbr">Def.</string>
+    <string name="other_apps_vibration_none_abbr">No</string>
+    
+    <string name="other_apps_use_default">Use default value</string>
     
    
     

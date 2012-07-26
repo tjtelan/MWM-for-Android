@@ -125,9 +125,9 @@ public class OtherAppsList extends Activity {
 		
 		private String getBuzzesText(int buzzes) {
 			if (buzzes == -1) {
-				return "Def.";
+				return getResources().getString(R.string.other_apps_vibration_default_abbr);
 			} else if (buzzes == 0) {
-				return "No";
+				return getResources().getString(R.string.other_apps_vibration_none_abbr);
 			} else {
 				return String.valueOf(buzzes);
 			}
@@ -183,7 +183,7 @@ public class OtherAppsList extends Activity {
 							dialog.dismiss();
 						}
 					});
-					builder.setNeutralButton("Use default value", new DialogInterface.OnClickListener() {
+					builder.setNeutralButton(getResources().getString(R.string.other_apps_use_default), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							appInfo.buzzes = -1;
 							buzzes.setText(getBuzzesText(appInfo.buzzes));
