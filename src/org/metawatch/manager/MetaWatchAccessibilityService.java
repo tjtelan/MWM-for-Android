@@ -36,6 +36,10 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 
 	private String currentActivity = "";
 	public static boolean accessibilityReceived = false;
+
+	private static String lastNotificationPackage = "";
+	private static String lastNotificationText = "";
+	private static long lastNotificationWhen = 0;
 	
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -47,8 +51,8 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 		
 		/* Acquire details of event. */
 		int eventType = event.getEventType();
-		CharSequence packageName = event.getPackageName();
-		CharSequence className = event.getClassName();
+		String packageName = event.getPackageName().toString();
+		String className = event.getClassName().toString();
 				
 		if (eventType == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG,
@@ -75,6 +79,19 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 						"MetaWatchAccessibilityService.onAccessibilityEvent(): Empty text, ignoring.");
 				return;
 			}
+			
+			String tickerText = notification.tickerText.toString();
+			
+			if (lastNotificationPackage.equals(packageName) && lastNotificationText.equals(tickerText) &&
+					lastNotificationWhen == notification.when) {
+				if (Preferences.logging) Log.d(MetaWatch.TAG,
+						"MetaWatchAccessibilityService.onAccessibilityEvent(): Duplicate notification, ignoring.");
+				return;
+			}
+			
+			lastNotificationPackage = packageName;
+			lastNotificationText = tickerText;
+			lastNotificationWhen = notification.when;
 	
 			SharedPreferences sharedPreferences = PreferenceManager
 					.getDefaultSharedPreferences(this);
@@ -83,10 +100,8 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 			if (packageName.equals("com.android.calendar")) {
 				if (sharedPreferences.getBoolean("NotifyCalendar", true)) {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
-							"onAccessibilityEvent(): Sending calendar event: '"
-									+ notification.tickerText + "'.");
-					NotificationBuilder.createCalendar(this,
-							notification.tickerText.toString() );
+							"onAccessibilityEvent(): Sending calendar event: '"	+ tickerText + "'.");
+					NotificationBuilder.createCalendar(this, tickerText);
 					return;
 				}
 			}
@@ -96,8 +111,8 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 				if (sharedPreferences.getBoolean("notifySMS", true)) {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Sending SMS event: '"
-									+ notification.tickerText + "'.");
-					NotificationBuilder.createSMS(this,"Google Message" ,notification.tickerText.toString());
+									+ tickerText + "'.");
+					NotificationBuilder.createSMS(this,"Google Message", tickerText);
 					return;
 				}
 			}
@@ -106,7 +121,7 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 			/* Deezer or Spotify track notification */
 			if (packageName.equals("deezer.android.app") || packageName.equals("com.spotify.mobile.android.ui")) {
 				
-				String text = notification.tickerText.toString().trim();
+				String text = tickerText.trim();
 				
 				int truncatePos = text.indexOf(" - ");
 				if (truncatePos>-1)
@@ -114,7 +129,7 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 					String artist = text.substring(0, truncatePos);
 					String track = text.substring(truncatePos+3);
 					
-					MediaControl.updateNowPlaying(this, artist, "", track, packageName.toString());
+					MediaControl.updateNowPlaying(this, artist, "", track, packageName);
 					
 					return;
 				}
@@ -163,31 +178,30 @@ public class MetaWatchAccessibilityService extends AccessibilityService {
 				if (appName == null) {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Unknown app -- sending notification: '"
-									+ notification.tickerText + "'.");
+									+ tickerText + "'.");
 					NotificationBuilder.createOtherNotification(this, icon,
-							"Notification", notification.tickerText.toString(), buzzes);
+							"Notification", tickerText, buzzes);
 				} else {
 					if (Preferences.logging) Log.d(MetaWatch.TAG,
 							"onAccessibilityEvent(): Sending notification: app='"
 									+ appName + "' notification='"
-									+ notification.tickerText + "'.");
+									+ tickerText + "'.");
 					NotificationBuilder.createOtherNotification(this, icon, appName,
-							notification.tickerText.toString(), buzzes);
+							tickerText, buzzes);
 				}
 			}
 		}
 		else if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED)
 		{
-			String newActivity = className.toString();
 			if (currentActivity.startsWith("com.fsck.k9")) {
-				if (!newActivity.startsWith("com.fsck.k9")) {
+				if (!className.startsWith("com.fsck.k9")) {
 					// User has switched away from k9, so refresh the read count
 					Utils.refreshUnreadK9Count(this);
 					Idle.updateIdle(this, true);
 				}
 			}
 			
-			currentActivity = newActivity;
+			currentActivity = className;
 		}
 	}
 
