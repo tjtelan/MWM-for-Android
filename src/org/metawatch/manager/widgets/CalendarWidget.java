@@ -104,8 +104,8 @@ public class CalendarWidget implements InternalWidget {
 					meetingTime = Utils.readCalendar(context, 0);
 					meetingStartTimestamp = Utils.Meeting_StartTimestamp;
 					meetingEndTimestamp = Utils.Meeting_EndTimestamp;
-					meetingLocation = Utils.Meeting_Location;
-					meetingTitle = Utils.Meeting_Title;
+					meetingLocation = Utils.Meeting_Location != null ? Utils.Meeting_Location : "";
+					meetingTitle = Utils.Meeting_Title != null ? Utils.Meeting_Title : "";
 					if (Preferences.logging) Log.d(MetaWatch.TAG, "CalendarWidget.refresh() stop");   
 				}
 				
@@ -235,7 +235,7 @@ public class CalendarWidget implements InternalWidget {
 		if (widget_id.equals(id_1) || widget_id.equals(id_4)) {
 			paintSmall.setTextAlign(Align.LEFT);
 
-			String text = meetingTitle;
+			String text = meetingTitle != null ? meetingTitle : "";
 			if ((meetingLocation !=null) && (meetingLocation.length()>0))
 				text += " - " + meetingLocation;
 
