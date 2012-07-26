@@ -610,18 +610,18 @@
 	</PreferenceScreen>	
 	
 	<PreferenceScreen
-		android:title="Backup settings"
+		android:title="@string/settings_backup"
 		>
 		
 		<Preference
-			android:title="Backup"
+			android:title="@string/settings_backup_backup"
 			android:key="Backup"
-			android:summary="Backup settings to external storage."
+			android:summary="@string/settings_backup_backup_desc"
 			/>
 		<Preference
-			android:title="Restore"
+			android:title="@string/settings_backup_restore"
 			android:key="Restore"
-			android:summary="Restore settings from external storage."
+			android:summary="@string/settings_backup_restore_desc"
 			/>
 	</PreferenceScreen>
 

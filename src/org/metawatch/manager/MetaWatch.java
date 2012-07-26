@@ -113,21 +113,21 @@ public class MetaWatch extends TabActivity {
         final TabHost tabHost = getTabHost();
 
         tabHost.addTab(tabHost.newTabSpec("tab1")
-                .setIndicator("Status",res.getDrawable(R.drawable.ic_tab_status))
+                .setIndicator(res.getString(R.string.ui_tab_status),res.getDrawable(R.drawable.ic_tab_status))
                 .setContent(new Intent(this, MetaWatchStatus.class)));
 
         tabHost.addTab(tabHost.newTabSpec("tab2")
-                .setIndicator("Preferences",res.getDrawable(R.drawable.ic_tab_settings))
+                .setIndicator(res.getString(R.string.ui_tab_preferences),res.getDrawable(R.drawable.ic_tab_settings))
                 .setContent(new Intent(this, Settings.class)));
         
         tabHost.addTab(tabHost.newTabSpec("tab3")
         		.setIndicator("destroy")
-                .setIndicator("Widgets",res.getDrawable(R.drawable.ic_tab_widgets))
+                .setIndicator(res.getString(R.string.ui_tab_widgets),res.getDrawable(R.drawable.ic_tab_widgets))
                 .setContent(new Intent(this, WidgetSetup.class)
                 		.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
         
         tabHost.addTab(tabHost.newTabSpec("tab4")
-                .setIndicator("Tests",res.getDrawable(R.drawable.ic_tab_test))
+                .setIndicator(res.getString(R.string.ui_tab_tests),res.getDrawable(R.drawable.ic_tab_test))
                 .setContent(new Intent(this, Test.class)));
         
         synchronized (MetaWatchStatus.textView) {

@@ -28,7 +28,7 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:gravity="center_horizontal"
-		    android:text="Include" />
+		    android:text="@string/other_apps_app_enable" />
 		    
 		<CheckBox android:id="@+id/other_apps_list_item_check"
 			android:layout_width="wrap_content"
@@ -47,14 +47,14 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:gravity="center_horizontal"
-	        android:text="Buzzes" />
+	        android:text="@string/other_apps_vibrate_label" />
 	    <Button
 	        android:id="@+id/other_apps_list_item_buzzes"
 	        style="?android:attr/buttonStyleSmall"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:gravity="center"
-	        android:text="Def." />
+	        android:text="@string/other_apps_vibration_set_button" />
 
 	</LinearLayout>
 </LinearLayout>

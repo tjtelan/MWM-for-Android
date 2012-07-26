@@ -305,4 +305,30 @@
     <string name="settings_screenshots">Dump watch screenshots</string>
     <string name="settings_screenshots_desc">Save screenshots of the watch display to your SD Card.  WARNING - this will slow down everything, and could fill up your SD Card - only really of use for obtaining screenshots for themes.</string>
     
+    <string name="settings_backup">Backup Settings</string>
+    <string name="settings_backup_backup">Backup</string>
+    <string name="settings_backup_backup_desc">Backup settings to external storage.</string>
+    <string name="settings_backup_restore">Restore</string>
+    <string name="settings_backup_restore_desc">Restore settings from external storage.</string>
+   
+    
+    <string name="main_service_toggle_on">Service running.  Click to stop.</string>
+    <string name="main_service_toggle_off">Service stopped.  Click to start.</string>
+
+  
+  	<string name="ui_tab_status">Status</string>
+  	<string name="ui_tab_preferences">Preferences</string>
+  	<string name="ui_tab_widgets">Widgets</string>
+  	<string name="ui_tab_tests">Tests</string>
+  	  
+    
+    <string name="device_selection_search_button">Search for devices</string>
+    
+    
+    <string name="other_apps_app_enable">Include</string>
+    <string name="other_apps_vibrate_label">Buzzes</string>
+    <string name="other_apps_vibration_set_button">Set</string>
+    
+   
+    
 </resources>
