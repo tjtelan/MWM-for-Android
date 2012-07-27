@@ -468,6 +468,8 @@ public class NotificationBuilder {
 		int scroll = textHeight-font.size;
 		boolean more = true;
 		
+		int pages = 0;
+		
 		while (more) {	
 			more = false;
 			Bitmap bitmap = Bitmap.createBitmap(96, 96, Bitmap.Config.RGB_565);
@@ -491,8 +493,9 @@ public class NotificationBuilder {
 			if (y>0)
 				canvas.drawBitmap(Utils.getBitmap(context, "arrow_up.bmp"), arrowUpLeft, arrowUpTop, null);
 			
-			if((h-y)>(displayHeight)) {
+			if((h-y)>(displayHeight) && pages<10) {
 				more = true;
+				pages++;
 				canvas.drawBitmap(Utils.getBitmap(context, "arrow_down.bmp"), arrowDownLeft, arrowDownTop, null);
 			}
 						
