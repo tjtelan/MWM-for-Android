@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MetaWatch</string>
+    <string name="app_name_long">MetaWatch Manager - Community Edition</string>
     
     <string name="settings_Notifications">Benachrichtigungen</string>
 	<string name="settings_Call">Anrufen</string>
@@ -11,9 +12,9 @@
     <string name="settings_Gmail">Gmail</string>
     <string name="settings_Gmail_desc">Emailbenachrichtigung (Gmail)</string>
     <string name="settings_Gmail_Vibrate_Pattern">Gmail Vibration</string>
-	<string name="settings_K9">K9 Mail</string>
-	<string name="settings_K9_desc">Neue K-9 Email Benachrichtigung</string>
-	<string name="settings_K9_Vibrate_Pattern">K9 Vibration</string>
+	<string name="settings_K9">K-9 Mail</string>
+	<string name="settings_K9_desc">Neue K-9 Mail Benachrichtigung</string>
+	<string name="settings_K9_Vibrate_Pattern">K-9 Mail Vibration</string>
 	<string name="settings_TD">TouchDown Mail</string>
 	<string name="settings_TD_desc">Neue Touchdown Email Benachrichtigung</string>
 	<string name="settings_TD_Vibrate_Pattern">TouchDown Vibration</string>
@@ -327,8 +328,37 @@
     
     <string name="other_apps_app_enable">Einschließen</string>
     <string name="other_apps_vibrate_label">Vibration</string>
-    <string name="other_apps_vibration_set_button">Einstellen</string>
     
-   
+    <string name="other_apps_vibration_default_abbr">Def.</string>
+    <string name="other_apps_vibration_none_abbr">No</string>
     
+    <string name="other_apps_use_default">Use default value</string>
+    
+
+	<string name="connection_disconnected">Disconnected</string>  
+	<string name="connection_connecting">Connecting</string> 
+	<string name="connection_connected">Connected</string> 
+	<string name="connection_disconnecting">Disconnecting</string>
+	
+	
+	<string name="error_bluetooth_not_supported">Can\'t connect to Watch, Bluetooth is not supported.</string>
+	<string name="error_bluetooth_not_enabled">Can\'t connect to Watch, Bluetooth is disabled.  Enable Bluetooth and try again.</string>
+    
+	<string name="status_loading">...loading...</string>
+	
+	<string name="status_weather_last_updated">Weather Last Updated:</string>
+	<string name="status_weather_forecast">Forecast:</string>
+	<string name="status_weather_observation">Current Observation:</string>
+	<string name="status_weather_waiting">Waiting for weather data.</string>
+	<string name="status_location_updated">Location last updated:</string>
+	<string name="status_location_waiting">Waiting for location data.</string>
+	
+	<string name="status_accessibility_working">Accessibility enabled and working</string>
+	<string name="status_accessibility_waiting">Accessibility enabled - waiting for notifications</string>
+	<string name="status_accessibility_failed">Accessibility not working - disable and renable Accessibility in the system settings</string>
+	<string name="status_accessibility_disabled">Accessibility disabled</string>
+	
+	<string name="status_message_queue">Message Queue Length:</string>
+	<string name="status_notification_queue">Notification Queue Length:</string>
+	
 </resources>
