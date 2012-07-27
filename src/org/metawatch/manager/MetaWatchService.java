@@ -602,7 +602,6 @@ public class MetaWatchService extends Service {
 			
 		} catch (IOException ioexception) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, ioexception.toString());
-			// sendToast(ioexception.toString());
 		} catch (SecurityException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 		} catch (NoSuchMethodException e) {
@@ -613,7 +612,10 @@ public class MetaWatchService extends Service {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 		} catch (InvocationTargetException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
+		} catch (NullPointerException e) {
+			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 		}
+		
 		
 		return;
 	}

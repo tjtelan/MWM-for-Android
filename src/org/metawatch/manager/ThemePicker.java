@@ -151,13 +151,15 @@ public class ThemePicker extends ListActivity {
         
         addTheme(BitmapCache.getInternalTheme(this));
         
-        File searchDir = Utils.getExternalFilesDir(this, "Themes");  
-        File[] themeFiles = searchDir.listFiles();
-		for (File file : themeFiles) {
-			String themeName = file.getName().replace(".zip", "");		
-			if (Preferences.logging) Log.d(MetaWatch.TAG, "Found theme "+themeName);
-			addTheme(BitmapCache.loadTheme(this, themeName));
-		}
+        File searchDir = Utils.getExternalFilesDir(this, "Themes"); 
+        if (searchDir != null) {
+	        File[] themeFiles = searchDir.listFiles();
+			for (File file : themeFiles) {
+				String themeName = file.getName().replace(".zip", "");		
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "Found theme "+themeName);
+				addTheme(BitmapCache.loadTheme(this, themeName));
+			}
+        }
         
         Collections.sort(themeList, COMPARATOR);
         
