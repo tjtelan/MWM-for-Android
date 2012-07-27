@@ -46,6 +46,7 @@ import org.metawatch.manager.Notification.VibratePattern;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Debug;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -353,7 +354,7 @@ public class Test extends PreferenceActivity {
 		preferenceScreen.findPreference("dump_hprof").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
 		    	try {
-					Debug.dumpHprofData("/sdcard/metawatch.hprof");
+					Debug.dumpHprofData(Environment.getExternalStorageDirectory().getPath()+ "metawatch.hprof");
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

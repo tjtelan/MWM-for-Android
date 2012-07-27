@@ -85,12 +85,16 @@ public class MetaWatch extends TabActivity {
     /** Flag indicating whether we have called bind on the service. */
     boolean mIsBound;
     
-    long startupTime = 0;
+    static long startupTime = 0;
+    
+    private static Context context = null;
         
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        context = this;
+        
         // If you want to use BugSense for your fork, register with them
         // and place your API key in /assets/bugsense.txt
         // (This prevents me receiving reports of crashes from forked versions
@@ -262,7 +266,7 @@ public class MetaWatch extends TabActivity {
     /**
      * Handler of incoming messages from service.
      */
-    class IncomingHandler extends Handler {
+    static class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -275,8 +279,8 @@ public class MetaWatch extends TabActivity {
         }
     }
     
-    private void displayStatus() {
-    	Resources res = getResources();
+    private static void displayStatus() {
+    	Resources res = context.getResources();
     	textView.setText(res.getString(R.string.app_name_long));
     	textView.append("\n\n");
     	
@@ -328,7 +332,7 @@ public class MetaWatch extends TabActivity {
     	}
     	
     	textView.append("\n");
-    	if (Utils.isAccessibilityEnabled(this)) {    		
+    	if (Utils.isAccessibilityEnabled(context)) {    		
 	    	if (MetaWatchAccessibilityService.accessibilityReceived) {
 	    		Utils.appendColoredText(textView, res.getString(R.string.status_accessibility_working), Color.GREEN);
 	    	}
@@ -354,12 +358,12 @@ public class MetaWatch extends TabActivity {
     	}
     }
     
-    private void printDate(long ticks) {
+    private static void printDate(long ticks) {
     	if(ticks==0) {
-    		textView.append(getResources().getString(R.string.status_loading));
+    		textView.append(context.getResources().getString(R.string.status_loading));
     	}
     	else {
-	    	textView.append(Utils.ticksToText(this, ticks));
+	    	textView.append(Utils.ticksToText(context, ticks));
     	}
     	textView.append("\n");
     }
@@ -367,7 +371,10 @@ public class MetaWatch extends TabActivity {
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
-    final Messenger mMessenger = new Messenger(new IncomingHandler());
+    
+    final static IncomingHandler mIncomingHandler = new IncomingHandler();
+    
+    final static Messenger mMessenger = new Messenger(new IncomingHandler());
 
     /**
      * Class for interacting with the main interface of the service.

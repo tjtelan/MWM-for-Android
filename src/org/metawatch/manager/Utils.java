@@ -59,6 +59,7 @@ import org.xml.sax.SAXException;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -766,6 +767,7 @@ public class Utils {
 		
 	}
     
+	@TargetApi(8)
 	public static boolean restoreUserPrefs(Context context) {
 		final File backupFile = new File(getExternalFilesDir(context, null), "preferenceBackup.xml");
 		String error = "";
@@ -851,6 +853,7 @@ public class Utils {
 	    return name.substring(0, name.lastIndexOf('.'));
 	}
 	
+	@TargetApi(8)
 	public static File getExternalFilesDir(Context context, String type) {
 		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 		if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO) {

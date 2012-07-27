@@ -49,6 +49,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -156,7 +157,7 @@ public class Protocol {
 			return false;
 		
 		if (Preferences.dumpWatchScreenshots)
-			Utils.dumpBitmapToSdCard(bitmap, "/sdcard/MWM_"+System.currentTimeMillis()+".png");
+			Utils.dumpBitmapToSdCard(bitmap, Environment.getExternalStorageDirectory().getPath()+ "MWM_"+System.currentTimeMillis()+".png");
 		
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Protocol.sendLcdBitmap()");
 		int pixelArray[] = new int[96 * 96];

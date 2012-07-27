@@ -46,6 +46,7 @@ import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.InternalApp;
 import org.metawatch.manager.widgets.WidgetManager;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
 import android.app.AlarmManager;
@@ -407,7 +408,7 @@ public class MetaWatchService extends Service {
 						+ hideNotificationIcon);
 		int notificationIcon = (hideNotificationIcon ? R.drawable.transparent_square
 				: R.drawable.disconnected);
-		notification = new android.app.Notification(notificationIcon, "MetaWatch Manager",
+		notification = new android.app.Notification(notificationIcon, getResources().getString(R.string.app_name),
 				System.currentTimeMillis());
 		notification.flags |= android.app.Notification.FLAG_ONGOING_EVENT;
 
@@ -527,6 +528,7 @@ public class MetaWatchService extends Service {
 		mClients.clear();
 	}
 
+	@TargetApi(10)
 	void connect(Context context) {
 
 		try {
@@ -626,7 +628,7 @@ public class MetaWatchService extends Service {
     /** Keeps track of all current registered clients. */
     static ArrayList<Messenger> mClients = new ArrayList<Messenger>();
   
-	private Handler messageHandler = new Handler() {
+	private static Handler messageHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -653,7 +655,7 @@ public class MetaWatchService extends Service {
 	/**
      * Target we publish for clients to send messages to IncomingHandler.
      */
-    final Messenger mMessenger = new Messenger(messageHandler);
+    final static Messenger mMessenger = new Messenger(messageHandler);
 
     public static void notifyClients() {
     	for (int i=mClients.size()-1; i>=0; i--) {

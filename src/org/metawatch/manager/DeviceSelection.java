@@ -103,7 +103,7 @@ public class DeviceSelection extends Activity {
 		}
 	}
 	
-	Context context;
+	static Context context;
 	ListView listView;
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	Set<String> foundMacs = new TreeSet<String>();
@@ -224,7 +224,7 @@ public class DeviceSelection extends Activity {
 		messageHandler.sendMessage(m);
 	}
 
-	private Handler messageHandler = new Handler() {
+	private static Handler messageHandler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {

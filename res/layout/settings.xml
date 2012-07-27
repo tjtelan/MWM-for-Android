@@ -263,7 +263,7 @@
 			android:title="@string/settings_notification_timeout"
 			android:key="notificationTimeout"
 			android:summary="@string/settings_notification_timeout_desc"
-			android:numeric="integer"
+			android:inputType="number"
 			android:defaultValue="5"
 			/>
 				
@@ -327,7 +327,7 @@
 			android:title="@string/settings_sticky_notification_timeout"
 			android:key="stickyNotificationTimeout"
 			android:summary="@string/settings_sticky_notification_timeout_desc"
-			android:numeric="integer"
+			android:inputType="number"
 			android:defaultValue="120"
 			/>
 
@@ -439,7 +439,7 @@
 				android:title="@string/settings_Read_calendar_min_duration_to_meeting_end"
 				android:key="ReadCalendarMinDurationToMeetingEnd"
 				android:summary="@string/settings_Read_calendar_min_duration_to_meeting_end_desc"
-				android:numeric="integer"
+				android:inputType="number"
 				android:defaultValue="15"
 				/>
 			<CheckBoxPreference
@@ -512,7 +512,7 @@
 			android:title="@string/settings_packet_wait"
 			android:key="PacketWait"
 			android:summary="@string/settings_packet_wait_desc"
-			android:numeric="integer"
+			android:inputType="number"
 			android:defaultValue="10"
 			/>
 		<CheckBoxPreference
@@ -549,7 +549,7 @@
 			android:title="@string/settings_sms_freq"
 			android:key="SmsLoopInterval"
 			android:summary="@string/settings_sms_freq_desc"
-			android:numeric="integer"
+			android:inputType="number"
 			android:defaultValue="15"
 			/>
 		<ListPreference 
