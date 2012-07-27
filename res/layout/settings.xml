@@ -399,15 +399,15 @@
 	 			android:defaultValue="1"
 				/>
 		    <EditTextPreference
-				android:title="Weather Location"
+				android:title="@string/settings_weather_location"
 				android:key="WeatherCity"
-				android:summary="Default city for weather data when geolocation mode is set to manual"
+				android:summary="@string/settings_weather_location_desc"
 				android:defaultValue="Dallas TX"
 				/>
 			<CheckBoxPreference
-				android:title="@string/settings_weather_location"
+				android:title="@string/settings_weather_celsius"
 				android:key="WeatherCelsius"
-				android:summary="@string/settings_weather_location_desc"
+				android:summary="@string/settings_weather_celsius_desc"
 				android:defaultValue="false"
 				/>
 

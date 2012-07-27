@@ -242,7 +242,10 @@
     <string name="settings_weather_geolocation_desc">Geolocation method</string>
     
     <string name="settings_weather_location">Weather Location</string>
-    <string name="settings_weather_location_desc">Display temperature in Celsius instead of Fahrenheit</string>
+    <string name="settings_weather_location_desc">Default city for weather data when geolocation mode is set to manual</string>
+    
+    <string name="settings_weather_celsius">Weather Celsius</string>
+    <string name="settings_weather_celsius_desc">Display temperature in Celsius instead of Fahrenheit</string>
     
     <string name="settings_wunderground_key">API Key</string>
     <string name="settings_wunderground_key_desc">API Key for Weather Underground - Required if using the Weather Underground weather provider</string>
