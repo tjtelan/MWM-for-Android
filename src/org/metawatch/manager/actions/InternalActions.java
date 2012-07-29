@@ -274,12 +274,14 @@ public class InternalActions {
 		public int performAction(Context context) {	
 			try {
 				Intent intent = context.getPackageManager().getLaunchIntentForPackage(getPackage());
-				context.startActivity(intent);
+				if (intent!=null) {
+					context.startActivity(intent);
+					return InternalApp.BUTTON_USED;
+				}
 			}
-			catch (ActivityNotFoundException e) {
-				return InternalApp.BUTTON_NOT_USED;
-			}
-			return InternalApp.BUTTON_USED;
+			catch (ActivityNotFoundException e) {}			
+			
+			return InternalApp.BUTTON_NOT_USED;
 		}	
 		
 	}

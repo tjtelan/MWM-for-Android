@@ -259,6 +259,9 @@ public class Idle {
 		
 		if (page == -1) {
 			AppPage aPage = new AppPage(app);
+			
+			if (idlePages==null)
+				idlePages = new ArrayList<IdlePage>();
 			idlePages.add(aPage);
 			page = idlePages.indexOf(aPage);
 			
