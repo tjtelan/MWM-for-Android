@@ -24,20 +24,20 @@
 	<string name="settings_Music">Musik</string>
 	<string name="settings_Music_desc">Lied/Künstler Information</string>
     <string name="settings_Music_Vibrate_Pattern">Musik Vibration</string>
-    <string name="settings_Timezonechange">Änderung Zeitzone</string>
+    <string name="settings_Timezonechange">Zeitzone</string>
     <string name="settings_Timezonechange_desc">Benachrichtigen sobald sich die Zeitzone ändert.</string>
-    <string name="settings_Timezonechange_Vibrate_Pattern">Zeitzonenwechsel Vibration</string>
+    <string name="settings_Timezonechange_Vibrate_Pattern">Zeitzone Vibration</string>
     <string name="settings_Batterylow">Akku leer</string>
     <string name="settings_Batterylow_desc">Zeigt eine Warnung, sobald der Akku leer ist.</string>
-    <string name="settings_Battery_Vibrate_Pattern">Batteriewarnung Vibration</string>
-    <string name="settings_NewVoicemail">Neue Sprachnachricht</string>
+    <string name="settings_Battery_Vibrate_Pattern">Akku leer Vibration</string>
+    <string name="settings_NewVoicemail">Sprachnachricht</string>
     <string name="settings_NewVoicemail_desc">Benachrichtigt, sobald eine neue Sprachnachricht empfangen wurde.</string>
-    <string name="settings_NewVoicemail_Vibrate_Pattern">Neue Sprachnachricht Vibration</string>
+    <string name="settings_NewVoicemail_Vibrate_Pattern">Sprachnachricht Vibration</string>
 	<string name="settings_Calendar">Kalender</string>
 	<string name="settings_Calendar_desc">Kalenderbenachrichtigungen (benötigt Accessibility  in Android Einstellungen)</string>
     <string name="settings_Calendar_Vibrate_Pattern">Kalender Vibration</string>
 	<string name="settings_NMA">Notify My Android</string>
-	<string name="settings_NMA_desc">Benachrichtigungen aus Notify My Android weiterleiten.</string>
+	<string name="settings_NMA_desc">Benachrichtigungen aus Notify My Android (NMA) weiterleiten.</string>
     <string name="settings_NMA_Vibrate_Pattern">NMA Vibration</string>
 	<string name="settings_OtherNotification">Andere Apps</string>
 	<string name="settings_OtherNotification_desc">Andere Benachrichtigungen (benötigt Accessibility in Android Einstellungen).</string>
@@ -51,13 +51,13 @@
 
 	<string name="settings_Font_Size">Schriftgröße</string>
 	
-	<string name="settings_center_notification">Benachrichtigungstext zentriert</string>
+	<string name="settings_center_notification">Benachrichtigung zentriert</string>
 	<string name="settings_center_notification_desc">Benachrichtigungstext zentriert darstellen</string>
 
-	<string name="settings_auto_light">Automatisch Licht bei Benachrichtigungen</string>
+	<string name="settings_auto_light">Benachrichtigung per Licht</string>
 	<string name="settings_auto_light_desc">Automatisch Hintergundbelechtung bei Benachrichtigungen kurz einschalten.</string>
 
-	<string name="settings_notification_timeout">Timeout bei Benachrichtigungen</string>
+	<string name="settings_notification_timeout">Timeout Benachrichtigungen</string>
 	<string name="settings_notification_timeout_desc">Standard Timeout bei Benachrichtigungen bevor die Uhr in den IDLE Mode zurückgeht.</string>
 
     <string name="settings_Device">Gerät</string>
@@ -81,9 +81,9 @@
 
     <string name="settings_phoneCalls">Anrufe</string>
         
-    <string name="settings_call_actions">Zeige Aktionen während eines Anrufs</string>
+    <string name="settings_call_actions">Aktionen während Anruf</string>
     <string name="settings_call_actions_desc">Zeige Aktionen automatisch während eines Anrufs.</string>
-   	<string name="settings_auto_speakerphone">Automatisch Lautsprechen</string>
+   	<string name="settings_auto_speakerphone">Lautsprechen</string>
    	<string name="settings_auto_speakerphone_desc">Automatisch Lautsprechen aktivieren, falls ein Anruf vom Benutzer an der Uhr angenommen wird.</string>     
        
     <string name="settings_analog_pause_scroll">Pause zwischen Scrollen</string>
@@ -92,10 +92,10 @@
     <string name="settings_quick_button_action">Quick Button Action</string>
     <string name="settings_quick_button_action_desc">Aktion der mittleren Taste rechts auf der IDLE Seite</string>    
         
-    <string name="settings_sticky_notifications">Benachrichtigungen (sticky)</string>  
+    <string name="settings_sticky_notifications">Sticky</string>  
     <string name="settings_sticky_notifications_desc">Zeige Benachrichtigungen so lange, bis der Benutzer diese manuell schliesst.</string>   
         
-    <string name="settings_sticky_notification_timeout">Timeout der Sticky Benachrichtigungen</string>
+    <string name="settings_sticky_notification_timeout">Timeout Sticky</string>
     <string name="settings_sticky_notification_timeout_desc">Standard Timeout bei sticky Benachrichtigungen bevor die Uhr in den IDLE Mode zurückgeht.</string>    
         
     <string name="settings_invert_lcd">Invertiere LCD</string>    
@@ -230,7 +230,7 @@
     <string name="settings_watch_widgets">Uhr Widgets</string>
     <string name="settings_weather_widgets">Wetter Widgets</string>
     <string name="settings_calendar_widgets">Kalender Widgets</string>
-    <string name="settings_watch_apps">Uhr Widgets</string>
+    <string name="settings_watch_apps">Uhr Apps</string>
     
     <string name="settings_reset_widgets">Widgets zurücksetzen</string>
     <string name="settings_reset_widgets_desc">Layout der Widgets zurücksetzen</string>
@@ -242,7 +242,10 @@
     <string name="settings_weather_geolocation_desc">Wähle aus wie und welcher Ort zum Wetter angezeigt werden soll.</string>
     
     <string name="settings_weather_location">Ort Manuell</string>
-    <string name="settings_weather_location_desc">Stelle Temperatur in Celsius oder Fahrenheit dar</string>
+    <string name="settings_weather_location_desc">Ortsangabe für manuellen Wetter Geolocation Modus</string>
+    
+    <string name="settings_weather_celsius">Temperatur Celsius</string>
+    <string name="settings_weather_celsius_desc">Stelle Temperatur in Celsius oder Fahrenheit dar</string>
     
     <string name="settings_wunderground_key">API Key</string>
     <string name="settings_wunderground_key_desc">API Key für Weather Underground - Erforderlich sobald Weather Underground als Quelle für die Wetterdaten verwendet wird.</string>
@@ -330,35 +333,35 @@
     <string name="other_apps_vibrate_label">Vibration</string>
     
     <string name="other_apps_vibration_default_abbr">Def.</string>
-    <string name="other_apps_vibration_none_abbr">No</string>
+    <string name="other_apps_vibration_none_abbr">Nein</string>
     
-    <string name="other_apps_use_default">Use default value</string>
+    <string name="other_apps_use_default">Standard</string>
     
 
-	<string name="connection_disconnected">Disconnected</string>  
-	<string name="connection_connecting">Connecting</string> 
-	<string name="connection_connected">Connected</string> 
-	<string name="connection_disconnecting">Disconnecting</string>
+	<string name="connection_disconnected">Nicht verbunden</string>  
+	<string name="connection_connecting">Verbinde</string> 
+	<string name="connection_connected">Verbunden</string> 
+	<string name="connection_disconnecting">Trenne Verbindung</string>
 	
 	
-	<string name="error_bluetooth_not_supported">Can\'t connect to Watch, Bluetooth is not supported.</string>
-	<string name="error_bluetooth_not_enabled">Can\'t connect to Watch, Bluetooth is disabled.  Enable Bluetooth and try again.</string>
+	<string name="error_bluetooth_not_supported">Ihre Uhr kann nicht verbunden werden, da Ihr Telefon kein Bluetooth unterstützt.</string>
+	<string name="error_bluetooth_not_enabled">Bluetooth ist ausgeschaltet. Bitte aktivieren, um Verbindung mit der Uhr zu ermöglichen.</string>
     
-	<string name="status_loading">...loading...</string>
+	<string name="status_loading">...lade...</string>
 	
-	<string name="status_weather_last_updated">Weather Last Updated:</string>
-	<string name="status_weather_forecast">Forecast:</string>
-	<string name="status_weather_observation">Current Observation:</string>
-	<string name="status_weather_waiting">Waiting for weather data.</string>
-	<string name="status_location_updated">Location last updated:</string>
-	<string name="status_location_waiting">Waiting for location data.</string>
+	<string name="status_weather_last_updated">Letztes Wetterupdate:</string>
+	<string name="status_weather_forecast">Vorhersage:</string>
+	<string name="status_weather_observation">Aktuelles Wetter:</string>
+	<string name="status_weather_waiting">Warte auf Wetterdaten.</string>
+	<string name="status_location_updated">Letztes Update Ortsinformation:</string>
+	<string name="status_location_waiting">Warte auf Wetterdaten.</string>
 	
-	<string name="status_accessibility_working">Accessibility enabled and working</string>
-	<string name="status_accessibility_waiting">Accessibility enabled - waiting for notifications</string>
-	<string name="status_accessibility_failed">Accessibility not working - disable and renable Accessibility in the system settings</string>
-	<string name="status_accessibility_disabled">Accessibility disabled</string>
+	<string name="status_accessibility_working">Barrierefreiheit ein</string>
+	<string name="status_accessibility_waiting">Barrierefreiheit ein - warte auf Nachricht</string>
+	<string name="status_accessibility_failed">Barrierefreiheit funktioniert nicht - aus- und wieder einschalten in den Systemeinstellungen</string>
+	<string name="status_accessibility_disabled">Barrierefreiheit aus</string>
 	
-	<string name="status_message_queue">Message Queue Length:</string>
-	<string name="status_notification_queue">Notification Queue Length:</string>
+	<string name="status_message_queue">Message Queue:</string>
+	<string name="status_notification_queue">Benachrichtigungsqueue:</string>
 	
 </resources>

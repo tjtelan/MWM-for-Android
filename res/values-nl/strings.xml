@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Metawatch</string>
+    <string name="app_name_long">Metawatch Manager, gemeenschap editie</string>
+    
+    <string name="settings_Notifications">Melding</string>
+	<string name="settings_Call">Oproep</string>
+	<string name="settings_Call_desc">Binnenkomend gesprek melding</string>
+    <string name="settings_SMS">SMS/MMS</string>
+    <string name="settings_SMS_desc">Nieuwe SMS/MMS melding</string>
+    <string name="settings_SMS_Vibrate_Pattern">SMS tril patroon</string>
+    <string name="settings_Gmail">Gmail</string>
+    <string name="settings_Gmail_desc">Nieuwe e-mailmelding (Gmail)</string>
+    <string name="settings_Gmail_Vibrate_Pattern">Gmail tril patroon</string>
+	<string name="settings_K9">K-9 mail</string>
+	<string name="settings_K9_desc">Nieuwe K9 e-mail</string>
+	<string name="settings_K9_Vibrate_Pattern">K-9 tril patroon</string>
+	<string name="settings_TD">Touchdown mail</string>
+	<string name="settings_TD_desc">Nieuwe Touchdown e-mail</string>
+	<string name="settings_TD_Vibrate_Pattern">Touchdown tril patroon</string>
+	<string name="settings_Alarm">Alarm</string>
+	<string name="settings_Alarm_desc">Wekalarm</string>
+	<string name="settings_Alarm_Vibrate_Pattern">Alarm tril patroon</string>
+	<string name="settings_Music">Muziek</string>
+	<string name="settings_Music_desc">Muziek nummer/artiest info</string>
+    <string name="settings_Music_Vibrate_Pattern">Muziek tril patroon</string>
+    <string name="settings_Timezonechange">Verandering tijdzone</string>
+    <string name="settings_Timezonechange_desc">Melding dat de telefoon is veranderd van tijdzone</string>
+    <string name="settings_Timezonechange_Vibrate_Pattern">Tijdzone tril patroon</string>
+    <string name="settings_Batterylow">Batterij bijna leeg</string>
+    <string name="settings_Batterylow_desc">Geeft een melding op het display als de batterij van dit apparaat bijna leeg is</string>
+    <string name="settings_Battery_Vibrate_Pattern">Batterij tril patroon</string>
+    <string name="settings_NewVoicemail">Nieuwe voicemail</string>
+    <string name="settings_NewVoicemail_desc">Geeft een melding bij nieuwe voicemail</string>
+    <string name="settings_NewVoicemail_Vibrate_Pattern">Nieuwe voicemail tril patroon</string>
+	<string name="settings_Calendar">Agenda</string>
+	<string name="settings_Calendar_desc">Agenda meldingen</string>
+    <string name="settings_Calendar_Vibrate_Pattern">Agenda tril patroon</string>
+	<string name="settings_NMA">Notify my Android</string>
+	<string name="settings_NMA_desc">Meldingen doorsturen van Notify my Android</string>
+    <string name="settings_NMA_Vibrate_Pattern">NMA tril patroon</string>
+	<string name="settings_OtherNotification">Andere Apps</string>
+	<string name="settings_OtherNotification_desc">Andere meldingen (toegang benodigd in Android instellingen)</string>
+    <string name="settings_OtherNotification_Vibrate_Pattern">Andere Apps tril patroon</string>
+	<string name="settings_OtherNotification_Vibrate_Pattern_desc">Standaard tril patroon voor andere Apps</string>
+
+	<string name="settings_OtherApps">Andere Apps instellingen</string>
+	<string name="settings_OtherApps_desc">Stel individuele tril patronen in en Apps waarvoor deze gelden</string>
+
+	<string name="settings_CancelButton">Annuleren</string>
+
+	<string name="settings_Font_Size">Tekstgrootte</string>
+	
+	<string name="settings_center_notification">Meldingstekst centreren</string>
+	<string name="settings_center_notification_desc">Meldingsteksten gecentreerd weergeven</string>
+
+	<string name="settings_auto_light">Licht automatisch aan bij melding</string>
+	<string name="settings_auto_light_desc">Het licht inschakelen als er een melding of een inkomend gesprek wordt weergegeven</string>
+
+	<string name="settings_notification_timeout">Meldingen timeout</string>
+	<string name="settings_notification_timeout_desc">Standaard tijd die non-sticky meldingen worden weergegeven voor er terug wordt gegaan naar rustscherm</string>
+
+    <string name="settings_Device">Apparaat</string>
+    <string name="settings_Mac">MAC</string>
+    <string name="settings_Mac_desc">Het horloge MAC-adres handmatig invoeren</string>
+
+    <string name="settings_Read_calendar_during_meeting">Agenda lezen tijdens vergaderingen</string>
+    <string name="settings_Read_calendar_during_meeting_desc">Agenda informatie updaten tijdens een vergadering (uitzetten om de agenda up te daten na de start van een vergadering)</string>
+    <string name="settings_Read_calendar_min_duration_to_meeting_end">Minimale tijd tot vergadering is afgelopen</string>
+    <string name="settings_Read_calendar_min_duration_to_meeting_end_desc">Tijd in minuten tot het eind van een vergadering voor Agenda lezen weer is toegestaan</string>
+    <string name="settings_Display_location_in_small_calendar_widget">Lokatie weergeven in kleine agenda widget</string>
+    <string name="settings_Display_location_in_small_calendar_widget_desc">Geeft de lokatie in plaats van de datum in de 24x32 volgende agenda afspraak widget als er genoeg ruimte is</string>
+    <string name="settings_Event_date_in_calendar_widget">Afspraakdatum in agenda widget</string>
+    <string name="settings_Event_date_in_calendar_widget_desc">Geeft afspraakdatum weer in plaats van huidige dag in *x32 adenda widget (als er een afspraak is)</string>
+
+    <string name="settings_Display_widget_row_separator">Scheidingslijn weergeven</string>
+    <string name="settings_Display_widget_row_separator_desc">Geeft een scheidingslijn weerd tussen widget rijen</string>
+
+    <string name="settings_Overlay_weather_text">Overschrijf tekst in weer widget</string>
+    <string name="settings_Overlay_weather_text_desc">Schrijft de tekst (conditie en lokatie) over het weer icoon</string>
+
+    <string name="settings_phoneCalls">Telefoonoproepen</string>
+        
+    <string name="settings_call_actions">Acties weergeven tijdens gesprek</string>
+    <string name="settings_call_actions_desc">Automatisch oproep actie menu weergeven tijdens een gesprek.</string>
+   	<string name="settings_auto_speakerphone">Automatisch luidspreker</string>
+   	<string name="settings_auto_speakerphone_desc">Automatisch luidspreker inschakelen als een oproep wordt beantwoord vanaf het horloge.</string>     
+       
+    <string name="settings_analog_pause_scroll">Pauzeren voor verder scrollen</string>
+    <string name="settings_analog_pause_scroll_desc">Paar seconden pauze nemen voor scrollen van lange berichten voor analoog horloge</string>
+        
+    <string name="settings_quick_button_action">Snelknop actie</string>
+    <string name="settings_quick_button_action_desc">Actie voor de rechter middelste knop op niet-App rustpagina\'s</string>    
+        
+    <string name="settings_sticky_notifications">Sticky meldingen</string>  
+    <string name="settings_sticky_notifications_desc">Gebruik sticky meldingen (blijven op het scherm staan tot handmatig wordt weggedrukt)</string>   
+        
+    <string name="settings_sticky_notification_timeout">Sticky meldingen timeout</string>
+    <string name="settings_sticky_notification_timeout_desc">Standaard tijd die Sticky meldingen op het scherm blijven staan voor er wordt teruggekeerd naar rustscherm</string>    
+        
+    <string name="settings_invert_lcd">Negatief LCD</string>    
+    <string name="settings_invert_lcd_desc">Negatief horlogescherm waar dat nodig is</string>
+        
+    <string name="settings_clock_every_page">Klok op elke pagina</string>
+    <string name="settings_clock_every_page_desc">Klok weergeven op alle widget pagina\'s</string>    
+        
+    <string name="settings_idle_app_buffer">Gebruik App buffer voor klokloze widget pagina\'s</string>
+    <string name="settings_idle_app_buffer_desc">Maakt de klok- en het statusicoon zichtbaar wanneer de verbinding met het horloge is verbroken, maar verliest de knoppenacties op relevante pagina\'s.</string>    
+        
+    <string-array name="settings_font_size_name"> 
+   	<item>Klein</item>
+   	<item>Middel</item>
+   	<item>Groot</item>     
+	</string-array> 
+
+	<string-array name="settings_font_size_value"> 
+	<item>1</item>
+   	<item>2</item>
+   	<item>3</item>  
+	</string-array>
+	
+	<string name="settings_Number_of_buzzes_dialogtitle">Aantal keren trillen</string>
+    
+	<string-array name="settings_number_buzzes_names">
+	<item>Niet trillen</item> 
+	<item>Eenmaal trillen</item>
+   	<item>Tweemaal trillen</item>
+   	<item>Driemaal trillen</item>  
+   	<item>Viermaal trillen</item>  
+   	<item>Vijfmaal trillen</item>  
+	</string-array>
+
+	<string-array name="settings_number_buzzes_values"> 
+	<item>0</item>
+	<item>1</item>
+   	<item>2</item>
+   	<item>3</item>  
+   	<item>4</item>  
+   	<item>5</item>  
+	</string-array>
+    
+	<string-array name="settings_collect_voltage_names">
+	<item>Nooit</item> 
+	<item>1 minuut</item>
+	<item>5 minuten</item>
+   	<item>10 minuten</item>
+   	<item>15 minuten</item>  
+   	<item>30 minuten</item>  
+   	<item>60 minuten</item>  
+	</string-array>
+
+	<string-array name="settings_collect_voltage_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>5</item>
+   	<item>10</item>
+   	<item>15</item>  
+   	<item>30</item>  
+   	<item>60</item>  
+	</string-array>
+        
+    <string-array name="settings_media_control_method_names">
+    <item>MuziekServiceCommando berichten (Standaard muziekspeler)</item>
+    <item>Hoofdtelefoonknoppen emuleren (Winamp, en andere spelers)</item>
+    </string-array>
+    
+    <string-array name="settings_media_control_method_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	</string-array>
+	
+	<string-array name="settings_weather_provider_names">
+	<item>Uitgeschakeld</item>
+    <item>Google Weather</item>
+    <item>Weather Underground</item>
+    <item>Yahoo Weather</item>
+    </string-array>
+    
+    <string-array name="settings_weather_provider_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	<item>3</item>
+	</string-array>
+	
+    <string-array name="settings_geolocation_names">
+	<item>Gebruik handmatig ingestelde locatie</item>
+    <item>Gebruik weer aanbieder</item>
+    <item>Gebruik Google altijd</item>
+    </string-array>
+    
+    <string-array name="settings_geolocation_values"> 
+	<item>0</item>
+	<item>1</item>
+	<item>2</item>
+	</string-array>
+    
+    <string-array name="settings_app_launch_mode_name"> 
+   	<item>Popup</item>
+   	<item>App pagina</item>    
+	</string-array> 
+
+	<string-array name="settings_app_launch_mode_value"> 
+	<item>0</item>
+   	<item>1</item> 
+	</string-array>
+    
+    <string-array name="settings_quick_button_name"> 
+   	<item>Uitgeschakeld (Secondenknop)</item>
+   	<item>Laatste melding herhalen</item>
+   	<item>Open/Ga naar de Actions App</item>   
+	</string-array> 
+
+	<string-array name="settings_quick_button_value"> 
+	<item>0</item>
+   	<item>1</item>
+   	<item>2</item>
+	</string-array>
+    
+    <string name="settings_Digital">Digitaal horloge</string>
+    <string name="settings_Analog">Analoog horloge</string>
+    <string name="settings_Other">Andere</string>
+    
+    <string name="settings_Select_Watch">Horloge selecteren</string>
+    <string name="settings_Select_Watch_desc">Horloge ontdekken en selecteren</string>
+    <string name="settings_Show_fake_watches">Nephorloges weergeven</string>
+    <string name="settings_Show_fake_watches_desc">Nepcommando\'s weergeven in ontdekscherm, om de verbinding van een analoog en een digitaal toestel te emuleren, zonder echt te verbinden</string>
+
+    <string name="settings_watch_widgets">Horloge widgets</string>
+    <string name="settings_weather_widgets">Weer widgets</string>
+    <string name="settings_calendar_widgets">Agenda widgets</string>
+    <string name="settings_watch_apps">Horloge Apps</string>
+    
+    <string name="settings_reset_widgets">Reset widgets</string>
+    <string name="settings_reset_widgets_desc">Reset widgets naar standaard layout</string>
+    
+    <string name="settings_weather_provider">Weer aanbieder</string>
+    <string name="settings_weather_provider_desc">Kies of schakel weer data bron uit</string>
+    
+    <string name="settings_weather_geolocation">Weer geolocatie modus</string>
+    <string name="settings_weather_geolocation_desc">Geolocatie methode</string>
+    
+    <string name="settings_weather_location">Weer lokatie</string>
+    <string name="settings_weather_location_desc">Standaard stad voor weerdata wanneer geolocatie op handmatig staat</string>
+    
+    <string name="settings_weather_celsius">Graden in Celsius</string>
+    <string name="settings_weather_celsius_desc">Temperatuur in Celsius weergeven in plaats van Fahrenheit</string>
+    
+    <string name="settings_wunderground_key">Api sleutel</string>
+    <string name="settings_wunderground_key_desc">Api sleutel voor Weather Underground - benodigd als Weather Underground als weer aanbieder wordt gebruikt</string>
+    
+    <string name="settings_app_launch_mode">App opstarten modus</string>
+    
+    <string name="settings_music_app">Muziek bedieningen</string>
+    <string name="settings_music_app_desc">Muziek bedieningen als App pagina</string>
+    
+    <string name="settings_media_control_method">Media bedieningsmethode</string>
+    
+    <string name="settings_actions_app">Acties</string>
+    <string name="settings_actions_app_desc">Acties scherm als een App pagina (recente meldingen weergeven, Apps opstarten en veel meer)</string>
+    
+    <string name="settings_choose_theme">Kies thema</string>
+    <string name="settings_choose_theme_desc">Selecteer een grafisch thema voor je horloge</string>
+    
+    <string name="settings_packet_wait">Packet wacht</string>
+    <string name="settings_packet_wait_desc">Tijd tussen packet zendingen (ms)</string>
+    
+    <string name="settings_hide_notification_icon">Verberg meldingen icoon</string>
+    <string name="settings_hide_notification_icon_desc">Verberg het gaande meldingen icoon in de statusregel (herstarten benodigd)</string>
+    
+    <string name="settings_skip_sdp">Sla SDK-lookup over</string>
+    <string name="settings_skip_sdp_desc">Verbind meteen met poort 1</string>
+    
+    <string name="settings_insecure_bluetooth">Gebruik onveilige bluetooth socket</string>
+    <string name="settings_insecure_bluetooth_desc">Inschakelen als er constant problemen zijn omdat de telefoon constant vraagt naar de PIN als bluetooth verbindt</string>
+    
+    <string name="settings_debug_logging">Foutherstel loggen</string>
+    <string name="settings_debug_logging_desc">Log dingen naar foutherstel log - Uitschakelen om de snelheid te verhogen - alstublieft inschakelen en logcat gebruiken om problemen te rapporteren</string>
+    
+    <string name="settings_log_packets">Log packet details</string>
+    <string name="settings_log_packets_desc">Log details van bluetooth packets</string>
+    
+    <string name="settings_sms_freq">Test sms herhaal interval</string>
+    <string name="settings_sms_freq_desc">Tijd tussen test sms meldingen (in s)</string>
+    
+    <string name="settings_watch_voltage">Horloge voltage waarden verzamelen</string>
+    <string name="settings_watch_voltage_desc">Horloge voltage rapporten verzamelen van horloge en naar SD kaart schrijven (herstart benodigd)</string>
+    <string name="settings_watch_voltage_freq">Verzamel frequentie</string>
+    
+    <string name="settings_auto_connect">Automatisch verbinden bij opstarten</string>
+    <string name="settings_auto_connect_desc">Automatisch proberen te verbinden bij opstarten App</string>
+    
+    <string name="settings_notify_on_connect">Melding weergeven op horloge bij verbinden</string>
+    <string name="settings_notify_on_connect_desc">Zend een melding naar het horloge na het leggen van een verbinding</string>
+    
+    <string name="settings_display_splash">Opstartscherm weergeven</string>
+    <string name="settings_display_splash_desc">MWM opstartscherm weergeven op horloge</string>
+    
+    <string name="settings_restart_if_stalled">Herstart bij vastlopen</string>
+    <string name="settings_restart_if_stalled_desc">Automatisch het programma herstarten wanneer het vastloopt</string>
+    
+    <string name="settings_haptic_feedback">Haptische waarneming</string>
+    <string name="settings_haptic_feedback_desc">Horloge trilt bij indrukken knoppen</string>
+    
+    <string name="settings_notification_queue">Toon meldingen wachtrij</string>
+    <string name="settings_notification_queue_desc">Geef weer wat er in de meldingen wachtrij staat op het status scherm</string>
+    
+    <string name="settings_screenshots">Dump horloge screenshots</string>
+    <string name="settings_screenshots_desc">Sla screenshots van het horloge beeldscherm op op de SD-kaart van de telefoon. WAARSCHUWING: dit zal alles vertragen, en kan de SD-kaart volledig vullen - is alleen handig voor het maken van screenshots voor thema\'s.</string>
+    
+    <string name="settings_backup">Maak een backup van de instellingen</string>
+    <string name="settings_backup_backup">Backup</string>
+    <string name="settings_backup_backup_desc">Maak een backup op externe opslag.</string>
+    <string name="settings_backup_restore">Herstellen</string>
+    <string name="settings_backup_restore_desc">Instellingen herstellen vanaf een externe opslag.</string>
+   
+    
+    <string name="main_service_toggle_on">Programma loopt. Klikken om te stoppen.</string>
+    <string name="main_service_toggle_off">Programma gestopt. Klikken om te starten.</string>
+
+  
+  	<string name="ui_tab_status">Status</string>
+  	<string name="ui_tab_preferences">Voorkeuren</string>
+  	<string name="ui_tab_widgets">Widgets</string>
+  	<string name="ui_tab_tests">Tests</string>
+  	  
+    
+    <string name="device_selection_search_button">Zoeken naar apparaten</string>
+    
+    
+    <string name="other_apps_app_enable">Inclusief</string>
+    <string name="other_apps_vibrate_label">Trillingen</string>
+    
+    <string name="other_apps_vibration_default_abbr">Stnd.</string>
+    <string name="other_apps_vibration_none_abbr">Nee</string>
+    
+    <string name="other_apps_use_default">Gebruik standaard waarde</string>
+    
+
+	<string name="connection_disconnected">Verbinding verbroken</string>  
+	<string name="connection_connecting">Verbinding maken</string> 
+	<string name="connection_connected">Verbonden</string> 
+	<string name="connection_disconnecting">Verbinding verbreken</string>
+	
+	
+	<string name="error_bluetooth_not_supported">Kan niet verbinden met horloge, Bluetooth wordt niet ondersteund</string>
+	<string name="error_bluetooth_not_enabled">Kan niet verbinden met horloge, Bluetooth niet ingeschakeld</string>
+    
+	<string name="status_loading">...inladen</string>
+	
+	<string name="status_weather_last_updated">Laatste weerupdate:</string>
+	<string name="status_weather_forecast">Voorspelling:</string>
+	<string name="status_weather_observation">Huidige waarden:</string>
+	<string name="status_weather_waiting">Wachten op weerdata</string>
+	<string name="status_location_updated">Laatste locatieupdate:</string>
+	<string name="status_location_waiting">Wachten op locatiegegevens.</string>
+	
+	<string name="status_accessibility_working">Toegang ingeschakeld en werkend</string>
+	<string name="status_accessibility_waiting">Toegang ingeschakeld - wachten op meldingen</string>
+	<string name="status_accessibility_failed">Toegankelijkheid werkt niet - schakel toegankelijkheid uit, en aan in de systeeminstellingen</string>
+	<string name="status_accessibility_disabled">Toegankelijkheid uitgeschakeld</string>
+	
+	<string name="status_message_queue">Berichten wachtrijlengte</string>
+	<string name="status_notification_queue">Meldingen wachtrijlengte</string>
+	
+</resources>
