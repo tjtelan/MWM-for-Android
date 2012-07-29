@@ -6,12 +6,12 @@
 
 	<ImageView android:id="@+id/other_apps_list_item_icon"
 		android:layout_width="48dp"
-		android:layout_height="48dp"
+		android:layout_height="54dp"
 		android:layout_marginRight="6dip"
 		android:src="@drawable/icon" />
 	<TextView
 	    android:id="@+id/other_apps_list_item_name"
-	    android:layout_width="wrap_content"
+	    android:layout_width="0dip"
 	    android:layout_height="match_parent"
 	    android:layout_weight="0.66"
 	    android:gravity="center_vertical"
