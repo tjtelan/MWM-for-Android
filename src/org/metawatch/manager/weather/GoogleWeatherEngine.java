@@ -72,10 +72,13 @@ public class GoogleWeatherEngine extends AbstractWeatherEngine {
 					queryString = "http://www.google.com/ig/api?weather=,,,"
 							+ lat + "," + lon;
 				} else {
+					String weatherLocation = Preferences.weatherCity.replace(",", " ")
+							.replace("  ", " ").replace(" ", "%20");
 					queryString = "http://www.google.com/ig/api?weather="
-							+ Preferences.weatherCity;
+							+ weatherLocation;
 					weatherData.locationName = Preferences.weatherCity;
 				}
+				
 
 				HttpClient hc = new DefaultHttpClient();
 				HttpGet httpGet = new HttpGet(queryString);
