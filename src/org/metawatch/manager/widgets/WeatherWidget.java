@@ -345,12 +345,15 @@ public class WeatherWidget implements InternalWidget {
 			paintLarge.setTextAlign(Paint.Align.LEFT);
 						
 			if (Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>0) {
-				canvas.drawText("High", 64, 23, paintSmall);
-				canvas.drawText("Low", 64, 31, paintSmall);
+				final String high = Monitors.weatherData.forecast[0].getTempHigh();
+				final String low = Monitors.weatherData.forecast[0].getTempLow();
+				final boolean shortLabel = (high.length()>2 || low.length()>2);
+				canvas.drawText( shortLabel ? "Hi" : "High", 64, 23, paintSmall);
+				canvas.drawText( shortLabel ? "Lo" : "Low", 64, 31, paintSmall);
 				
 				paintSmall.setTextAlign(Paint.Align.RIGHT);
-				canvas.drawText(Monitors.weatherData.forecast[0].getTempHigh(), 95, 23, paintSmall);
-				canvas.drawText(Monitors.weatherData.forecast[0].getTempLow(), 95, 31, paintSmall);
+				canvas.drawText(high, 95, 23, paintSmall);
+				canvas.drawText(low, 95, 31, paintSmall);
 				paintSmall.setTextAlign(Paint.Align.LEFT);
 			}
 
