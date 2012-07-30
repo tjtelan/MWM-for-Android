@@ -33,7 +33,7 @@
 package org.metawatch.manager;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,13 +46,13 @@ public class Application {
 	public final static byte EXIT_APP = 100;
 	public final static byte TOGGLE_APP = 101;
 	
-	private static InternalApp currentApp = null;
+	private static ApplicationBase currentApp = null;
 
 	public static void startAppMode(Context context) {
 		startAppMode(context, null);
 	}
 	
-	public static void startAppMode(Context context, InternalApp internalApp) {
+	public static void startAppMode(Context context, ApplicationBase internalApp) {
 		if (currentApp != null) {
 			stopAppMode(context);
 		}
@@ -109,37 +109,7 @@ public class Application {
 		}		
 	}
 	
-	public static void updateAppMode(Context context, int[] array) {
-		MetaWatchService.WatchModes.APPLICATION = true;
-		
-		if (MetaWatchService.WatchModes.APPLICATION == true) {
-			
-			// enable app mode if there is no parent mode currently active
-			if (MetaWatchService.watchState < MetaWatchService.WatchStates.APPLICATION)
-				MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
-			
-			if (MetaWatchService.watchState == MetaWatchService.WatchStates.APPLICATION) {
-				Protocol.sendLcdArray(array, MetaWatchService.WatchBuffers.APPLICATION);
-				Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.APPLICATION);
-			}
-		}		
-	}
 	
-	public static void updateAppMode(Context context, byte[] buffer) {
-		MetaWatchService.WatchModes.APPLICATION = true;
-		
-		if (MetaWatchService.WatchModes.APPLICATION == true) {
-			
-			// enable app mode if there is no parent mode currently active
-			if (MetaWatchService.watchState < MetaWatchService.WatchStates.APPLICATION)
-				MetaWatchService.watchState = MetaWatchService.WatchStates.APPLICATION;
-			
-			if (MetaWatchService.watchState == MetaWatchService.WatchStates.APPLICATION) {
-				Protocol.sendLcdBuffer(buffer, MetaWatchService.WatchBuffers.APPLICATION);
-				Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.APPLICATION);
-			}
-		}		
-	}
 	
 	public static void enableToggleButton(int watchType) {
 		if (watchType == MetaWatchService.WatchType.DIGITAL) {
@@ -184,18 +154,18 @@ public class Application {
 		Protocol.updateLcdDisplay(MetaWatchService.WatchBuffers.APPLICATION);
 	}
 	
-	public static void toggleApp(Context context, InternalApp app) {
+	public static void toggleApp(Context context, ApplicationBase app) {
 		if (app != null) {
 			if (!app.isToggleable())
 				return;
-			if (app.appState == InternalApp.ACTIVE_IDLE) {
+			if (app.appState == ApplicationBase.ACTIVE_IDLE) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to popup.");
 				
 				Idle.removeAppPage(context, app);
 				app.open(context, true);
 				return;
 			
-			} else if (app.appState == InternalApp.ACTIVE_POPUP) {
+			} else if (app.appState == ApplicationBase.ACTIVE_POPUP) {
 				if (Preferences.logging) Log.d(MetaWatch.TAG, "Application.toggleApp(): switching to idle page.");
 				
 				Idle.addAppPage(context, app);
@@ -214,7 +184,7 @@ public class Application {
 			toggleApp(context, currentApp);
 			
 		} else if (currentApp != null) {
-			if (currentApp.buttonPressed(context, button) != InternalApp.BUTTON_USED_DONT_UPDATE) {
+			if (currentApp.buttonPressed(context, button) != ApplicationBase.BUTTON_USED_DONT_UPDATE) {
 				updateAppMode(context);
 			}
 			

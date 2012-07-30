@@ -21,7 +21,7 @@ import android.graphics.Canvas;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public abstract class InternalApp {
+public abstract class ApplicationBase {
 	
 	public final static int BUTTON_NOT_USED = 0;
 	public final static int BUTTON_USED = 1;

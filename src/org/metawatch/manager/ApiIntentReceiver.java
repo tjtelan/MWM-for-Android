@@ -34,6 +34,9 @@ package org.metawatch.manager;
 
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Notification.VibratePattern;
+import org.metawatch.manager.apps.AppManager;
+import org.metawatch.manager.apps.ApplicationBase;
+import org.metawatch.manager.apps.ExternalApp;
 import org.metawatch.manager.widgets.WidgetManager;
 
 import android.content.BroadcastReceiver;
@@ -47,21 +50,28 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		String action = intent.getAction();
+		final String action = intent.getAction();
 		
 		// add digital watch check
 		
 		if (action.equals("org.metawatch.manager.APPLICATION_UPDATE")) {
-			//boolean dither = false;
-			//if (intent.hasExtra("requires_dither"))
-			//	dither = true;
+			String id = intent.hasExtra("id") ? intent.getStringExtra("id") : "anonymous";
 			if (intent.hasExtra("array")) {
-				int[] array = intent.getIntArrayExtra("array");			
-				Application.updateAppMode(context, array);
-			} else if (intent.hasExtra("buffer")) {
-				byte[] buffer = intent.getByteArrayExtra("buffer");
-				Application.updateAppMode(context, buffer);
-			}
+				Bitmap bmp = Bitmap.createBitmap(intent.getIntArrayExtra("array"),
+						96, 96, Bitmap.Config.RGB_565);
+				
+				ApplicationBase app = AppManager.getApp(id);
+				if (app != null && app instanceof ExternalApp) {
+					((ExternalApp)app).setBuffer(bmp);
+					
+					if (app.appState == ApplicationBase.ACTIVE_IDLE)
+						Idle.updateIdle(context, true);
+					else if (app.appState == ApplicationBase.ACTIVE_POPUP)
+						Application.updateAppMode(context);
+				}
+				
+				//Application.updateAppMode(context, bmp);
+			} 
 			return;
 		}
 		
@@ -72,12 +82,34 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 		}
 		
 		if (action.equals("org.metawatch.manager.APPLICATION_START")) {
-			Application.startAppMode(context);
+			String id = intent.hasExtra("id") ? intent.getStringExtra("id") : "anonymous";
+			String name = intent.hasExtra("name") ? intent.getStringExtra("name") : "External App";
+			
+			ApplicationBase app = AppManager.getApp(id);
+			if (app==null) {
+				app = new ExternalApp(id, name);
+				AppManager.addApp(app);
+			}
+			int page = Idle.addAppPage(context, app);
+			Idle.toPage(context, page);
+			//Idle.updateIdle(context, false);
+			
+			
+			
+			//Application.startAppMode(context);
 			return;
 		}
 		
 		if (action.equals("org.metawatch.manager.APPLICATION_STOP")) {
-			Application.stopAppMode(context);
+			String id = intent.hasExtra("id") ? intent.getStringExtra("id") : "anonymous";
+			
+			ApplicationBase app = AppManager.getApp(id);
+			if (app!=null) {
+				Idle.removeAppPage(context, app);
+				AppManager.removeApp(app);
+				Idle.updateIdle(context, true);
+			}
+			
 			return;
 		}
 		

@@ -3,7 +3,7 @@ package org.metawatch.manager.actions;
 import org.metawatch.manager.Call;
 import org.metawatch.manager.MediaControl;
 import org.metawatch.manager.Monitors;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -62,7 +62,7 @@ public class InternalActions {
 				as.setStreamVolume(AudioManager.STREAM_RING, volume, 0);
 				as.setRingerMode(ringerMode);
 			}
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 		
 		protected boolean isEnabled() {
@@ -98,7 +98,7 @@ public class InternalActions {
 
 		public int performAction(Context context) {
 			MediaControl.ToggleSpeakerphone(context);
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 	}
 	
@@ -123,7 +123,7 @@ public class InternalActions {
 			count++;
 			timestamp = System.currentTimeMillis();
 			
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 		
 		public int getSecondaryType() {
@@ -132,7 +132,7 @@ public class InternalActions {
 		public int performSecondary(Context context) {
 			count = 0;
 			timestamp = 0;
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 		
 		public long getTimestamp() {
@@ -160,7 +160,7 @@ public class InternalActions {
 		public int performAction(Context context) {
 			Monitors.updateWeatherDataForced(context);
 			
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 		
 		public long getTimestamp() {
@@ -196,7 +196,7 @@ public class InternalActions {
 				wifiMgr.setWifiEnabled( !wifiMgr.isWifiEnabled() );
 			}
 			
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 		
 	}
@@ -227,7 +227,7 @@ public class InternalActions {
 			audioManager.setRingerMode( audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT
 					? AudioManager.RINGER_MODE_NORMAL 
 					: AudioManager.RINGER_MODE_SILENT );
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 	}
 
@@ -251,7 +251,7 @@ public class InternalActions {
 
 		public int performAction(Context context) {
 			name = ANSWER;
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 		
 		public int getSecondaryType() {
@@ -259,7 +259,7 @@ public class InternalActions {
 		}
 		public int performSecondary(Context context) {
 			name = QUESTION;
-			return InternalApp.BUTTON_USED;
+			return ApplicationBase.BUTTON_USED;
 		}
 	}
 	
@@ -276,12 +276,12 @@ public class InternalActions {
 				Intent intent = context.getPackageManager().getLaunchIntentForPackage(getPackage());
 				if (intent!=null) {
 					context.startActivity(intent);
-					return InternalApp.BUTTON_USED;
+					return ApplicationBase.BUTTON_USED;
 				}
 			}
 			catch (ActivityNotFoundException e) {}			
 			
-			return InternalApp.BUTTON_NOT_USED;
+			return ApplicationBase.BUTTON_NOT_USED;
 		}	
 		
 	}

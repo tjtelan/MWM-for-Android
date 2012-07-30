@@ -3,7 +3,7 @@ package org.metawatch.manager.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.Context;
 
@@ -54,7 +54,7 @@ public abstract class ContainerAction extends Action {
 	
 	// Override to do something after opening the container
 	public int performAction(Context context) {
-		return InternalApp.BUTTON_USED;
+		return ApplicationBase.BUTTON_USED;
 	}
 	
 	// Override to provide a custom back action

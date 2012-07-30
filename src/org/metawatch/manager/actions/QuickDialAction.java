@@ -1,6 +1,6 @@
 package org.metawatch.manager.actions;
 
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.Context;
 import android.content.Intent;
@@ -42,7 +42,7 @@ public class QuickDialAction extends ContainerAction {
 				Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("voicemail:"));
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(intent);
-				return InternalApp.BUTTON_USED;
+				return ApplicationBase.BUTTON_USED;
 			}
 			
 		});
@@ -115,7 +115,7 @@ public class QuickDialAction extends ContainerAction {
 							Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
 							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							context.startActivity(intent);
-							return InternalApp.BUTTON_USED;
+							return ApplicationBase.BUTTON_USED;
 						}
 						
 					};

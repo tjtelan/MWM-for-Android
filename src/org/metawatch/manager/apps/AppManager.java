@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class AppManager {
 
-	static Map<String, InternalApp> apps = new HashMap<String, InternalApp>();
+	static Map<String, ApplicationBase> apps = new HashMap<String, ApplicationBase>();
 	
 	public static void initApps() {
 		if(apps.size()==0) {
@@ -16,19 +16,25 @@ public class AppManager {
 		}
 	}
 	
-	private static void addApp(InternalApp app) {
+	public static void addApp(ApplicationBase app) {
 		apps.put(app.getId(), app);
 	}
 	
-	public static InternalApp.AppData[] getAppInfos() {
-		List<InternalApp.AppData> list = new ArrayList<InternalApp.AppData>();
-		for (InternalApp a : apps.values()) {
-			list.add(a.getInfo());
+	public static void removeApp(ApplicationBase app) {
+		if (apps.containsKey(app.getId())) {
+			apps.remove(app.getId());
 		}
-		return list.toArray(new InternalApp.AppData[0]);
 	}
 	
-	public static InternalApp getApp(String appId) {
+	public static ApplicationBase.AppData[] getAppInfos() {
+		List<ApplicationBase.AppData> list = new ArrayList<ApplicationBase.AppData>();
+		for (ApplicationBase a : apps.values()) {
+			list.add(a.getInfo());
+		}
+		return list.toArray(new ApplicationBase.AppData[0]);
+	}
+	
+	public static ApplicationBase getApp(String appId) {
 		if(!apps.containsKey(appId)) {
 			return null;
 		}
@@ -38,7 +44,7 @@ public class AppManager {
 	
 	public static int getAppState(String appId) {
 		if(!apps.containsKey(appId)) {
-			return InternalApp.INACTIVE;
+			return ApplicationBase.INACTIVE;
 		}
 		
 		return apps.get(appId).appState;

@@ -3,8 +3,8 @@ package org.metawatch.manager.actions;
 import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.apps.AppManager;
-import org.metawatch.manager.apps.InternalApp;
-import org.metawatch.manager.apps.InternalApp.AppData;
+import org.metawatch.manager.apps.ApplicationBase;
+import org.metawatch.manager.apps.ApplicationBase.AppData;
 
 import android.content.Context;
 
@@ -51,7 +51,7 @@ public class AppManagerAction extends ContainerAction {
 
 				public int performAction(Context context) {
 					AppManager.getApp(a.id).open(context, false);
-					return InternalApp.BUTTON_USED_DONT_UPDATE;
+					return ApplicationBase.BUTTON_USED_DONT_UPDATE;
 				}
 				
 				public int getSecondaryType() {
@@ -61,10 +61,10 @@ public class AppManagerAction extends ContainerAction {
 				public int performSecondary(Context context) {
 					if (isRunning()) {
 						Idle.removeAppPage(context, AppManager.getApp(a.id));
-						return InternalApp.BUTTON_USED;
+						return ApplicationBase.BUTTON_USED;
 					}
 					
-					return InternalApp.BUTTON_NOT_USED;
+					return ApplicationBase.BUTTON_NOT_USED;
 				}
 			});
 		}

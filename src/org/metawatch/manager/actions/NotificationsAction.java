@@ -2,7 +2,7 @@ package org.metawatch.manager.actions;
 
 import org.metawatch.manager.Notification;
 import org.metawatch.manager.Notification.NotificationType;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.Context;
 
@@ -50,7 +50,7 @@ public class NotificationsAction extends ContainerAction {
 				public int performAction(Context context) {
 					Notification.replay(context, n);
 					// DONT_UPDATE since the idle screen overwrites the notification otherwise.
-					return InternalApp.BUTTON_USED_DONT_UPDATE;
+					return ApplicationBase.BUTTON_USED_DONT_UPDATE;
 				}
 			});
 		}
@@ -61,6 +61,6 @@ public class NotificationsAction extends ContainerAction {
 	}
 	public int performSecondary(Context context) {
 		Notification.clearHistory();
-		return InternalApp.BUTTON_USED;
+		return ApplicationBase.BUTTON_USED;
 	}
 }

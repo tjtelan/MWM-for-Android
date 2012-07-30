@@ -43,7 +43,7 @@ import java.util.UUID;
 import org.metawatch.communityedition.R;
 import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.actions.ActionManager;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 import org.metawatch.manager.widgets.WidgetManager;
 
 import android.annotation.TargetApi;
@@ -1013,7 +1013,7 @@ public class MetaWatchService extends Service {
 		case WatchStates.IDLE: {
 			
 			int idleAppButton = Idle.appButtonPressed(this, button);
-			if( idleAppButton == InternalApp.BUTTON_NOT_USED )
+			if( idleAppButton == ApplicationBase.BUTTON_NOT_USED )
 			{
 				
 				switch (button) {
@@ -1047,7 +1047,7 @@ public class MetaWatchService extends Service {
 					break;
 				}
 			}
-			else if (idleAppButton != InternalApp.BUTTON_USED_DONT_UPDATE)
+			else if (idleAppButton != ApplicationBase.BUTTON_USED_DONT_UPDATE)
 			{
 				Idle.updateIdle(this, false);
 				if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)

@@ -42,7 +42,7 @@ import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 import org.metawatch.manager.apps.MediaPlayerApp;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
 import org.metawatch.manager.widgets.WidgetManager;
@@ -167,20 +167,20 @@ public class Idle {
 		}
 
 		public int buttonPressed(Context context, int id) {
-			return InternalApp.BUTTON_NOT_USED;
+			return ApplicationBase.BUTTON_NOT_USED;
 		}
 	}
 	
 	private static class AppPage implements IdlePage {
 
-		private InternalApp app;
+		private ApplicationBase app;
 		
-		public AppPage(InternalApp arg) {
+		public AppPage(ApplicationBase arg) {
 			app = arg;
 		}
 		
 		public void activate(final Context context, int watchType) {
-			app.appState = InternalApp.ACTIVE_IDLE;
+			app.appState = ApplicationBase.ACTIVE_IDLE;
 			app.activate(context, watchType);
 			if (app.isToggleable())
 				Application.enableToggleButton(watchType);
@@ -245,7 +245,7 @@ public class Idle {
 		return -1;
 	}
 	
-	public static InternalApp getCurrentApp() {
+	public static ApplicationBase getCurrentApp() {
 		if (idlePages.get(currentPage) instanceof AppPage) {
 			return ((AppPage)idlePages.get(currentPage)).app;
 		}
@@ -254,7 +254,7 @@ public class Idle {
 		return null;
 	}
 	
-	public static synchronized int addAppPage(final Context context, InternalApp app) {
+	public static synchronized int addAppPage(final Context context, ApplicationBase app) {
 		int page = getAppPage(app.getId());
 		
 		if (page == -1) {
@@ -271,12 +271,12 @@ public class Idle {
 		return page;
 	}
 	
-	public static synchronized void removeAppPage(final Context context, InternalApp app) {
+	public static synchronized void removeAppPage(final Context context, ApplicationBase app) {
 		int page = getAppPage(app.getId());
 
 		if (page != -1) {
 			if (page == currentPage) {
-				nextPage(context);
+				toPage(context,0);
 			}
 			
 			idlePages.remove(page);
@@ -538,7 +538,7 @@ public class Idle {
 		if(idlePages != null && idlePages.size()>currentPage) {
 			return idlePages.get(currentPage).buttonPressed(context, id);
 		}
-		return InternalApp.BUTTON_NOT_USED;
+		return ApplicationBase.BUTTON_NOT_USED;
 	}
 	
 	public static void quickButtonAction(Context context) {

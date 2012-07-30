@@ -36,7 +36,7 @@ import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Notification.VibratePattern;
 import org.metawatch.manager.apps.AppManager;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 import org.metawatch.manager.apps.MediaPlayerApp;
 
 import android.content.Context;
@@ -205,15 +205,15 @@ public class MediaControl {
 		lastTimeUpdate = System.currentTimeMillis();
 		
 		int mediaPlayerState = AppManager.getAppState(MediaPlayerApp.APP_ID);
-		if (mediaPlayerState == InternalApp.ACTIVE_IDLE)
+		if (mediaPlayerState == ApplicationBase.ACTIVE_IDLE)
 			Idle.updateIdle(context, true);
-		else if (mediaPlayerState == InternalApp.ACTIVE_POPUP)
+		else if (mediaPlayerState == ApplicationBase.ACTIVE_POPUP)
 			Application.updateAppMode(context);
 		
 		if (!MetaWatchService.Preferences.notifyMusic)
 			return;
 		
-		if(mediaPlayerState != InternalApp.INACTIVE) {
+		if(mediaPlayerState != ApplicationBase.INACTIVE) {
 			VibratePattern vibratePattern = NotificationBuilder.createVibratePatternFromPreference(context, "settingsMusicNumberBuzzes");				
 			
 			if (vibratePattern.vibrate)
@@ -226,7 +226,7 @@ public class MediaControl {
 					Protocol.ledChange(true);
 			}
 			else if (MetaWatchService.watchType == WatchType.ANALOG) {
-				if(mediaPlayerState == InternalApp.ACTIVE_IDLE)
+				if(mediaPlayerState == ApplicationBase.ACTIVE_IDLE)
 					Idle.sendOledIdle(context);
 				//else if (mediaPlayerState == InternalApp.ACTIVE_STANDALONE)
 				//	FIXME ...

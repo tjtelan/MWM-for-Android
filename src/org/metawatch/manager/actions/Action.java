@@ -1,6 +1,6 @@
 package org.metawatch.manager.actions;
 
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.Context;
 
@@ -27,7 +27,7 @@ public abstract class Action {
 		return SECONDARY_NONE;
 	}
 	public int performSecondary(Context context) {
-		return InternalApp.BUTTON_NOT_USED;
+		return ApplicationBase.BUTTON_NOT_USED;
 	}
 	
 	/*

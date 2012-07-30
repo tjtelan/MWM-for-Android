@@ -25,7 +25,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
 
-public class MediaPlayerApp extends InternalApp {
+public class MediaPlayerApp extends ApplicationBase {
 
 	public final static String APP_ID = "org.metawatch.manager.apps.MediaPlayerApp";
 

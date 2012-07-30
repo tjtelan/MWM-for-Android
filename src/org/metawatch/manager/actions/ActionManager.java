@@ -13,7 +13,7 @@ import org.metawatch.manager.actions.InternalActions.PhoneCallAction;
 import org.metawatch.manager.actions.InternalActions.PhoneSettingsAction;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
-import org.metawatch.manager.apps.InternalApp;
+import org.metawatch.manager.apps.ApplicationBase;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -71,7 +71,7 @@ public class ActionManager {
 				@Override
 				public int performAction(Context context) {
 					MediaControl.answerCall(context);
-					return InternalApp.BUTTON_USED;
+					return ApplicationBase.BUTTON_USED;
 				}
 				
 				public boolean isHidden() {
@@ -95,7 +95,7 @@ public class ActionManager {
 				public int performAction(Context context) {
 					MediaControl.dismissCall(context);
 					ActionManager.toRoot(context);
-					return InternalApp.BUTTON_USED;
+					return ApplicationBase.BUTTON_USED;
 				}
 				
 				public boolean isHidden() {
@@ -120,7 +120,7 @@ public class ActionManager {
 				public int performAction(Context context) {
 					MediaControl.dismissCall(context);
 					ActionManager.toRoot(context);
-					return InternalApp.BUTTON_USED;
+					return ApplicationBase.BUTTON_USED;
 				}
 				
 				public boolean isHidden() {

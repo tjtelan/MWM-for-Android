@@ -30,7 +30,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 
-public class ActionsApp extends InternalApp {
+public class ActionsApp extends ApplicationBase {
 	
 	public final static String APP_ID = "org.metawatch.manager.apps.ActionsApp";
 	
