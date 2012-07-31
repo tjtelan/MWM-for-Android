@@ -51,6 +51,7 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		
 		final String action = intent.getAction();
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "ApiIntentReceiver.onReceive(): received intent, action='"+action+"'");
 		
 		// add digital watch check
 		
