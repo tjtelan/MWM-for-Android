@@ -157,9 +157,9 @@
             <intent-filter>
             	<action android:name="org.metawatch.manager.APPLICATION_UPDATE" />  
             	<action android:name="org.metawatch.manager.WIDGET_UPDATE" />
+            	<action android:name="org.metawatch.manager.APPLICATION_ANNOUNCE" />
             	<action android:name="org.metawatch.manager.APPLICATION_START"/>
             	<action android:name="org.metawatch.manager.APPLICATION_STOP"/>
-            	<action android:name="org.metawatch.manager.IDLE_BUTTONS_OVERRIDE"/>
             	<action android:name="org.metawatch.manager.NOTIFICATION"/>	
             	<action android:name="org.metawatch.manager.VIBRATE"/>			            	
             </intent-filter>            

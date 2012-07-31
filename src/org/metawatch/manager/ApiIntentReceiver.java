@@ -81,7 +81,8 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 			return;
 		}
 		
-		if (action.equals("org.metawatch.manager.APPLICATION_START")) {
+		if (action.equals("org.metawatch.manager.APPLICATION_START") ||
+			action.equals("org.metawatch.manager.APPLICATION_ANNOUNCE")) {
 			String id = intent.hasExtra("id") ? intent.getStringExtra("id") : "anonymous";
 			String name = intent.hasExtra("name") ? intent.getStringExtra("name") : "External App";
 			
@@ -90,13 +91,12 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 				app = new ExternalApp(id, name);
 				AppManager.addApp(app);
 			}
-			int page = Idle.addAppPage(context, app);
-			Idle.toPage(context, page);
-			//Idle.updateIdle(context, false);
 			
-			
-			
-			//Application.startAppMode(context);
+			if (action.equals("org.metawatch.manager.APPLICATION_START")) {
+				int page = Idle.addAppPage(context, app);
+				Idle.toPage(context, page);
+			}
+
 			return;
 		}
 		
