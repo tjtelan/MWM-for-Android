@@ -35,8 +35,12 @@ public class WidgetManager {
 	static Map<String,WidgetData> dataCache;
 	static Object lock = new Object();
 	
+	static long lastWidgetBroadcast = 0;
+	
 	public static String defaultWidgetsDigital = "weather_96_32|missedCalls_24_32,unreadSms_24_32,unreadGmail_24_32";
 	public static String defaultWidgetsAnalog = "weather_80_16|missedCalls_16_16,unreadSms_16_16,unreadGmail_16_16";
+	
+	private final static int TIME_ONE_MINUTE = 60 * 1000;
 	
 	public static void initWidgets(Context context, ArrayList<CharSequence> widgetsDesired) {
 		
@@ -71,19 +75,22 @@ public class WidgetManager {
 				widget.refresh(widgetsDesired);
 				widget.get(widgetsDesired, dataCache);
 			}
+	
+			if (System.currentTimeMillis() - lastWidgetBroadcast > TIME_ONE_MINUTE ) {
+				Intent intent = new Intent("org.metawatch.manager.REFRESH_WIDGET_REQUEST");
+				Bundle b = new Bundle();
+				if(widgetsDesired==null)
+					b.putBoolean("org.metawatch.manager.get_previews", true);
+				else {
+					String[] temp = widgetsDesired.toArray(new String[widgetsDesired.size()]);
+					b.putStringArray("org.metawatch.manager.widgets_desired", temp);
+				}
 			
-			Intent intent = new Intent("org.metawatch.manager.REFRESH_WIDGET_REQUEST");
-			Bundle b = new Bundle();
-			if(widgetsDesired==null)
-				b.putBoolean("org.metawatch.manager.get_previews", true);
-			else {
-				String[] temp = widgetsDesired.toArray(new String[widgetsDesired.size()]);
-				b.putStringArray("org.metawatch.manager.widgets_desired", temp);
+				intent.putExtras(b);
+				
+				context.sendBroadcast(intent);
+				lastWidgetBroadcast = System.currentTimeMillis();
 			}
-		
-			intent.putExtras(b);
-			
-			context.sendBroadcast(intent);
 			
 			return dataCache;
 		
