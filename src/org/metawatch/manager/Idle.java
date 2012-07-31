@@ -303,6 +303,7 @@ public class Idle {
 			if(!initialised) {
 				WidgetManager.initWidgets(context, null);
 				AppManager.initApps();
+				AppManager.sendDiscoveryBroadcast(context);
 				ActionManager.initActions(context);
 				initialised = true;
 			}

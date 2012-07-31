@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
+import android.content.Intent;
+
 public class AppManager {
 
 	static Map<String, ApplicationBase> apps = new HashMap<String, ApplicationBase>();
@@ -48,5 +51,10 @@ public class AppManager {
 		}
 		
 		return apps.get(appId).appState;
+	}
+	
+	public static void sendDiscoveryBroadcast(Context context) {
+		Intent intent = new Intent("org.metawatch.manager.APPLICATION_DISCOVERY");		
+		context.sendBroadcast(intent);
 	}
 }

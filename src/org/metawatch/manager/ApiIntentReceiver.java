@@ -70,7 +70,6 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 						Application.updateAppMode(context);
 				}
 				
-				//Application.updateAppMode(context, bmp);
 			} 
 			return;
 		}
@@ -106,7 +105,6 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 			ApplicationBase app = AppManager.getApp(id);
 			if (app!=null) {
 				Idle.removeAppPage(context, app);
-				AppManager.removeApp(app);
 				Idle.updateIdle(context, true);
 			}
 			

@@ -38,6 +38,7 @@ import org.damazio.notifier.event.receivers.mms.EncodedStringValue;
 import org.damazio.notifier.event.receivers.mms.PduHeaders;
 import org.damazio.notifier.event.receivers.mms.PduParser;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.apps.AppManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -122,6 +123,10 @@ public class IntentReceiver extends BroadcastReceiver {
 				
 				return;
 			}
+		}
+		else if (action.equals("android.intent.action.PACKAGE_ADDED") ||
+				 action.equals("android.intent.action.PACKAGE_CHANGED")) {
+			AppManager.sendDiscoveryBroadcast(context);
 		}
 		else if (action.equals("android.provider.Telephony.SMS_RECEIVED")) {		
 			if (!MetaWatchService.Preferences.notifySMS)
