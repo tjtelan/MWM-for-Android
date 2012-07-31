@@ -1,5 +1,8 @@
 package org.metawatch.manager.apps;
 
+import org.metawatch.manager.MetaWatch;
+import org.metawatch.manager.MetaWatchService;
+import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Protocol;
 
 import android.content.Context;
@@ -7,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.util.Log;
 
 public class ExternalApp extends ApplicationBase {
 	
@@ -43,6 +47,16 @@ public class ExternalApp extends ApplicationBase {
 			b.putString("id", appData.id);
 			intent.putExtras(b);
 			context.sendBroadcast(intent);
+			
+			for (int button=1; button<6; ++button) {
+				for (int type=0; type<4; ++type) {
+					int code = 200 + ((button-1)*4) + type;
+					int actualButton = button;
+					if (actualButton>3) actualButton++;
+					Protocol.enableButton(actualButton, type, code, MetaWatchService.WatchBuffers.APPLICATION);
+				}
+			}
+		
 		}
 	}
 
@@ -54,6 +68,14 @@ public class ExternalApp extends ApplicationBase {
 			b.putString("id", appData.id);
 			intent.putExtras(b);
 			context.sendBroadcast(intent);
+			
+			for (int button=1; button<6; ++button) {
+				for (int mode=0; mode<4; ++mode) {
+					int actualButton = button;
+					if (actualButton>3) actualButton++;
+					Protocol.disableButton(actualButton, mode, MetaWatchService.WatchBuffers.APPLICATION);
+				}
+			}
 		}
 	}
 
@@ -70,6 +92,21 @@ public class ExternalApp extends ApplicationBase {
 
 	@Override
 	public int buttonPressed(Context context, int id) {
+		if (id>=200 && id<220) {
+			id = id-200;
+			
+			int button = 1+(id/4);
+			int type = id%4;
+		
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Sending button press: "+button+" "+type);
+			
+			Intent intent = new Intent("org.metawatch.manager.BUTTON_PRESS");
+			intent.putExtra("button", button);
+			intent.putExtra("type", type);		
+			context.sendBroadcast(intent);
+			
+			return ApplicationBase.BUTTON_USED;
+		}
 		return ApplicationBase.BUTTON_NOT_USED;
 	}
 	

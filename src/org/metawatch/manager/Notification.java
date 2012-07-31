@@ -53,7 +53,7 @@ public class Notification {
 	final static byte NOTIFICATION_DOWN = 31;
 	final static byte NOTIFICATION_DISMISS = 32;
 	
-	private static byte notifyButtonPress = 0;
+	private static int notifyButtonPress = 0;
 	
 	private static BlockingQueue<NotificationType> notificationQueue = new LinkedBlockingQueue<NotificationType>();
 	private static volatile boolean notificationSenderRunning = false;
@@ -519,7 +519,7 @@ public class Notification {
 		}
 	}
 	
-	public static void buttonPressed(byte button) {
+	public static void buttonPressed(int button) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG,
 				"Notification:Button pressed "+button );
 

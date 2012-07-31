@@ -855,7 +855,7 @@ public class MetaWatchService extends Service {
 																	// press
 				if (Preferences.logging) Log.d(MetaWatch.TAG,
 						"MetaWatchService.readFromDevice(): button event");
-				pressedButton(bytes[3]);
+				pressedButton(bytes[3]&0xFF); // 
 			}
 
 			else if (bytes[2] == eMessageType.GetDeviceTypeResponse.msg) { // device
@@ -999,8 +999,8 @@ public class MetaWatchService extends Service {
 	}
 
 	static long lastOledCrownPress = 0;
-	void pressedButton(byte button) {
-		if (Preferences.logging) Log.d(MetaWatch.TAG, "button code: " + Byte.toString(button));
+	void pressedButton(int button) {
+		if (Preferences.logging) Log.d(MetaWatch.TAG, "button code: " + Integer.toString(button));
 		
 		wakeLock.acquire(10000);
 		

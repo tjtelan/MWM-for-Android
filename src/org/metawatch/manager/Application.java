@@ -176,7 +176,7 @@ public class Application {
 		}
 	}
 	
-	public static void buttonPressed(Context context, byte button) {
+	public static void buttonPressed(Context context, int button) {
 		if (button == EXIT_APP) {
 			stopAppMode(context);
 			
