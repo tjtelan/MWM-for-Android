@@ -153,6 +153,17 @@ public class Test extends PreferenceActivity {
 		    	return true;
 			}
 		});
+		
+		preferenceScreen.findPreference("sms3").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
+			public boolean onPreferenceClick(Preference arg0) {
+		    	String smsText = "";
+		    	for(int i=0;i<12;++i) {
+		    		smsText += "SMS Line "+i+"\n";
+		    	}
+		    	NotificationBuilder.createSMS(context, "555-123-4567", smsText);
+		    	return true;
+			}
+		});
         
 		preferenceScreen.findPreference("mms").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {

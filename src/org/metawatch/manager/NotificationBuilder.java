@@ -463,7 +463,7 @@ public class NotificationBuilder {
 			
 		int h = staticLayout.getHeight();
 		int y = 0;
-		int displayHeight = 96 - textTop;
+		int displayHeight = textHeight+3;
 		
 		int scroll = textHeight-font.size;
 		boolean more = true;

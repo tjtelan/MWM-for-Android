@@ -10,6 +10,7 @@
     	<Preference android:key="sms_stop" android:title="SMS Stop (LCD/OLED)"/>
     	<Preference android:key="sms" android:title="SMS (LCD/OLED)"/>
     	<Preference android:key="sms2" android:title="SMS test wrap (LCD/OLED)"/>
+    	<Preference android:key="sms3" android:title="SMS test overflow (LCD/OLED)"/>
     	<Preference android:key="mms" android:title="MMS (LCD/OLED)"/>
     	<Preference android:key="k9" android:title="K9 (LCD/OLED)"/>
     	<Preference android:key="gmail_short" android:title="Gmail Short (LCD/OLED)"/>
