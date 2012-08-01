@@ -101,6 +101,7 @@ public class ExternalApp extends ApplicationBase {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "Sending button press: "+button+" "+type);
 			
 			Intent intent = new Intent("org.metawatch.manager.BUTTON_PRESS");
+			intent.putExtra("id", appData.id);
 			intent.putExtra("button", button);
 			intent.putExtra("type", type);		
 			context.sendBroadcast(intent);
