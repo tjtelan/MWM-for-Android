@@ -71,7 +71,7 @@
     <string name="settings_Display_location_in_small_calendar_widget">Lokatie weergeven in kleine agenda widget</string>
     <string name="settings_Display_location_in_small_calendar_widget_desc">Geeft de lokatie in plaats van de datum in de 24x32 volgende agenda afspraak widget als er genoeg ruimte is</string>
     <string name="settings_Event_date_in_calendar_widget">Afspraakdatum in agenda widget</string>
-    <string name="settings_Event_date_in_calendar_widget_desc">Geeft afspraakdatum weer in plaats van huidige dag in *x32 adenda widget (als er een afspraak is)</string>
+    <string name="settings_Event_date_in_calendar_widget_desc">Geeft afspraakdatum weer in plaats van huidige dag in *x32 agenda widget (als er een afspraak is) </string>
 
     <string name="settings_Display_widget_row_separator">Scheidingslijn weergeven</string>
     <string name="settings_Display_widget_row_separator_desc">Geeft een scheidingslijn weerd tussen widget rijen</string>
