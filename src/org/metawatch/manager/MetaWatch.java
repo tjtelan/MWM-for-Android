@@ -250,7 +250,12 @@ public class MetaWatch extends TabActivity {
 		String html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>About</title></head><body><center>" + 
 						"<img src=\"banner.jpg\" width=\"100%\">" +
 						"<p>Version " + Utils.getVersion(this) + ".</p>" +
-						"<p>Modified by Dobie Wollert, Chris Sewell, Prash D, Craig Oliver, Richard Munn, Matthias Gruenewald, Kyle Schroeder, Garth Bushell, Joakim Andersson, Chris Boyle and Didi Pfeifle.</p>" +
+						"<b>MetaWatch Community Team</b><br>" +
+						"Joakim Andersson<br>Chris Boyle<br>Garth Bushell<br>Prash D<br>Matthias Gruenewald<br>"+
+						"Richard Munn<br>Craig Oliver<br>Didi Pfeifle<br>Kyle Schroeder<br>Chris Sewell<br>"+
+						"Dobie Wollert<p>"+
+						"<b>Translation Team</b><br>"+
+						"Miguel Branco<br>Didi Pfeifle<br>Geurt Pieter Maassen van den Brink<br>Thierry Schork<p>"+
 						"<p>&copy; Copyright 2011-2012 Meta Watch Ltd.</p>" +
 						"</center></body></html>";
         webView.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "utf-8", null);
