@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -615,6 +616,27 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Return a lists of configured Gmail account, rather than the first one
+	 * 
+	 * @param context
+	 * @return List<String> the list of the account names
+	 */
+	public static List<String> getGoogleAccountsNames(Context context) {
+		AccountManager accountManager = AccountManager.get(context);
+		Account[] accounts = accountManager.getAccounts();
+		
+		final List<String> accNames = new ArrayList<String>();
+		
+		for (Account account : accounts) {
+			if (account.type.equals("com.google")) {
+				accNames.add(account.name);
+			}
+		}
+		
+		return accNames;
 	}
 	
 	public static String ReadInputStream(InputStream in) throws IOException {
