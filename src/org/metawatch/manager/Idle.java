@@ -246,7 +246,7 @@ public class Idle {
 	}
 	
 	public static ApplicationBase getCurrentApp() {
-		if (idlePages.get(currentPage) instanceof AppPage) {
+		if (idlePages != null && idlePages.get(currentPage) instanceof AppPage) {
 			return ((AppPage)idlePages.get(currentPage)).app;
 		}
 		
