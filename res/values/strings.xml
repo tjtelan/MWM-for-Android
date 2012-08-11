@@ -315,6 +315,8 @@
     <string name="settings_backup_restore">Restore</string>
     <string name="settings_backup_restore_desc">Restore settings from external storage.</string>
    
+    <string name="settings_auto_clock_format">Auto set clock format</string>
+    <string name="settings_auto_clock_format_desc">Automatically set the watch date and time formats when connecting.  WARNING - this may cause the watch to crash on pre 0.9 versions of the firmware.</string>
     
     <string name="main_service_toggle_on">Service running.  Click to stop.</string>
     <string name="main_service_toggle_off">Service stopped.  Click to start.</string>

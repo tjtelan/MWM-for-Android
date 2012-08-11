@@ -593,6 +593,13 @@
 			android:summary="@string/settings_haptic_feedback_desc"
 			android:defaultValue="false"
 			/>	
+		<!-- RM: disabled for now, confuses firmware!
+		<CheckBoxPreference
+		    android:title="@string/settings_auto_clock_format"
+		    android:key="AutoClockFormat"
+		    android:summary="@string/settings_auto_clock_format_desc"
+		    android:defaultValue="false"
+		    />   -->
 			
 		<CheckBoxPreference
 		    android:title="@string/settings_notification_queue"

@@ -194,6 +194,7 @@ public class MetaWatchService extends Service {
 		public static boolean notificationLarger = false;
 		public static boolean autoConnect = false;
 		public static boolean autoRestart = false;
+		public static boolean autoClockFormat = false;
 		public static boolean hapticFeedback = false;
 		public static boolean readCalendarDuringMeeting = true;
 		public static int readCalendarMinDurationToMeetingEnd = 15;
@@ -303,6 +304,8 @@ public class MetaWatchService extends Service {
 				"AutoConnect", Preferences.autoConnect);	
 		Preferences.autoRestart = sharedPreferences.getBoolean("AutoRestart", 
 				Preferences.autoRestart);
+		Preferences.autoClockFormat = sharedPreferences.getBoolean("AutoClockFormat",
+				Preferences.autoClockFormat);
 		Preferences.hapticFeedback = sharedPreferences.getBoolean("HapticFeedback",
 				Preferences.hapticFeedback);
 		Preferences.readCalendarDuringMeeting = sharedPreferences.getBoolean("ReadCalendarDuringMeeting",
@@ -591,9 +594,14 @@ public class MetaWatchService extends Service {
 			updateNotification();
 
 			Protocol.startProtocolSender();
-			//Protocol.setNvalTime(context);
+			
+			// RM: This is disabled for now, as it seems to confuse the watch fw (3.1.0S tested)
+			// and get it into a state where it won't accept any date/time format updates :-S
+			
+			//if( Preferences.autoClockFormat )
+			//	Protocol.setTimeDateFormat(this);
+			
 			Protocol.getRealTimeClock();
-			//Protocol.sendRtcNow(context);
 			Protocol.getDeviceType();
 
 			Notification.startNotificationSender(this);
@@ -911,7 +919,7 @@ public class MetaWatchService extends Service {
 				}
 				
 				Idle.activateButtons(this);
-				
+								
 			} else if (bytes[2] == eMessageType.ReadBatteryVoltageResponse.msg) {
 				boolean powerGood = bytes[4] > 0;
 				boolean batteryCharging = bytes[5] > 0;
