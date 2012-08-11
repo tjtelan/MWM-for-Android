@@ -62,9 +62,20 @@ public class Notification {
 
 	private static void addToNotificationQueue(NotificationType notification) {
 		if (MetaWatchService.connectionState == MetaWatchService.ConnectionState.CONNECTED) {
-			notificationQueue.add(notification);
-			MetaWatchService.notifyClients();
+			if (MetaWatchService.SilentMode() ) {
+				addToHistory(notification);
+			}
+			else {
+				notificationQueue.add(notification);
+				MetaWatchService.notifyClients();
+			}
 		}
+	}
+	
+	private static void addToHistory(NotificationType notification) {
+		notificationHistory.add(0, notification);
+		while(notificationHistory.size()>NOTIFICATION_HISTORY_SIZE)
+			notificationHistory.remove(notificationHistory.size()-1);
 	}
 
 	private static class NotificationSender implements Runnable {
@@ -216,9 +227,7 @@ public class Notification {
 					}
 
 					if(notification.isNew) {
-						notificationHistory.add(0, notification);
-						while(notificationHistory.size()>NOTIFICATION_HISTORY_SIZE)
-							notificationHistory.remove(notificationHistory.size()-1);
+						addToHistory(notification);
 					}
 
 					/* Do the timeout and button handling. */
@@ -301,6 +310,7 @@ public class Notification {
 				}
 			}
 		}
+
 	};
 
 	private static Thread notificationSenderThread = null;

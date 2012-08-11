@@ -134,6 +134,7 @@ public class ActionManager {
 			addAction(new InternalActions.WeatherRefreshAction());
 			//addAction(new InternalActions.ClickerAction());
 			addAction(new InternalActions.VoiceSearchAction());
+			addAction( new InternalActions.ToggleWatchSilentAction());
 			
 			
 		}
@@ -181,6 +182,8 @@ public class ActionManager {
 		result.add(notificationsAction);
 		result.add(appManagerAction);
 		result.add(phoneSettingsAction);
+		
+		result.add(getAction(InternalActions.ToggleWatchSilentAction.id));
 		
 		result.add(getAction(InternalActions.PingAction.id));
 		

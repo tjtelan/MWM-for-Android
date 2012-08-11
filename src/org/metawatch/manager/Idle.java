@@ -53,6 +53,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.util.Log;
 
 public class Idle {
@@ -60,6 +61,7 @@ public class Idle {
 	final static byte IDLE_NEXT_PAGE = 60;
 	final static byte IDLE_OLED_DISPLAY = 61;
 	final static byte QUICK_BUTTON = 62;
+	final static byte TOGGLE_SILENT = 63;
 	
 	private static boolean busy = false;
 	private static Object busyObj = new Object();
@@ -125,31 +127,46 @@ public class Idle {
 				canvas.drawBitmap(Utils.getBitmap(context, "dummy_clock.png"), 0, 0, null);
 			} 
 			
-			int totalHeight = 0;
-			for(WidgetRow row : rows) {
-				totalHeight += row.getHeight();
-			}
-						
-			int space = (watchType == WatchType.DIGITAL) ? (((showClock ? 64:96) - totalHeight) / (rows.size()+1)) : 0;
-			int yPos = (watchType == WatchType.DIGITAL) ? (showClock ? 32:0) + space : 0;
-			
-			for(WidgetRow row : rows) {
-				row.draw(widgetData, canvas, yPos);
-				yPos += row.getHeight() + space;
-			}
-
-			if (watchType == WatchType.DIGITAL && Preferences.displayWidgetRowSeparator) {
-				yPos = space/2; // Center the separators between rows.
-				if (showClock) {
-					yPos += 32;
-					drawLine(canvas, yPos);
+			if (MetaWatchService.SilentMode()) {
+				if (MetaWatchService.watchType==WatchType.DIGITAL) {
+					
+					Paint paint = new Paint();
+					paint.setColor(Color.BLACK);		
+					paint.setTextSize(FontCache.instance(context).Large.size);
+					paint.setTypeface(FontCache.instance(context).Large.face);
+					paint.setTextAlign(Align.CENTER);
+					
+					canvas.drawText("Silent Mode", 48, 64, paint);
+					
 				}
-				int i = 0;
+			} else {
+			
+				int totalHeight = 0;
 				for(WidgetRow row : rows) {
-					if (++i == rows.size())
-						continue;
+					totalHeight += row.getHeight();
+				}
+							
+				int space = (watchType == WatchType.DIGITAL) ? (((showClock ? 64:96) - totalHeight) / (rows.size()+1)) : 0;
+				int yPos = (watchType == WatchType.DIGITAL) ? (showClock ? 32:0) + space : 0;
+				
+				for(WidgetRow row : rows) {
+					row.draw(widgetData, canvas, yPos);
 					yPos += row.getHeight() + space;
-					drawLine(canvas, yPos);
+				}
+	
+				if (watchType == WatchType.DIGITAL && Preferences.displayWidgetRowSeparator) {
+					yPos = space/2; // Center the separators between rows.
+					if (showClock) {
+						yPos += 32;
+						drawLine(canvas, yPos);
+					}
+					int i = 0;
+					for(WidgetRow row : rows) {
+						if (++i == rows.size())
+							continue;
+						yPos += row.getHeight() + space;
+						drawLine(canvas, yPos);
+					}
 				}
 			}
 			
@@ -402,10 +419,10 @@ public class Idle {
 		final int width = (MetaWatchService.watchType==WatchType.DIGITAL) ? 96 : 80;
 		final int height = (MetaWatchService.watchType==WatchType.DIGITAL) ? 96 : 32;
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-		
+							
 		if(idlePages != null && idlePages.size()>page) {
 			return idlePages.get(page).draw(context, preview, bitmap, MetaWatchService.watchType);
-		}
+		}		
 		
 		return bitmap;
 	}
@@ -448,10 +465,15 @@ public class Idle {
 		
 		if (mode == MetaWatchService.WatchBuffers.IDLE ||
 				idlePages.get(currentPage) instanceof WidgetPage) {
-			// Update widgets.
-			// Don't do it while on an AppPage in order to not overwrite any running app.
-			updateIdlePages(context, refresh);
-			showClock = (currentPage==0 || Preferences.clockOnEveryPage);
+			if (MetaWatchService.SilentMode()) {
+				showClock = true;
+			}
+			else {
+				// Update widgets.
+				// Don't do it while on an AppPage in order to not overwrite any running app.
+				updateIdlePages(context, refresh);
+				showClock = (currentPage==0 || Preferences.clockOnEveryPage);
+			}
 		}
 		
 		Protocol.sendLcdBitmap(createIdle(context), mode);
@@ -483,6 +505,9 @@ public class Idle {
 				Protocol.enableButton(0, 1, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.IDLE); // Right top press
 				Protocol.enableButton(0, 1, IDLE_NEXT_PAGE, MetaWatchService.WatchBuffers.APPLICATION); // Right top press
 			}
+			
+			Protocol.enableButton(0, 2, TOGGLE_SILENT, MetaWatchService.WatchBuffers.IDLE);
+			Protocol.enableButton(0, 3, TOGGLE_SILENT, MetaWatchService.WatchBuffers.IDLE);
 		
 		}
 		else if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
@@ -490,6 +515,9 @@ public class Idle {
 			Protocol.enableButton(1, 1, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.IDLE); // Middle press
 			Protocol.enableButton(1, 1, IDLE_OLED_DISPLAY, MetaWatchService.WatchBuffers.APPLICATION); // Middle press
 		}
+		
+		Protocol.enableButton(1, 2, TOGGLE_SILENT, MetaWatchService.WatchBuffers.IDLE);
+		Protocol.enableButton(1, 3, TOGGLE_SILENT, MetaWatchService.WatchBuffers.IDLE);
 
 		return true;
 	}

@@ -2,6 +2,7 @@ package org.metawatch.manager.actions;
 
 import org.metawatch.manager.Call;
 import org.metawatch.manager.MediaControl;
+import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.Monitors;
 import org.metawatch.manager.apps.ApplicationBase;
 
@@ -215,8 +216,8 @@ public class InternalActions {
 		
 		public String getName() {
 			return isEnabled()
-					? "Disable silent mode"
-			        : "Enable silent mode";
+					? "Disable phone silent mode"
+			        : "Enable phone silent mode";
 		}
 		
 		protected boolean isEnabled() {
@@ -227,6 +228,28 @@ public class InternalActions {
 			audioManager.setRingerMode( audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT
 					? AudioManager.RINGER_MODE_NORMAL 
 					: AudioManager.RINGER_MODE_SILENT );
+			return ApplicationBase.BUTTON_USED;
+		}
+	}
+	
+	public static class ToggleWatchSilentAction extends ToggleAction {
+		public static String id = "toggleWatchSilent";
+		public String getId() {
+			return id;
+		}
+		
+		public String getName() {
+			return isEnabled()
+					? "Disable silent mode"
+			        : "Enable silent mode";
+		}
+		
+		protected boolean isEnabled() {
+			return MetaWatchService.SilentMode();
+		}
+
+		public int performAction(Context context) {
+			MetaWatchService.setSilentMode(!MetaWatchService.SilentMode());
 			return ApplicationBase.BUTTON_USED;
 		}
 	}

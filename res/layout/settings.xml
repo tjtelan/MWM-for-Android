@@ -26,6 +26,13 @@
 			android:defaultValue="false"
 			/>	
 	</PreferenceScreen>
+	
+    <CheckBoxPreference
+		android:title="@string/settings_silent_mode"
+		android:key="SilentMode"
+		android:summary="@string/settings_silent_mode_desc"
+		android:defaultValue="false"
+		/>
     
 	<PreferenceScreen
 		android:title="@string/settings_Notifications"

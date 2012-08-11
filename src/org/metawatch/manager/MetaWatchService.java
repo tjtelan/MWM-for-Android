@@ -97,6 +97,20 @@ public class MetaWatchService extends Service {
 
 	public static TestSmsLoop testSmsLoop;
 	private boolean lastConnectionState = false;
+	
+	private static boolean silentMode = false;
+	public static boolean SilentMode() { return silentMode; }
+	public static void setSilentMode( boolean enabled ) {
+		silentMode = enabled;
+		Idle.updateIdle(context, true);
+		
+		SharedPreferences sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		Editor editor = sharedPreferences.edit();
+		editor.putBoolean("SilentMode", silentMode);
+		editor.commit();
+		
+	}
 
 	final static class ConnectionState {
 		static final int DISCONNECTED = 0;
@@ -344,6 +358,10 @@ public class MetaWatchService extends Service {
 				Preferences.themeName);
 		Preferences.hideEmptyWidgets = sharedPreferences.getBoolean("HideEmptyWidgets",
 				Preferences.hideEmptyWidgets);
+		
+		boolean silent = sharedPreferences.getBoolean("SilentMode", silentMode );
+		if (silent!=silentMode)
+			setSilentMode(silent);
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
@@ -1042,6 +1060,11 @@ public class MetaWatchService extends Service {
 						Idle.nextPage(this);
 						Idle.updateIdle(this, true);	
 					}
+					break;
+					
+				case Idle.TOGGLE_SILENT:
+					MetaWatchService.setSilentMode(!silentMode);
+					Protocol.vibrate(500, 500, 2);
 					break;
 					
 				case Idle.IDLE_OLED_DISPLAY:
