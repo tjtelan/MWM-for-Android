@@ -235,6 +235,9 @@
     <string name="settings_reset_widgets">Reset Widgets</string>
     <string name="settings_reset_widgets_desc">Reset widgets to default layout</string>
     
+    <string name="settings_hide_empty_widgets">Hide empty widgets</string>
+    <string name="settings_hide_empty_widgets_desc">Hide widgets that are displaying "0" or have no data</string>
+    
     <string name="settings_weather_provider">Weather Provider</string>
     <string name="settings_weather_provider_desc">Choose or disable weather data source</string>
     

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.metawatch.manager.MetaWatchService;
+import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
 
 import android.graphics.Canvas;
@@ -38,10 +39,12 @@ public class WidgetRow {
 		
 		final int screenWidth = screenWidth();
 		
+		int priorityCutoff = Preferences.hideEmptyWidgets ? 0 : -1; 
+		
 		totalWidth = 0;
 		for( CharSequence id : widgetIDs ) {
 			WidgetData widget = widgetData.get(id);
-			if(widget!=null && widget.bitmap!=null && widget.priority>-1) {
+			if(widget!=null && widget.bitmap!=null && widget.priority>priorityCutoff) {
 				widgets.add(widget);
 				totalWidth += widget.width;
 			}

@@ -372,6 +372,13 @@
 			android:key="ResetWidgets"
 			android:summary="@string/settings_reset_widgets_desc"
 			/>
+	    
+	    <CheckBoxPreference
+	        android:title="@string/settings_hide_empty_widgets"
+	        android:key="HideEmptyWidgets"
+	        android:summary="@string/settings_hide_empty_widgets_desc"
+	        android:defaultValue="false"
+			/>
 		
 		<PreferenceScreen
 		    android:title="@string/settings_weather_widgets"
