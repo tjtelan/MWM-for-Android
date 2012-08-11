@@ -75,13 +75,13 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 			return;
 		}
 		
-		if (action.equals("org.metawatch.manager.WIDGET_UPDATE")) {
+		else if (action.equals("org.metawatch.manager.WIDGET_UPDATE")) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "WIDGET_UPDATE received");
 			WidgetManager.getFromIntent(context, intent);
 			return;
 		}
 		
-		if (action.equals("org.metawatch.manager.APPLICATION_START") ||
+		else if (action.equals("org.metawatch.manager.APPLICATION_START") ||
 			action.equals("org.metawatch.manager.APPLICATION_ANNOUNCE")) {
 			String id = intent.hasExtra("id") ? intent.getStringExtra("id") : "anonymous";
 			String name = intent.hasExtra("name") ? intent.getStringExtra("name") : "External App";
@@ -100,7 +100,7 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 			return;
 		}
 		
-		if (action.equals("org.metawatch.manager.APPLICATION_STOP")) {
+		else if (action.equals("org.metawatch.manager.APPLICATION_STOP")) {
 			String id = intent.hasExtra("id") ? intent.getStringExtra("id") : "anonymous";
 			
 			ApplicationBase app = AppManager.getApp(id);
@@ -112,7 +112,7 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 			return;
 		}
 		
-		if (action.equals("org.metawatch.manager.NOTIFICATION")) {
+		else if (action.equals("org.metawatch.manager.NOTIFICATION")) {
 			
 			/* Set up vibrate pattern. */
 			VibratePattern vibrate = getVibratePatternFromIntent(intent);
@@ -199,6 +199,12 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 				Protocol.vibrate(vibrate.on, vibrate.off, vibrate.cycles);
 			
 			return;
+		}
+		
+		else if (action.equals("org.metawatch.manager.SILENTMODE")) {
+			if (intent.hasExtra("enabled")) {
+				MetaWatchService.setSilentMode(intent.getBooleanExtra("enabled", false));
+			}
 		}
 		
 	}

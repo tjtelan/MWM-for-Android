@@ -163,7 +163,8 @@
             	<action android:name="org.metawatch.manager.APPLICATION_START"/>
             	<action android:name="org.metawatch.manager.APPLICATION_STOP"/>
             	<action android:name="org.metawatch.manager.NOTIFICATION"/>	
-            	<action android:name="org.metawatch.manager.VIBRATE"/>			            	
+            	<action android:name="org.metawatch.manager.VIBRATE"/>	
+            	<action android:name="org.metawatch.manager.SILENTMODE"/>			            	
             </intent-filter>            
         </receiver> 
         <receiver android:name="org.metawatch.manager.AlarmReceiver"></receiver>

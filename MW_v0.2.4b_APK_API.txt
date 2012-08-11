@@ -63,6 +63,12 @@ org.metawatch.manager.WIDGET_UPDATE
   "priority" - priority of the widget (0 if no data, >0 otherwise) - bigger means less likely to be culled for space
   "array"    - pixel array : int[width*height]
 
+-------------------------------------------------------------------------------  
+  
+org.metawatch.manager.SILENTMODE
+  - Enable or disable silent mode from an external app
+  "enabled"  - (boolean) - whether to enable to disable silent mode
+
 ===============================================================================
 
 Broadcasted:
