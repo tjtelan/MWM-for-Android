@@ -361,7 +361,7 @@ public class MetaWatchService extends Service {
 		
 		boolean silent = sharedPreferences.getBoolean("SilentMode", silentMode );
 		if (silent!=silentMode)
-			setSilentMode(silent);
+			silentMode = silent;
 				
 		try {
 			Preferences.fontSize = Integer.valueOf(sharedPreferences.getString(
