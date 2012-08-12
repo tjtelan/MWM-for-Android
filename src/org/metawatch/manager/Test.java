@@ -362,18 +362,6 @@ public class Test extends PreferenceActivity {
 			}
 		});
 	
-		preferenceScreen.findPreference("dump_hprof").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
-			public boolean onPreferenceClick(Preference arg0) {
-		    	try {
-					Debug.dumpHprofData(Environment.getExternalStorageDirectory().getPath()+ "metawatch.hprof");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		    	return true;
-			}
-		});  
-
 		preferenceScreen.findPreference("led_on").setOnPreferenceClickListener(new OnPreferenceClickListener() {	
 			public boolean onPreferenceClick(Preference arg0) {
 			 	Protocol.ledChange(true);

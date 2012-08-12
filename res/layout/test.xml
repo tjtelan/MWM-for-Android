@@ -54,7 +54,6 @@
     	<Preference android:key="write_buffer" android:title="Write Buffer (Idle) (LCD)"/>
     	<Preference android:key="update_display" android:title="Update Display (Idle) (LCD)"/>    
     	<Preference android:key="test" android:title="Test (OLED)"/>
-    	<Preference android:key="dump_hprof" android:title="Dump Hprof data"/>
     	<Preference android:key="led_on" android:title="LED On (LCD)"/>
     	<Preference android:key="led_off" android:title="LED Off (LCD)"/>
     </PreferenceCategory>
