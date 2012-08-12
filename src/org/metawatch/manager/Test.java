@@ -32,7 +32,6 @@
 
 package org.metawatch.manager;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -45,8 +44,6 @@ import org.metawatch.manager.Notification.VibratePattern;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
