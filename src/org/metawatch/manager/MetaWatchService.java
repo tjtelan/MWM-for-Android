@@ -255,7 +255,7 @@ public class MetaWatchService extends Service {
 				Idle.reset(context);
 			}	
 			
-			if (key.contains("Widgets")) {
+			if (key.contains("Widgets") || (key.equals("SilentMode"))) {
 				Idle.updateIdle(context, true);
 			}
 		}
