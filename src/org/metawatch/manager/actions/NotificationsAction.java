@@ -44,7 +44,7 @@ public class NotificationsAction extends ContainerAction {
 				} 
 				
 				public String bulletIcon() {
-					return "bullet_triangle.bmp";
+					return n.viewed ? "bullet_triangle.bmp" : "bullet_star.bmp";
 				}
 	
 				public int performAction(Context context) {
