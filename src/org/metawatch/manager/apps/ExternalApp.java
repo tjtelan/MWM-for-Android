@@ -49,6 +49,8 @@ public class ExternalApp extends ApplicationBase {
 			context.sendBroadcast(intent);
 			
 			for (int button=1; button<6; ++button) {
+				if (button==3)
+					continue;    // don't override the LED button
 				for (int type=0; type<4; ++type) {
 					int code = 200 + ((button-1)*4) + type;
 					int actualButton = button;
@@ -70,8 +72,11 @@ public class ExternalApp extends ApplicationBase {
 			context.sendBroadcast(intent);
 			
 			for (int button=1; button<6; ++button) {
+				if (button==3)
+					continue;    // don't override the LED button
 				for (int mode=0; mode<4; ++mode) {
 					int actualButton = button;
+					
 					if (actualButton>3) actualButton++;
 					Protocol.disableButton(actualButton, mode, MetaWatchService.WatchBuffers.APPLICATION);
 				}
