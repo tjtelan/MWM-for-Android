@@ -893,14 +893,15 @@ public class Utils {
 		return folder;
 	}
 	
-	public static void invertBitmap(Bitmap bitmap) {
+	public static Bitmap invertBitmap(final Bitmap bitmap) {
 		int size = bitmap.getWidth() * bitmap.getHeight();
 		int pixelArray[] = new int[size];
 		bitmap.getPixels(pixelArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 		for(int i=0; i<size; ++i) {
 			pixelArray[i] = 0xFFFFFF - pixelArray[i];
 		}
-		bitmap.setPixels(pixelArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+		return Bitmap.createBitmap(pixelArray, bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.RGB_565 );
+		//bitmap.setPixels(pixelArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
 	}
 
 	public static String ticksToText(Context context, long ticks) {

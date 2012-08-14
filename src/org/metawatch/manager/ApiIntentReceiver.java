@@ -61,6 +61,10 @@ public class ApiIntentReceiver extends BroadcastReceiver {
 				Bitmap bmp = Bitmap.createBitmap(intent.getIntArrayExtra("array"),
 						96, 96, Bitmap.Config.RGB_565);
 				
+				if (Preferences.invertLCD && intent.getBooleanExtra("autoinvert", false)) {
+					bmp = Utils.invertBitmap(bmp);
+				}
+				
 				ApplicationBase app = AppManager.getApp(id);
 				if (app != null && app instanceof ExternalApp) {
 					((ExternalApp)app).setBuffer(bmp);

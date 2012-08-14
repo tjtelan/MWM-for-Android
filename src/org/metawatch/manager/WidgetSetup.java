@@ -232,7 +232,7 @@ public class WidgetSetup extends Activity {
     				    : R.layout.idle_screen_preview;
     			
         		if(Preferences.invertLCD || MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG) {
-        			Utils.invertBitmap(bmp);
+        			bmp = Utils.invertBitmap(bmp);
         			backCol = 0xff111111;
         		}
         		    			
