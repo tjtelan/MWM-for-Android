@@ -98,8 +98,6 @@
             <intent-filter>
             	<action android:name="android.intent.action.BATTERY_LOW"/>
             	<action android:name="android.intent.action.NEW_OUTGOING_CALL" /> 
-            	<action android:name="android.intent.action.PACKAGE_ADDED" />
-            	<action android:name="android.intent.action.PACKAGE_CHANGED" />
             	<action android:name="android.intent.action.TIME_SET"/>
             	<action android:name="android.intent.action.TIMEZONE_CHANGED" />
             	<action android:name="android.provider.Telephony.SMS_RECEIVED" />  
@@ -147,6 +145,14 @@
 			<intent-filter>
 				<action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
 				<data android:mimeType="application/vnd.wap.mms-message" />
+			</intent-filter>
+			
+			<intent-filter>
+              <action android:name="android.intent.action.PACKAGE_INSTALL" /> 
+                <action android:name="android.intent.action.PACKAGE_ADDED" /> 
+                <action android:name="android.intent.action.PACKAGE_CHANGED" /> 
+                <category android:name="android.intent.category.DEFAULT" /> 
+                <data android:scheme="package" /> 
 			</intent-filter>
         </receiver> 
         <receiver android:name="org.metawatch.manager.BootCompletedReceiver" android:exported="true">

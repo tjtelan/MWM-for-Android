@@ -41,6 +41,7 @@ import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WatchType;
 import org.metawatch.manager.Monitors.LocationData;
 import org.metawatch.manager.Notification.VibratePattern;
+import org.metawatch.manager.apps.AppManager;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -436,6 +437,13 @@ public class Test extends PreferenceActivity {
 			}
 		});
 			
+		preferenceScreen.findPreference("discover_apps").setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			public boolean onPreferenceClick(Preference preference) {
+				AppManager.sendDiscoveryBroadcast(context);
+				return true;
+			}
+		});
+		
 		super.onStart();
 	}
 	
