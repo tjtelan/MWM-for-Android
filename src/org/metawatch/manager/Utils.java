@@ -52,6 +52,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.metawatch.manager.FontCache.FontInfo;
+import org.metawatch.manager.FontCache.FontSize;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -87,6 +89,7 @@ import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.PhoneLookup;
 import android.provider.Settings.SettingNotFoundException;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -920,6 +923,39 @@ public class Utils {
     	}
     	builder.append(DateFormat.getTimeFormat(context).format(date));
     	return builder.toString();
+    }
+    
+    private static StaticLayout buildText(Context context, String text, int width, Layout.Alignment alignment, int textCol, FontSize size ) {
+		TextPaint tp = new TextPaint();
+		tp.setColor(textCol);
+		FontInfo info = FontCache.instance(context).Get(size);
+		tp.setTextSize(info.size);
+		tp.setTypeface(info.face);
+    	
+    	return new StaticLayout(text, tp, width, alignment, 1.2f, 0, false);
+    }
+    
+    public static void autoText(Context context, Canvas canvas, String text, int tX, int tY, int width, int height, Layout.Alignment alignment, int textCol) {
+    	
+    	StaticLayout layout = buildText(context, text, width, alignment, textCol, FontSize.LARGE);
+    	if(layout.getHeight()>height) {
+    		layout = buildText(context, text, width, alignment, textCol, FontSize.MEDIUM);
+    	}
+    	if(layout.getHeight()>height) {
+    		layout = buildText(context, text, width, alignment, textCol, FontSize.SMALL);
+    	}
+    	
+    	int textHeight = layout.getHeight();
+		int textY = tY+(height/2) - (textHeight/2);
+		if(textY<tY) {
+			textY=tY;
+		}
+		
+		canvas.save();		
+		canvas.translate(tX, textY); //position the text
+		//canvas.clipRect(0,0,width,height);
+		layout.draw(canvas);
+		canvas.restore();	
     }
 	
 }

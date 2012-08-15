@@ -135,28 +135,6 @@ public class MediaPlayerApp extends ApplicationBase {
 			else {	
 				canvas.drawBitmap(Utils.getBitmap(context, "media_player.png"), 0, 0, null);
 				
-				
-				TextPaint tp = null;
-				if( paintLarge.measureText(lastTrack.track) < 170) {
-					tp = paintLarge;
-				}
-				else {
-					tp = paintSmall;
-				}
-				
-				canvas.save();			
-				StaticLayout layout = new StaticLayout(lastTrack.track, tp, 96, Layout.Alignment.ALIGN_CENTER, 1.2f, 0, false);
-				int height = layout.getHeight();
-				int textY = 26 - (height/2);
-				if(textY<8) {
-					textY=8;
-				}
-				canvas.translate(0, textY); //position the text
-				canvas.clipRect(0,0,96,35);
-				layout.draw(canvas);
-				canvas.restore();	
-				
-				canvas.save();			
 				StringBuilder lowerText = new StringBuilder();
 				if(!lastTrack.artist.equals("")) {
 					lowerText.append(lastTrack.artist);
@@ -166,16 +144,9 @@ public class MediaPlayerApp extends ApplicationBase {
 						lowerText.append("\n\n");
 					lowerText.append(lastTrack.album);
 				}
-				layout = new StaticLayout(lowerText.toString(), paintSmall, 96, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
-				height = layout.getHeight();
-				textY = 70 - (height/2);
-				if(textY<54) {
-					textY=54;
-				}
-				canvas.translate(0, textY); //position the text
-				canvas.clipRect(0,0,96,35);
-				layout.draw(canvas);
-				canvas.restore();	
+
+				Utils.autoText(context, canvas, lastTrack.track, 0, 8, 96, 35, Layout.Alignment.ALIGN_CENTER, Color.BLACK);
+				Utils.autoText(context, canvas, lowerText.toString(), 0, 54, 96, 35, Layout.Alignment.ALIGN_CENTER, Color.BLACK);
 			}
 			drawDigitalAppSwitchIcon(context, canvas, preview);
 			
