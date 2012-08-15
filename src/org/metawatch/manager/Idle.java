@@ -484,8 +484,11 @@ public class Idle {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "sendLcdIdle end");
 	}
 	
-	public static boolean toIdle(Context context) {
+	public static void toIdle(Context context) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "Idle.toIdle()");
+		
+		if (Notification.isActive())
+			return;
 		
 		MetaWatchService.WatchModes.IDLE = true;
 		MetaWatchService.watchState = MetaWatchService.WatchStates.IDLE;
@@ -518,8 +521,6 @@ public class Idle {
 		
 		Protocol.enableButton(1, 2, TOGGLE_SILENT, MetaWatchService.WatchBuffers.IDLE);
 		Protocol.enableButton(1, 3, TOGGLE_SILENT, MetaWatchService.WatchBuffers.IDLE);
-
-		return true;
 	}
 	
 	public static void updateIdle(Context context, boolean refresh) {

@@ -590,5 +590,9 @@ public class Notification {
 	public static void clearHistory() {
 		notificationHistory.clear();
 	}
+	
+	public static boolean isActive() {
+		return currentNotification != null;
+	}
 
 }
