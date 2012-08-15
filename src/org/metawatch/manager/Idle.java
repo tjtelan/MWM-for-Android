@@ -210,7 +210,7 @@ public class Idle {
 		}
 		
 		public Bitmap draw(final Context context, boolean preview, Bitmap bitmap, int watchType) {
-			return app.update(context, preview, watchType);
+			return app != null ? app.update(context, preview, watchType) : null;
 		}	
 		
 		public int screenMode(int watchType) {
