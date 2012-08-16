@@ -235,6 +235,9 @@
     <string name="settings_reset_widgets">Reset widgets</string>
     <string name="settings_reset_widgets_desc">Reset widgets naar standaard layout</string>
     
+    <string name="settings_hide_empty_widgets">Lege widgets verbergen</string>
+    <string name="settings_hide_empty_widgets_desc">Widgets verbergen die een "0" weergeven, of geen data</string>
+    
     <string name="settings_weather_provider">Weer aanbieder</string>
     <string name="settings_weather_provider_desc">Kies of schakel weer data bron uit</string>
     
@@ -262,6 +265,8 @@
     
     <string name="settings_choose_theme">Kies thema</string>
     <string name="settings_choose_theme_desc">Selecteer een grafisch thema voor je horloge</string>
+    
+    <string name="settings_active_apps">Active App Pages</string>
     
     <string name="settings_packet_wait">Packet wacht</string>
     <string name="settings_packet_wait_desc">Tijd tussen packet zendingen (ms)</string>
@@ -315,6 +320,11 @@
     <string name="settings_backup_restore">Herstellen</string>
     <string name="settings_backup_restore_desc">Instellingen herstellen vanaf een externe opslag.</string>
    
+    <string name="settings_auto_clock_format">Automatisch aanpassen tijdweergave</string>
+    <string name="settings_auto_clock_format_desc">Automatisch datum- en tijdweergave instellen bij verbinden. WAARSCHUWING - het kan voorkomen dat het horloge kan crashen bij firmware-versies die ouder zijn dan 0.9</string>
+    
+    <string name="settings_silent_mode">Stille modus</string>
+    <string name="settings_silent_mode_desc">Meldingen pauzeren, en stoppen met updaten van het rustscherm. Schakelen met een lange druk op de rustschermpaginadrukknop.</string>
     
     <string name="main_service_toggle_on">Programma loopt. Klikken om te stoppen.</string>
     <string name="main_service_toggle_off">Programma gestopt. Klikken om te starten.</string>

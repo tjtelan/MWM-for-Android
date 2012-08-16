@@ -235,6 +235,9 @@
     <string name="settings_reset_widgets">Widgets zurücksetzen</string>
     <string name="settings_reset_widgets_desc">Layout der Widgets zurücksetzen</string>
     
+    <string name="settings_hide_empty_widgets">Hide empty widgets</string>
+    <string name="settings_hide_empty_widgets_desc">Hide widgets that are displaying "0" or have no data</string>
+    
     <string name="settings_weather_provider">Weather Provider</string>
     <string name="settings_weather_provider_desc">Wähle eine Quelle für Wetterdaten aus.</string>
     
@@ -262,6 +265,8 @@
     
     <string name="settings_choose_theme">Theme auswählen</string>
     <string name="settings_choose_theme_desc">Wähle ein Theme für die Uhr aus</string>
+    
+    <string name="settings_active_apps">Active App Pages</string>
     
     <string name="settings_packet_wait">Wartezeit zwischen Senden</string>
     <string name="settings_packet_wait_desc">Wartezeit (in Millisekunden) zwischen dem Senden der Paketen</string>
@@ -315,6 +320,11 @@
     <string name="settings_backup_restore">Wiederherstellen</string>
     <string name="settings_backup_restore_desc">Wiederherstellung der Einstellungen von Sicherung auf der SD Karte.</string>
    
+    <string name="settings_auto_clock_format">Auto set clock format</string>
+    <string name="settings_auto_clock_format_desc">Automatically set the watch date and time formats when connecting.  WARNING - this may cause the watch to crash on pre 0.9 versions of the firmware.</string>
+    
+    <string name="settings_silent_mode">Silent Mode</string>
+    <string name="settings_silent_mode_desc">Mute notifications, and stop updating the idle screen.  Toggle with a long press on the idle page switch button.</string>
     
     <string name="main_service_toggle_on">Service läuft. Click zum Stoppen.</string>
     <string name="main_service_toggle_off">Service gestoppt. Click zum Starten.</string>
