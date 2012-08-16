@@ -43,17 +43,19 @@ import org.metawatch.manager.actions.ActionManager;
 import org.metawatch.manager.apps.ActionsApp;
 import org.metawatch.manager.apps.AppManager;
 import org.metawatch.manager.apps.ApplicationBase;
-import org.metawatch.manager.apps.MediaPlayerApp;
+import org.metawatch.manager.apps.ApplicationBase.AppData;
 import org.metawatch.manager.widgets.InternalWidget.WidgetData;
 import org.metawatch.manager.widgets.WidgetManager;
 import org.metawatch.manager.widgets.WidgetRow;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Idle {
@@ -319,8 +321,6 @@ public class Idle {
 			
 			if(!initialised) {
 				WidgetManager.initWidgets(context, null);
-				AppManager.initApps();
-				AppManager.sendDiscoveryBroadcast(context);
 				ActionManager.initActions(context);
 				initialised = true;
 			}
@@ -375,16 +375,17 @@ public class Idle {
 			}
 			screens.add(new WidgetPage(screenRow, screens.size()));
 			
-			if (prevList == null) {
-				// Initialize app pages.
-				// TODO: Implement a better method of configuring enabled apps
-				if(Preferences.idleActions) {
-					screens.add(new AppPage(AppManager.getApp(ActionsApp.APP_ID)));
-				}
-				if(Preferences.idleMusicControls) {
-					screens.add(new AppPage(AppManager.getApp(MediaPlayerApp.APP_ID)));
-				}
+			if (prevList == null) {			
+				SharedPreferences sharedPreferences = PreferenceManager
+						.getDefaultSharedPreferences(context);
 				
+				AppData[] data = AppManager.getAppInfos();	
+				for (AppData appEntry : data) {
+					if(sharedPreferences.getBoolean(appEntry.getPageSettingName(), false)) {
+						screens.add(new AppPage(AppManager.getApp(appEntry.id)));
+					}
+				}
+								
 			} else {
 				// Copy app pages from previous list.
 				for (IdlePage page : prevList) {

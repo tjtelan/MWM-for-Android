@@ -41,6 +41,7 @@ import org.metawatch.manager.MetaWatchService.GeolocationMode;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.MetaWatchService.WeatherProvider;
 import org.metawatch.manager.Monitors.LocationData;
+import org.metawatch.manager.apps.AppManager;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -109,6 +110,9 @@ public class MetaWatch extends TabActivity {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "No BugSense keyfile found");
 		}
         
+		MetaWatchService.loadPreferences(this);
+		AppManager.initApps(this);
+        
         startupTime = System.currentTimeMillis();
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -128,7 +132,7 @@ public class MetaWatch extends TabActivity {
         		.setIndicator("destroy")
                 .setIndicator(res.getString(R.string.ui_tab_widgets),res.getDrawable(R.drawable.ic_tab_widgets))
                 .setContent(new Intent(this, WidgetSetup.class)
-                		.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
         
         tabHost.addTab(tabHost.newTabSpec("tab4")
                 .setIndicator(res.getString(R.string.ui_tab_tests),res.getDrawable(R.drawable.ic_tab_test))
@@ -146,8 +150,6 @@ public class MetaWatch extends TabActivity {
 	        textView = MetaWatchStatus.textView;
 	        toggleButton = MetaWatchStatus.toggleButton;
         }
-
-		MetaWatchService.loadPreferences(this);
 		
 		if (Preferences.watchMacAddress == "") {
 			// Show the watch discovery screen on first start

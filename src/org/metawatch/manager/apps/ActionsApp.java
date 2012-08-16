@@ -40,9 +40,6 @@ public class ActionsApp extends ApplicationBase {
 	
 		supportsDigital = true;
 		supportsAnalog = true;
-		
-		pageSettingKey = "IdleActions";
-		pageSettingAttribute = "idleActions";
 	}};
 	
 	public final static byte ACTION_NEXT = 30;

@@ -35,9 +35,6 @@ public class MediaPlayerApp extends ApplicationBase {
 	
 		supportsDigital = true;
 		supportsAnalog = true;
-		
-		pageSettingKey = "IdleMusicControls";
-		pageSettingAttribute = "idleMusicControls";
 	}};
 	
 	public final static byte VOLUME_UP = 10;

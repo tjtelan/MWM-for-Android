@@ -26,9 +26,6 @@ public class ExternalApp extends ApplicationBase {
 		
 			supportsDigital = true;
 			supportsAnalog = false;
-			
-			pageSettingKey = "idle" + appId;
-			pageSettingAttribute = "idle" + appId;
 		}};
 	}
 	

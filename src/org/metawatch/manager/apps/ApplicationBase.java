@@ -40,8 +40,9 @@ public abstract class ApplicationBase {
 		public boolean supportsDigital = false;
 		public boolean supportsAnalog = false;
 		
-		String pageSettingKey = null;
-		String pageSettingAttribute = null;
+		public String getPageSettingName() {
+			return id+".app_enabled";
+		}
 	}
 	
 	public abstract AppData getInfo();
@@ -53,22 +54,21 @@ public abstract class ApplicationBase {
 	}
 
 	public void setPageSetting(Context context, boolean value) {
-		//TODO: Implement a better method of configuring enabled apps
+
 		AppData info = getInfo();
-		if (info.pageSettingKey != null) {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-			SharedPreferences.Editor editor = prefs.edit();
-			editor.putBoolean(getInfo().pageSettingKey, value);
-			editor.commit();
+		final String pageSetting = info.getPageSettingName();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(pageSetting, value);
+		editor.commit();
+
+		try {
+			Field f = Preferences.class.getDeclaredField(pageSetting);
+			f.setBoolean(null, value);
+		} catch (Exception e) {
+			if (Preferences.logging) Log.e(MetaWatch.TAG, "Error while changing preference attribute", e);
 		}
-		if (info.pageSettingAttribute != null) {
-			try {
-				Field f = Preferences.class.getDeclaredField(info.pageSettingAttribute);
-				f.setBoolean(null, value);
-			} catch (Exception e) {
-				if (Preferences.logging) Log.e(MetaWatch.TAG, "Error while changing preference attribute", e);
-			}
-		}
+		
 	}
 	
 	// An app should do any required construction on the first call of activate or update

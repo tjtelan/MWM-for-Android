@@ -201,9 +201,7 @@ public class MetaWatchService extends Service {
 		public static String wundergroundKey = "";
 		public static int fontSize = 2;
 		public static int smsLoopInterval = 15;
-		public static boolean idleMusicControls = false;
 		public static int idleMusicControlMethod = MediaControl.MUSICSERVICECOMMAND;
-		public static boolean idleActions = false;
 		public static int quickButton = QuickButton.DISABLED;
 		public static boolean notificationLarger = false;
 		public static boolean autoConnect = false;
@@ -251,7 +249,7 @@ public class MetaWatchService extends Service {
 				Monitors.restart(context);
 			}
 			
-			if (key.contains("Idle")) {
+			if (key.contains("Idle") || key.contains(".app_enabled")) {
 				Idle.reset(context);
 			}	
 			
@@ -311,8 +309,6 @@ public class MetaWatchService extends Service {
 				Integer.toString(Preferences.weatherGeolocationMode)));
 		Preferences.wundergroundKey = sharedPreferences.getString(
 				"WundergroundKey", Preferences.wundergroundKey);
-		Preferences.idleMusicControls = sharedPreferences.getBoolean(
-				"IdleMusicControls", Preferences.idleMusicControls);
 		Preferences.idleMusicControlMethod = Integer.parseInt(
 				sharedPreferences.getString("IdleMusicControlMethod", 
 				Integer.toString(Preferences.idleMusicControlMethod)));
@@ -348,8 +344,6 @@ public class MetaWatchService extends Service {
 				Preferences.showNotificationQueue);
 		Preferences.dumpWatchScreenshots = sharedPreferences.getBoolean("DumpWatchScreenshots",
 				Preferences.dumpWatchScreenshots);
-		Preferences.idleActions = sharedPreferences.getBoolean("IdleActions",
-				Preferences.idleActions);
 		Preferences.autoSpeakerphone = sharedPreferences.getBoolean("autoSpeakerphone",
 				Preferences.autoSpeakerphone);
 		Preferences.showActionsInCall = sharedPreferences.getBoolean("showActionsInCall",

@@ -34,6 +34,8 @@ package org.metawatch.manager;
 
 import org.metawatch.communityedition.R;
 import org.metawatch.manager.MetaWatchService.Preferences;
+import org.metawatch.manager.apps.AppManager;
+import org.metawatch.manager.apps.ApplicationBase.AppData;
 import org.metawatch.manager.widgets.WidgetManager;
 
 import android.app.AlarmManager;
@@ -41,8 +43,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
@@ -134,7 +138,28 @@ public class Settings extends PreferenceActivity {
 		super.onStart();
 	}
 	
-	
+	@Override
+	protected void onResume() {
+		
+		// Dynamically add the "Enabled app" controls
+		PreferenceCategory appGroup = (PreferenceCategory) findPreference("ActiveApps");
+		
+		appGroup.removeAll();
+		
+		AppData[] data = AppManager.getAppInfos();	
+		for (AppData appEntry : data) {
+			
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "Adding setting for "+appEntry.id);
+		
+			CheckBoxPreference test = new CheckBoxPreference(this);
+			test.setKey(appEntry.getPageSettingName());
+			test.setTitle(appEntry.name);
+			
+			appGroup.addPreference(test);		
+		}
+		
+		super.onResume();
+	}
 	
 	
 

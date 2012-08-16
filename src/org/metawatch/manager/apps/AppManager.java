@@ -16,7 +16,8 @@ public class AppManager {
 
 	static Map<String, ApplicationBase> apps = new HashMap<String, ApplicationBase>();
 	
-	public static void initApps() {
+	public static void initApps(Context context) {
+		sendDiscoveryBroadcast(context);
 		if(apps.size()==0) {
 			addApp(new MediaPlayerApp());
 			addApp(new ActionsApp());

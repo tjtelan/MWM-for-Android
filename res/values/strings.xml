@@ -266,6 +266,8 @@
     <string name="settings_choose_theme">Choose Theme</string>
     <string name="settings_choose_theme_desc">Select a graphical theme for your watch</string>
     
+    <string name="settings_active_apps">Active App Pages</string>
+    
     <string name="settings_packet_wait">Packet Wait</string>
     <string name="settings_packet_wait_desc">Time between packet sends (ms)</string>
     

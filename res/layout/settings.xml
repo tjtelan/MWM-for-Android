@@ -474,6 +474,7 @@
 	
 	<PreferenceScreen
 	    android:title="@string/settings_watch_apps"
+	    android:key="WatchAppsScreen"
 	    >
 	    
 	    <ListPreference 
@@ -487,12 +488,6 @@
  			android:defaultValue="0"
  			/>
 
-		<CheckBoxPreference
-			android:title="@string/settings_music_app"
-			android:key="IdleMusicControls"
-			android:summary="@string/settings_music_app_desc"
-			android:defaultValue="false"
-			/>
 		<ListPreference 
 			android:entries="@array/settings_media_control_method_names" 
 			android:entryValues="@array/settings_media_control_method_values" 
@@ -503,12 +498,14 @@
  			android:enabled="true" 
  			android:defaultValue="0"
  			/>	
-		<CheckBoxPreference
-		    android:title="@string/settings_actions_app"
-		    android:key="IdleActions"
-		    android:summary="@string/settings_actions_app_desc"
-		    android:defaultValue="false"
-		    />
+		
+		<PreferenceCategory
+		    android:title="@string/settings_active_apps"
+		    android:key="ActiveApps">
+		
+		    <!-- This category gets filled by code in Settings.java -->
+		    
+		</PreferenceCategory>
 	    			    
 	</PreferenceScreen>
 	

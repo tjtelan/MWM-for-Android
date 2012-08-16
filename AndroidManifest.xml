@@ -184,7 +184,7 @@
                   android:launchMode="standard">
         </activity>  
         <activity android:name="org.metawatch.manager.Settings" 
-        		  android:launchMode="singleTask">
+        		  android:launchMode="standard">
         </activity>
         <activity android:name="org.metawatch.manager.WidgetSetup"
         		  android:configChanges="keyboardHidden|orientation" 
