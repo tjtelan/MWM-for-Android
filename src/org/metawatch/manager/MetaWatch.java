@@ -254,8 +254,8 @@ public class MetaWatch extends TabActivity {
 						"<p>Version " + Utils.getVersion(this) + ".</p>" +
 						"<b>MetaWatch Community Team</b><br>" +
 						"Joakim Andersson<br>Chris Boyle<br>Garth Bushell<br>Prash D<br>Matthias Gruenewald<br>"+
-						"Richard Munn<br>Craig Oliver<br>Didi Pfeifle<br>Kyle Schroeder<br>Chris Sewell<br>"+
-						"Dobie Wollert<p>"+
+						"Richard Munn<br>Craig Oliver<br>Didi Pfeifle<br>Thierry Schork<br>Kyle Schroeder<br>"+
+						"Chris Sewell<br>Dobie Wollert<p>"+
 						"<b>Translation Team</b><br>"+
 						"Miguel Branco<br>Didi Pfeifle<br>Geurt Pieter Maassen van den Brink<br>Thierry Schork<p>"+
 						"<p>&copy; Copyright 2011-2012 Meta Watch Ltd.</p>" +
