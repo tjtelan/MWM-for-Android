@@ -235,6 +235,8 @@ public class WidgetSetup extends Activity {
         			bmp = Utils.invertBitmap(bmp);
         			backCol = 0xff111111;
         		}
+        		
+        		bmp = Bitmap.createScaledBitmap(bmp, bmp.getWidth()*2, bmp.getHeight()*2, false);
         		    			
 	    		LayoutInflater factory = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	

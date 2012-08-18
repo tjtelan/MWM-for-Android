@@ -107,8 +107,10 @@ public class WidgetPicker extends ListActivity {
 
             // Bind the data efficiently with the holder.
             holder.text.setText(mWidgets.get(position).description);
-            if(mWidgets.get(position).bitmap!=null)
-            	holder.icon.setImageBitmap(mWidgets.get(position).bitmap);
+            if(mWidgets.get(position).bitmap!=null) {
+            	Bitmap bmp = mWidgets.get(position).bitmap;
+            	holder.icon.setImageBitmap(  Bitmap.createScaledBitmap(bmp, bmp.getWidth()*2, bmp.getHeight()*2, false) );
+            }
 
             return convertView;
         }
