@@ -266,7 +266,7 @@
     <string name="settings_choose_theme">Kies thema</string>
     <string name="settings_choose_theme_desc">Selecteer een grafisch thema voor je horloge</string>
     
-    <string name="settings_active_apps">Active App Pages</string>
+    <string name="settings_active_apps">Actieve App pagina\'s</string>
     
     <string name="settings_packet_wait">Packet wacht</string>
     <string name="settings_packet_wait_desc">Tijd tussen packet zendingen (ms)</string>

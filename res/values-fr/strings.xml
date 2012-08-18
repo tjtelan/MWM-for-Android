@@ -266,7 +266,7 @@
     <string name="settings_choose_theme">Choisir un thème</string>
     <string name="settings_choose_theme_desc">Sélectionnez un thème graphique pour votre montre</string>
     
-    <string name="settings_active_apps">Active App Pages</string>
+    <string name="settings_active_apps">Applications actives</string>
     
     <string name="settings_packet_wait">Attente de paquets</string>
     <string name="settings_packet_wait_desc">Intervalle entre l\'envoi de paquets (en ms)</string>
