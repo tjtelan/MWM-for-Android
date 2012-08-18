@@ -320,6 +320,7 @@ public class Idle {
 			setBusy(true);
 			
 			if(!initialised) {
+				AppManager.initApps(context);
 				WidgetManager.initWidgets(context, null);
 				ActionManager.initActions(context);
 				initialised = true;

@@ -18,10 +18,10 @@ public class AppManager {
 	
 	public static void initApps(Context context) {
 		sendDiscoveryBroadcast(context);
-		if(apps.size()==0) {
+		if (getApp(MediaPlayerApp.APP_ID)==null)
 			addApp(new MediaPlayerApp());
+		if (getApp(ActionsApp.APP_ID)==null)
 			addApp(new ActionsApp());
-		}
 	}
 	
 	public static void addApp(ApplicationBase app) {

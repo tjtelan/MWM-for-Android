@@ -142,7 +142,7 @@ public class ActionsApp extends ApplicationBase {
 		init(context);
 
 		currentActions.clear();
-		if (containerStack.isEmpty()) {
+		if (containerStack.isEmpty() || containerStack.peek()==null) {
 			// At the root.
 			currentActions = ActionManager.getRootActions(context);
 		} else {
