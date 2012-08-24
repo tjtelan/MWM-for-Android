@@ -537,11 +537,12 @@ public class MetaWatchService extends Service {
 
 	@Override
 	public void onDestroy() {
-		disconnectExit();
+		connectionState = ConnectionState.DISCONNECTED;
+		updateNotification();
+		disconnectExit();		
 		super.onDestroy();
 		if (Preferences.logging) Log.d(MetaWatch.TAG,
 				"MetaWatchService.onDestroy()");
-
 		PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(prefChangeListener);
 		
 		Monitors.stop(this);
@@ -579,6 +580,8 @@ public class MetaWatchService extends Service {
 					sendToast(getResources().getString(R.string.error_bluetooth_not_enabled));
 					return;
 				}
+								
+				wakeLock.acquire(5000);
 				
 				BluetoothDevice bluetoothDevice = bluetoothAdapter
 						.getRemoteDevice(Preferences.watchMacAddress);
@@ -604,7 +607,9 @@ public class MetaWatchService extends Service {
 					
 				}
 
+				bluetoothAdapter.cancelDiscovery();
 				bluetoothSocket.connect();
+		
 				inputStream = bluetoothSocket.getInputStream();
 				outputStream = bluetoothSocket.getOutputStream();
 			}
@@ -641,9 +646,14 @@ public class MetaWatchService extends Service {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 		} catch (NullPointerException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
+		} finally
+		{
+			if(wakeLock != null && wakeLock.isHeld())
+			{
+				wakeLock.release();
+			}
 		}
-		
-		
+				
 		return;
 	}
 	
@@ -723,48 +733,82 @@ public class MetaWatchService extends Service {
 
 	void disconnectExit() {
 		connectionState = ConnectionState.DISCONNECTING;
+		updateNotification();
 		disconnect();
 	}
 
+	int processState()
+	{
+		int result = 0;
+		switch (connectionState) {
+		case ConnectionState.DISCONNECTED:
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "state: disconnected");
+			break;
+		case ConnectionState.CONNECTING:
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "state: connecting");
+			// create initial connection or reconnect
+			updateNotification();					
+			connect(MetaWatchService.this);
+			result = 10000;
+			break;
+		case ConnectionState.CONNECTED:
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "state: connected");
+			// read from input stream
+			readFromDevice();
+			break;
+		case ConnectionState.DISCONNECTING:
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "state: disconnecting");
+			// exit			
+			result = -1;
+			break;
+		}	
+		
+		return result;
+	}
+		
 	void start() {
+		
 		Thread thread = new Thread("MetaWatch Service Thread") {
+			
+			Handler handler;
+			
 			@Override
 			public void run() {
-				boolean run = true;
-				Looper.prepare();
-
-				while (run) {
-					switch (connectionState) {
-					case ConnectionState.DISCONNECTED:
-						if (Preferences.logging) Log.d(MetaWatch.TAG, "state: disconnected");
-						break;
-					case ConnectionState.CONNECTING:
-						if (Preferences.logging) Log.d(MetaWatch.TAG, "state: connecting");
-						// create initial connection or reconnect
-						updateNotification();
-						connect(MetaWatchService.this);
-						try {
-							Thread.sleep(2000);
-						} catch (InterruptedException ie) {
-							/* If we've been interrupted, exit gracefully. */
-							run = false;
-						}
-						break;
-					case ConnectionState.CONNECTED:
-						if (Preferences.logging) Log.d(MetaWatch.TAG, "state: connected");
-						// read from input stream
-						readFromDevice();
-						break;
-					case ConnectionState.DISCONNECTING:
-						if (Preferences.logging) Log.d(MetaWatch.TAG, "state: disconnecting");
-						// exit
-						run = false;
-						break;
-					}
+				
+				try {
+									
+					Looper.prepare();
+					handler = new Handler();
+					
+					Runnable ProcessState = new Runnable() {
+							public void run() { 
+								int delay = processState();
+								if(delay >= 0) {
+									handler.postDelayed(this, delay);
+								} else {
+									connectionState = ConnectionState.DISCONNECTED;
+									updateNotification();
+									handler.removeCallbacks(this);
+									Looper.myLooper().quit();
+								}
+							}
+					};
+						
+					handler.post(ProcessState);
+					Looper.loop();			
+				} 
+				catch(Throwable T)
+				{
+					if (Preferences.logging) Log.d(MetaWatch.TAG, "Looper Halted " + T.getMessage());	
 				}
-				connectionState = ConnectionState.DISCONNECTED;
+				finally
+				{
+					connectionState = ConnectionState.DISCONNECTED;
+					updateNotification();				
+				}
 			}
 		};
+		
 		thread.start();
 
 		/* DEBUG */
@@ -1001,12 +1045,10 @@ public class MetaWatchService extends Service {
 	
 	private void resetConnection() {
 		Log.d(MetaWatch.TAG, "MetaWatchService.resetConnection()");
-		wakeLock.acquire(5000);
+		//wakeLock.acquire(5000);
 		if (connectionState != ConnectionState.DISCONNECTING) {
-			Protocol.stopProtocolSender();
-			Notification.stopNotificationSender();
-			connectionState = ConnectionState.CONNECTING;
-			broadcastConnection(false);
+			connectionState = ConnectionState.CONNECTING;			
+			disconnect();
 		}	
 	}
 
