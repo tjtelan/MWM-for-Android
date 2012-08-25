@@ -82,12 +82,13 @@ public class MetaWatchService extends Service {
 	BluetoothSocket bluetoothSocket;
 	static InputStream inputStream;
 	static OutputStream outputStream;
+	static ServiceThread serviceThread;
 
 	//TelephonyManager telephonyManager;
 	NotificationManager notificationManager;
 	android.app.Notification notification;
 
-	public static PowerManager powerManger;
+	public static PowerManager powerManager;
 	public static PowerManager.WakeLock wakeLock;
 
 	public static volatile int connectionState;
@@ -229,7 +230,7 @@ public class MetaWatchService extends Service {
 		public static final int ANALOG = 1;
 		public static final int DIGITAL = 2;
 	}
-
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mMessenger.getBinder();
@@ -481,6 +482,7 @@ public class MetaWatchService extends Service {
 		stopForeground(true);
 	}
 
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -507,8 +509,8 @@ public class MetaWatchService extends Service {
 		if (bluetoothAdapter == null)
 			bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-		powerManger = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = powerManger.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+		powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
 				"MetaWatch");
 
 		Monitors.start(this/*, telephonyManager*/);
@@ -537,10 +539,10 @@ public class MetaWatchService extends Service {
 
 	@Override
 	public void onDestroy() {
-		connectionState = ConnectionState.DISCONNECTED;
-		updateNotification();
-		disconnectExit();		
+		disconnectExit();			
 		super.onDestroy();
+		serviceThread.quit();
+		
 		if (Preferences.logging) Log.d(MetaWatch.TAG,
 				"MetaWatchService.onDestroy()");
 		PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(prefChangeListener);
@@ -580,7 +582,7 @@ public class MetaWatchService extends Service {
 					sendToast(getResources().getString(R.string.error_bluetooth_not_enabled));
 					return;
 				}
-								
+				
 				wakeLock.acquire(5000);
 				
 				BluetoothDevice bluetoothDevice = bluetoothAdapter
@@ -646,10 +648,8 @@ public class MetaWatchService extends Service {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 		} catch (NullPointerException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
-		} finally
-		{
-			if(wakeLock != null && wakeLock.isHeld())
-			{
+		} finally {
+			if(wakeLock != null && wakeLock.isHeld()) {
 				wakeLock.release();
 			}
 		}
@@ -737,6 +737,58 @@ public class MetaWatchService extends Service {
 		disconnect();
 	}
 
+	private class ServiceThread extends Thread
+	{			
+		private Handler handler;
+		private Looper looper;
+		
+		public ServiceThread(String name) {
+			super(name);
+		}
+
+		@Override
+		public void run() {
+			
+			try {
+								
+				Looper.prepare();
+				looper = Looper.myLooper();
+				handler = new Handler();
+				
+				Runnable ProcessState = new Runnable() {
+						public void run() { 
+							int delay = processState();
+							if(delay >= 0) {
+								handler.postDelayed(this, delay);
+							} else {
+								connectionState = ConnectionState.DISCONNECTED;
+								updateNotification();
+								handler.removeCallbacks(this);
+								looper.quit();
+							}
+						}
+				};
+					
+				handler.post(ProcessState);
+				Looper.loop();			
+			} 
+			catch(Throwable T)
+			{
+				if (Preferences.logging) Log.d(MetaWatch.TAG, "serviceThread: " + T.getMessage());	
+			}
+			finally
+			{				
+				connectionState = ConnectionState.DISCONNECTED;
+				updateNotification();				
+			}
+		}
+		
+		public void quit() {
+			looper.quit();
+		}		
+	}	
+	
+	
 	int processState()
 	{
 		int result = 0;
@@ -749,7 +801,11 @@ public class MetaWatchService extends Service {
 			// create initial connection or reconnect
 			updateNotification();					
 			connect(MetaWatchService.this);
-			result = 10000;
+			if(powerManager.isScreenOn()) {
+				result = 10000; //try to reconnect in 10s 
+			} else {
+				result = 30000; //try to reconnect in 30s				
+			}
 			break;
 		case ConnectionState.CONNECTED:
 			if (Preferences.logging) Log.d(MetaWatch.TAG, "state: connected");
@@ -768,48 +824,8 @@ public class MetaWatchService extends Service {
 		
 	void start() {
 		
-		Thread thread = new Thread("MetaWatch Service Thread") {
-			
-			Handler handler;
-			
-			@Override
-			public void run() {
-				
-				try {
-									
-					Looper.prepare();
-					handler = new Handler();
-					
-					Runnable ProcessState = new Runnable() {
-							public void run() { 
-								int delay = processState();
-								if(delay >= 0) {
-									handler.postDelayed(this, delay);
-								} else {
-									connectionState = ConnectionState.DISCONNECTED;
-									updateNotification();
-									handler.removeCallbacks(this);
-									Looper.myLooper().quit();
-								}
-							}
-					};
-						
-					handler.post(ProcessState);
-					Looper.loop();			
-				} 
-				catch(Throwable T)
-				{
-					if (Preferences.logging) Log.d(MetaWatch.TAG, "Looper Halted " + T.getMessage());	
-				}
-				finally
-				{
-					connectionState = ConnectionState.DISCONNECTED;
-					updateNotification();				
-				}
-			}
-		};
-		
-		thread.start();
+		serviceThread = new ServiceThread("MetaWatch Service Thread"); 		
+		serviceThread.start();
 
 		/* DEBUG */
 		String voltageFrequencyString = PreferenceManager
@@ -867,6 +883,7 @@ public class MetaWatchService extends Service {
 			        lengthtoread = bytes[1];
 			    }
 			}
+			
 			wakeLock.acquire(5000);
 
 			// print received
@@ -1040,16 +1057,30 @@ public class MetaWatchService extends Service {
 		} catch(ArrayIndexOutOfBoundsException e) {
 			if (Preferences.logging) Log.d(MetaWatch.TAG, e.toString());
 			resetConnection();
+		} finally {
+			if(wakeLock != null && wakeLock.isHeld()) {
+				wakeLock.release();
+			}
+				
 		}
+		
 	}
 	
 	private void resetConnection() {
 		Log.d(MetaWatch.TAG, "MetaWatchService.resetConnection()");
-		//wakeLock.acquire(5000);
+		
+		wakeLock.acquire(5000);
+		
+		try {
 		if (connectionState != ConnectionState.DISCONNECTING) {
 			connectionState = ConnectionState.CONNECTING;			
 			disconnect();
 		}	
+		} finally {
+			if(wakeLock != null && wakeLock.isHeld()) {
+				wakeLock.release();
+			}				
+		}
 	}
 
 	void broadcastConnection(boolean connected) {
@@ -1073,85 +1104,97 @@ public class MetaWatchService extends Service {
 		
 		wakeLock.acquire(10000);
 		
-		if(button>0 && Preferences.hapticFeedback)
-			Protocol.vibrate(5, 5, 2);
-
-		if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.pressedButton(): watchState="
-				+ watchState);
-		switch (watchState) {
-		case WatchStates.IDLE: {
+		try {
 			
-			int idleAppButton = Idle.appButtonPressed(this, button);
-			if( idleAppButton == ApplicationBase.BUTTON_NOT_USED )
-			{
+			if(button>0 && Preferences.hapticFeedback)
+				Protocol.vibrate(5, 5, 2);
+	
+			if (Preferences.logging) Log.d(MetaWatch.TAG, "MetaWatchService.pressedButton(): watchState="
+					+ watchState);
+			switch (watchState) {
+			case WatchStates.IDLE: {
+				
+				int idleAppButton = Idle.appButtonPressed(this, button);
+				if( idleAppButton == ApplicationBase.BUTTON_NOT_USED )
+				{
+					
+					switch (button) {
+					
+					case Idle.QUICK_BUTTON:
+						Idle.quickButtonAction(this);
+						break;
+						
+					case Idle.IDLE_NEXT_PAGE:							
+						if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
+							Idle.nextPage(this);
+							Idle.updateIdle(this, true);	
+						}
+						break;
+						
+					case Idle.TOGGLE_SILENT:
+						MetaWatchService.setSilentMode(!silentMode);
+						Protocol.vibrate(500, 500, 2);
+						break;
+						
+					case Idle.IDLE_OLED_DISPLAY:
+						long time = System.currentTimeMillis();
+						
+						if(time-lastOledCrownPress < 1000*5)
+						{
+							Idle.nextPage(this);
+							Idle.updateIdle(this, true);
+						}
+						
+						lastOledCrownPress = time;
+						Idle.sendOledIdle(this);
+						break;
+													
+					case Application.TOGGLE_APP:
+						Application.toggleApp(context, Idle.getCurrentApp());
+						break;
+					}
+				}
+				else if (idleAppButton != ApplicationBase.BUTTON_USED_DONT_UPDATE)
+				{
+					Idle.updateIdle(this, false);
+					if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
+						Idle.sendOledIdle(this);
+				}
+				break;
+			}
+				
+			case WatchStates.APPLICATION:
+				Application.buttonPressed(this, button);
+				break;
+				
+			case WatchStates.NOTIFICATION:
 				
 				switch (button) {
-				
-				case Idle.QUICK_BUTTON:
-					Idle.quickButtonAction(this);
+				case Call.CALL_ANSWER:
+					MediaControl.answerCall(this);
+					break;			
+				case Call.CALL_DISMISS:
+					MediaControl.ignoreCall(this);
 					break;
-					
-				case Idle.IDLE_NEXT_PAGE:							
-					if (MetaWatchService.watchType == MetaWatchService.WatchType.DIGITAL) {
-						Idle.nextPage(this);
-						Idle.updateIdle(this, true);	
-					}
+				case Call.CALL_MENU:
+					ActionManager.displayCallActions(this);
 					break;
-					
-				case Idle.TOGGLE_SILENT:
-					MetaWatchService.setSilentMode(!silentMode);
-					Protocol.vibrate(500, 500, 2);
-					break;
-					
-				case Idle.IDLE_OLED_DISPLAY:
-					long time = System.currentTimeMillis();
-					
-					if(time-lastOledCrownPress < 1000*5)
-					{
-						Idle.nextPage(this);
-						Idle.updateIdle(this, true);
-					}
-					
-					lastOledCrownPress = time;
-					Idle.sendOledIdle(this);
-					break;
-												
-				case Application.TOGGLE_APP:
-					Application.toggleApp(context, Idle.getCurrentApp());
+				default:
+					Notification.buttonPressed(button);
 					break;
 				}
+				break;
 			}
-			else if (idleAppButton != ApplicationBase.BUTTON_USED_DONT_UPDATE)
-			{
-				Idle.updateIdle(this, false);
-				if (MetaWatchService.watchType == MetaWatchService.WatchType.ANALOG)
-					Idle.sendOledIdle(this);
+		
+		} 
+		finally
+		{
+			if(wakeLock != null && wakeLock.isHeld()) {
+				wakeLock.release();
 			}
-			break;
 		}
-			
-		case WatchStates.APPLICATION:
-			Application.buttonPressed(this, button);
-			break;
-			
-		case WatchStates.NOTIFICATION:
-			
-			switch (button) {
-			case Call.CALL_ANSWER:
-				MediaControl.answerCall(this);
-				break;			
-			case Call.CALL_DISMISS:
-				MediaControl.ignoreCall(this);
-				break;
-			case Call.CALL_MENU:
-				ActionManager.displayCallActions(this);
-				break;
-			default:
-				Notification.buttonPressed(button);
-				break;
-			}
-			break;
-		}
+		
+
 
 	}
 	
