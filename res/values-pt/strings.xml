@@ -235,8 +235,8 @@
     <string name="settings_reset_widgets">Repôr Widgets Originais</string>
     <string name="settings_reset_widgets_desc">Repõe as widgets à configuração inicial</string>
     
-    <string name="settings_hide_empty_widgets">Hide empty widgets</string>
-    <string name="settings_hide_empty_widgets_desc">Hide widgets that are displaying "0" or have no data</string>
+    <string name="settings_hide_empty_widgets">Esconder widgets vazias</string>
+    <string name="settings_hide_empty_widgets_desc">Esconder widgets que mostram "0" ou não têm dados</string>
     
     <string name="settings_weather_provider">Serviço de Clima</string>
     <string name="settings_weather_provider_desc">Escolher ou desativar fonte de informação de clima</string>
@@ -266,7 +266,7 @@
     <string name="settings_choose_theme">Escolher Tema</string>
     <string name="settings_choose_theme_desc">Escolher um tema gráfico para o relógio</string>
     
-    <string name="settings_active_apps">Active App Pages</string>
+    <string name="settings_active_apps">Páginas de Aplicações Activas</string>
     
     <string name="settings_packet_wait">Tempo de espera de pacotes</string>
     <string name="settings_packet_wait_desc">Tempo entre envios sucessivos de pacotes (ms)</string>
@@ -320,11 +320,11 @@
     <string name="settings_backup_restore">Restaurar Cópia de Segurança</string>
     <string name="settings_backup_restore_desc">Restaurar definições a partir do armazenamento externo</string>
    
-    <string name="settings_auto_clock_format">Auto set clock format</string>
-    <string name="settings_auto_clock_format_desc">Automatically set the watch date and time formats when connecting.  WARNING - this may cause the watch to crash on pre 0.9 versions of the firmware.</string>
+    <string name="settings_auto_clock_format">Definir formato do relógio automaticamente</string>
+    <string name="settings_auto_clock_format_desc">Definir automaticamente o formato das horas e da data no relógio. AVISO - pode causar crash no relógio em versões da firmware anteriores a 0.9</string>
     
-    <string name="settings_silent_mode">Silent Mode</string>
-    <string name="settings_silent_mode_desc">Mute notifications, and stop updating the idle screen.  Toggle with a long press on the idle page switch button.</string>
+    <string name="settings_silent_mode">Modo Silêncio</string>
+    <string name="settings_silent_mode_desc">Desactivar notificações e não actualizar o ecrã idle. Active/desactive deixando o dedo no botão de troca das páginas idle.</string>
     
     <string name="main_service_toggle_on">Serviço em execução. Toque para parar.</string>
     <string name="main_service_toggle_off">Serviço parado. Toque para começar.</string>
