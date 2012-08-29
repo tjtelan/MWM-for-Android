@@ -53,10 +53,12 @@ public class InternalActions {
 				as.setStreamVolume(AudioManager.STREAM_RING, as.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
 				as.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				r = RingtoneManager.getRingtone(context.getApplicationContext(), notification);
-				r.play();
+				if (r!=null)
+					r.play();
 			}
 			else {
-				r.stop();
+				if (r!=null)
+					r.stop();
 				r = null;
 				
 				AudioManager as = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
