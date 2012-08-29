@@ -173,6 +173,8 @@ public class ActionManager {
 	public static List<Action> getRootActions(Context context) {
 		List<Action> result = new ArrayList<Action>();
 		
+		initActions(context);
+		
 		result.add(phoneCallAction);
 		result.add(quickDialAction);
 			
