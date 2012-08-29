@@ -583,7 +583,7 @@ public class MetaWatchService extends Service {
 					return;
 				}
 				
-				wakeLock.acquire(5000);
+				wakeLock.acquire();
 				
 				BluetoothDevice bluetoothDevice = bluetoothAdapter
 						.getRemoteDevice(Preferences.watchMacAddress);
@@ -884,7 +884,7 @@ public class MetaWatchService extends Service {
 			    }
 			}
 			
-			wakeLock.acquire(5000);
+			wakeLock.acquire();
 
 			// print received
 			String str = "received: ";
@@ -1069,7 +1069,7 @@ public class MetaWatchService extends Service {
 	private void resetConnection() {
 		Log.d(MetaWatch.TAG, "MetaWatchService.resetConnection()");
 		
-		wakeLock.acquire(5000);
+		wakeLock.acquire();
 		
 		try {
 		if (connectionState != ConnectionState.DISCONNECTING) {
@@ -1102,7 +1102,7 @@ public class MetaWatchService extends Service {
 	void pressedButton(int button) {
 		if (Preferences.logging) Log.d(MetaWatch.TAG, "button code: " + Integer.toString(button));
 		
-		wakeLock.acquire(10000);
+		wakeLock.acquire();
 		
 		try {
 			
