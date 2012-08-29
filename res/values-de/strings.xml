@@ -172,14 +172,14 @@
 	
 	<string-array name="settings_weather_provider_names">
 	<item>Kein</item>
-    <item>Google Wetter</item>
+<!--     <item>Google Wetter</item>  -->
     <item>Weather Underground</item>
     <item>Yahoo Wetter</item>
     </string-array>
     
     <string-array name="settings_weather_provider_values"> 
 	<item>0</item>
-	<item>1</item>
+<!--<item>1</item> -->
 	<item>2</item>
 	<item>3</item>
 	</string-array>

@@ -144,7 +144,7 @@ public class MetaWatchService extends Service {
 	
 	public final static class WeatherProvider {
 		public static final int DISABLED = 0;
-		public static final int GOOGLE = 1;
+		public static final int GOOGLE_DEPRECATED = 1;
 		public static final int WUNDERGROUND = 2;
 		public static final int YAHOO = 3;
 	}
@@ -195,7 +195,7 @@ public class MetaWatchService extends Service {
 		public static boolean notificationCenter = false;
 		public static boolean notifyLight = false;
 		public static boolean stickyNotifications = true;
-		public static int weatherProvider = WeatherProvider.GOOGLE;
+		public static int weatherProvider = WeatherProvider.YAHOO;
 		public static String weatherCity = "Dallas TX";
 		public static boolean weatherCelsius = false;
 		public static int weatherGeolocationMode = GeolocationMode.USEPROVIDER;
