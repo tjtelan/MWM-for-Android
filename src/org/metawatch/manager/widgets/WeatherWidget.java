@@ -386,13 +386,21 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>3) {
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>1) {
 			int weatherIndex = 0;
 			if(Monitors.weatherData.forecast.length>4)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
 
-			for (int i=0;i<4;++i) {
+			int max = Math.min(4, Monitors.weatherData.forecast.length);
+			
+			for (int i=0;i<max;++i) {
 				int x = i*24;
+				
+				if (max==2)
+					x += (i+1) * 16;
+				else if (max==3)
+					x += (i+1) * 12;
+				
 				Bitmap image = Utils.getBitmap(context, Monitors.weatherData.forecast[weatherIndex].getIcon());
 				canvas.drawBitmap(image, x, 4, null);
 				Utils.drawOutlinedText(Monitors.weatherData.forecast[weatherIndex].getDay(), canvas, x, 6, paintSmall, paintSmallOutline);
@@ -542,13 +550,17 @@ public class WeatherWidget implements InternalWidget {
 		paintSmall.setTextAlign(Align.LEFT);
 		paintSmallOutline.setTextAlign(Align.LEFT);
 		
-		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>3) {
+		if (Monitors.weatherData.received && Monitors.weatherData.forecast!=null && Monitors.weatherData.forecast.length>1) {
 			int weatherIndex = 0;
 			if(Monitors.weatherData.forecast.length>3)
 				weatherIndex = 1; // Start with tomorrow's weather if we've got enough entries
 
-			for (int i=0;i<3;++i) {
+			final int max = Math.min(3, Monitors.weatherData.forecast.length);
+						
+			for (int i=0;i<max;++i) {
 				int x = i*26;
+				if( max==2 )
+					x+=(i+1)*8;
 				final String smallIcon = Monitors.weatherData.forecast[weatherIndex].getIcon().replace(".bmp", "_12.bmp");
 				Bitmap image = Utils.getBitmap(context, smallIcon);
 				canvas.drawBitmap(image, x+12, 0, null);
