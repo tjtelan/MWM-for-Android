@@ -15,7 +15,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.metawatch.manager.Idle;
 import org.metawatch.manager.MetaWatch;
+import org.metawatch.manager.MetaWatchService;
 import org.metawatch.manager.MetaWatchService.Preferences;
 import org.metawatch.manager.Monitors.LocationData;
 import org.xml.sax.Attributes;
@@ -155,8 +157,11 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 							+ weatherLocation + arguments;
 				}
 
-				return requestWeatherFromYahooPlacefinder(placeFinderUrl,
+				weatherData = requestWeatherFromYahooPlacefinder(placeFinderUrl,
 						weatherData);
+				
+				Idle.updateIdle(context, true);
+				MetaWatchService.notifyClients();
 			}
 
 		} catch (Exception e) {
@@ -274,7 +279,8 @@ public class YahooWeatherEngine extends AbstractWeatherEngine {
 				weatherData.celsius = Preferences.weatherCelsius;
 				weatherData.condition = handler.getText();
 				weatherData.temp = handler.getTemp();
-				weatherData.forecastTimeStamp = System.currentTimeMillis(); // TODO
+				weatherData.forecastTimeStamp = System.currentTimeMillis();				
+				weatherData.timeStamp = weatherData.forecastTimeStamp;
 				weatherData.icon = getIcon(handler.getCode());
 				List<Forecast> forecasts = handler.getForecasts();
 				weatherData.forecast = new Forecast[forecasts.size()];
