@@ -202,8 +202,19 @@ public class MetaWatch extends TabActivity {
     
 	void startService() {
 
+		
 		if(!isServiceRunning()) {
-			Context context = getApplicationContext();
+			
+			// Check if bluetooth service is on
+			// if not, ask to turn it on
+
+			
+
+		if(!BluetoothHelper.enableBluetoothDialog(context))
+			return;	
+			
+			
+			Context context = getApplicationContext();			
 			context.bindService(new Intent(MetaWatch.this, 
 					MetaWatchService.class), mConnection, Context.BIND_AUTO_CREATE);
 		}
@@ -214,7 +225,11 @@ public class MetaWatch extends TabActivity {
 	}
 	
     void stopService() {
+		// Check if bluetooth service is on
+		// if true, ask to turn it off
+		BluetoothHelper.disableBluetoothDialog(context);
 
+		
 		Context context = getApplicationContext();
         try {
         	context.stopService(new Intent(this, MetaWatchService.class));
@@ -228,6 +243,8 @@ public class MetaWatch extends TabActivity {
     	if(!isServiceRunning()) {
     		toggleButton.setChecked(false);
     	}
+    	
+    	
     }
     
     private boolean isServiceRunning() {
